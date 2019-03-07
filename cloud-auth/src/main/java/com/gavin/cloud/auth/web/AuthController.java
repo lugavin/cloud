@@ -7,10 +7,6 @@ import com.gavin.cloud.auth.dto.KeyAndPasswordDTO;
 import com.gavin.cloud.auth.dto.LoginDTO;
 import com.gavin.cloud.auth.enums.AuthMessageType;
 import com.gavin.cloud.auth.enums.MailTemplateEnum;
-import com.gavin.cloud.auth.transformer.PermissionTransformer;
-import com.gavin.cloud.auth.transformer.UserTransformer;
-import com.gavin.cloud.sys.api.dto.RegisterDTO;
-import com.gavin.cloud.sys.api.model.User;
 import com.gavin.cloud.common.base.exception.AppException;
 import com.gavin.cloud.common.base.subject.Permission;
 import com.gavin.cloud.common.base.subject.Subject;
@@ -21,6 +17,8 @@ import com.gavin.cloud.common.web.auth.RequiresGuest;
 import com.gavin.cloud.common.web.auth.RequiresUser;
 import com.gavin.cloud.common.web.config.AppWebProperties;
 import com.gavin.cloud.common.web.mail.MailService;
+import com.gavin.cloud.sys.api.dto.RegisterDTO;
+import com.gavin.cloud.sys.api.model.User;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,21 +28,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.CookieGenerator;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/account")
-public class AccountResource {
+public class AuthController {
 
     private static final String USER = "user";
 
@@ -77,7 +74,7 @@ public class AccountResource {
      */
     @RequiresGuest
     @PostMapping("/login/{type:" + Constants.REGEX_LOGIN_TYPE + "}")
-    public ResponseEntity<Subject> login(@Valid LoginDTO loginDTO, @PathVariable int type) {
+    public ResponseEntity<Void> login(@Valid LoginDTO loginDTO, @PathVariable int type, HttpServletResponse response) {
         User user = userClient.getUser(loginDTO.getUsername(), type);
         if (user == null) {
             throw new AppException(AuthMessageType.ERR_ACCOUNT_NOT_FOUND);
@@ -88,20 +85,22 @@ public class AccountResource {
         if (user.getActivated() == null || !user.getActivated()) {
             throw new AppException(AuthMessageType.ERR_ACCOUNT_NOT_ACTIVATED);
         }
-
-        Subject subject = UserTransformer.userToSubject(user);
-        subject.addMenus(permissionClient.getMenus(user.getId())
-                .stream()
-                .map(PermissionTransformer::transform)
-                .collect(Collectors.toList()));
-        subject.addFuncs(permissionClient.getFuncs(user.getId())
-                .stream()
-                .map(PermissionTransformer::transform)
-                .collect(Collectors.toList()));
-
-        subjectService.setSubject(subject);
-
-        return ResponseEntity.ok(subject);
+        // File file = ResourceUtils.getFile("classpath:cert.jks");
+        // byte[] privateKey = null;
+        // String token = Jwt.builder()
+        //         .withSub(user.getId())
+        //         .withExp(Long.toString(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + 1800)) // 半小时有效
+        //         .sign(privateKey, Algorithm.Type.RS256);
+        AppWebProperties.Cookie cookie = appWebProperties.getCookie();
+        CookieGenerator cookieGenerator = new CookieGenerator();
+        cookieGenerator.setCookiePath(cookie.getPath());
+        cookieGenerator.setCookieDomain(cookie.getDomain());
+        cookieGenerator.setCookieHttpOnly(cookie.isHttpOnly());
+        cookieGenerator.setCookieMaxAge(cookie.getMaxAge());
+        cookieGenerator.setCookieName(cookie.getName());
+        cookieGenerator.setCookieSecure(cookie.isSecure());
+        // cookieGenerator.addCookie(response, token);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @RequiresGuest

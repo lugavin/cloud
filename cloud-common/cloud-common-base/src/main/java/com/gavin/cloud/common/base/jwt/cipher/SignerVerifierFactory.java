@@ -11,7 +11,7 @@ public abstract class SignerVerifierFactory {
             case RS256:
             case RS384:
             case RS512:
-                return new RsaSigner(KeyHelper.createRSAPrivateKey(key), alg);
+                return new RSASigner(KeyHelper.createRSAPrivateKey(key), alg);
             default:
                 throw new IllegalArgumentException("Unsupported signature algorithm: " + alg.value());
         }
@@ -26,7 +26,7 @@ public abstract class SignerVerifierFactory {
             case RS256:
             case RS384:
             case RS512:
-                return new RsaVerifier(KeyHelper.createRSAPublicKey(key), alg);
+                return new RSAVerifier(KeyHelper.createRSAPublicKey(key), alg);
             default:
                 throw new IllegalArgumentException("Unsupported signature algorithm: " + alg.value());
         }

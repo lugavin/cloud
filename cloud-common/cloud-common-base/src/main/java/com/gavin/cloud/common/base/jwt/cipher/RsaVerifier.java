@@ -4,20 +4,20 @@ import java.security.GeneralSecurityException;
 import java.security.Signature;
 import java.security.interfaces.RSAPublicKey;
 
-public class RsaVerifier implements Verifier {
+public class RSAVerifier implements Verifier {
 
     private final RSAPublicKey key;
     private final String alg;
 
-    public RsaVerifier(RSAPublicKey key) {
+    public RSAVerifier(RSAPublicKey key) {
         this(key, Algorithm.Type.RS256);
     }
 
-    public RsaVerifier(RSAPublicKey key, Algorithm.Type type) {
+    public RSAVerifier(RSAPublicKey key, Algorithm.Type type) {
         this(key, type.value());
     }
 
-    public RsaVerifier(RSAPublicKey key, String alg) {
+    public RSAVerifier(RSAPublicKey key, String alg) {
         this.key = key;
         this.alg = alg;
     }
