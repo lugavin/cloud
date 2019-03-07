@@ -1,0 +1,31 @@
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overridden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+
+server:
+  port: 8081
+
+spring:
+  application:
+    name: cloud-auth
+
+logging:
+  file: target/${spring.application.name}.log
+
+management:
+  security:
+    enabled: false
+
+# Hystrix\u670D\u52A1\u7194\u65AD\u5904\u7406(\u53EA\u4F5C\u7528\u5728\u670D\u52A1\u8C03\u7528\u7684\u4E00\u7AEF)
+feign:
+  hystrix:
+    enabled: true

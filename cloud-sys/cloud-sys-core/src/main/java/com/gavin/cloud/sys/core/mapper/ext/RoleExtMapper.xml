@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper">
+
+    <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.api.model.Role">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, code, `name`, remark
+    </sql>
+
+    <select id="getList" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_role
+        <where>
+            <if test="id!=null">
+                AND id = #{id}
+            </if>
+            <if test="code!=null and code!=''">
+                AND code = #{code}
+            </if>
+            <if test="name!=null and name!=''">
+                AND name LIKE CONCAT('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="getPage" parameterType="com.gavin.cloud.common.base.page.Pageable" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_role
+        <where>
+            <if test="param!=null">
+                <if test="param.code!=null and param.code!=''">
+                    AND code = #{param.code}
+                </if>
+                <if test="param.name!=null and param.name!=''">
+                    AND name LIKE CONCAT('%',#{param.name},'%')
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <select id="getByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT a.id, a.code, a.`name`, a.remark
+          FROM sys_role a JOIN sys_user_role b ON a.id = b.role_id
+         WHERE b.user_id = #{userId}
+    </select>
+
+</mapper>

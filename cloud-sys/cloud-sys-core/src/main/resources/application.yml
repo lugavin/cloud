@@ -1,0 +1,23 @@
+# ===================================================================
+# Mybatis properties.
+# Full reference is available at:
+# {@link org.mybatis.spring.boot.autoconfigure.MybatisProperties}
+# ===================================================================
+mybatis:
+    #mapper-locations: classpath*:sqlmap/*-mapper.xml
+    #type-aliases-package: com.example.domain.model
+    #type-handlers-package: com.example.typehandler
+    configuration:
+        lazy-loading-enabled: true
+        aggressive-lazy-loading: false
+        cache-enabled: false
+
+ftp:
+  host: 192.168.8.99
+  port: 21
+  username: ftpuser
+  password: ftpuser
+  basePath: /home/ftpuser/www/images
+
+oss:
+  baseURL: http://192.168.8.99/images

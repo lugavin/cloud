@@ -1,0 +1,43 @@
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overridden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+
+server:
+  port: 9000
+
+spring:
+  application:
+    name: cloud-gateway
+
+logging:
+  file: target/${spring.application.name}.log
+
+management:
+  security:
+    enabled: false #\u5168\u5C40\u5173\u95EDActuator\u5B89\u5168\u8BA4\u8BC1
+#endpoints:
+#  env:
+#    sensitive: false #\u7EC6\u7C92\u5EA6\u7684\u5F00\u653EActuator Endpoints
+
+#ribbon:
+#  eureka:
+#    enabled: true
+
+# https://projects.spring.io/spring-cloud/spring-cloud.html
+zuul:
+  #host:
+  #  max-total-connections: 1000
+  #  max-per-route-connections: 100
+  #semaphore:
+  #  max-semaphores: 500
+  add-host-header: true
+  sensitiveHeaders: #Cookie, Set-Cookie, Authorization

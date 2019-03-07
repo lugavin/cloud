@@ -1,0 +1,11 @@
+server:
+    port: 8083
+spring:
+    application:
+        name: cloud-portal
+    profiles:
+        active: dev
+        include: swagger
+    devtools:
+        restart:
+            enabled: true

@@ -1,0 +1,26 @@
+# ===================================================================
+# Spring Boot configuration for the "prod" profile.
+#
+# This configuration overrides the application.yml file.
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+
+ribbon:
+  ReadTimeout: 1000
+  ConnectTimeout: 1000
+  MaxAutoRetries: 1
+  MaxAutoRetriesNextServer: 1
+
+# See https://github.com/Netflix/Hystrix/wiki/Configuration
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000

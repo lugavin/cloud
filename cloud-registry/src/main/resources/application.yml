@@ -1,0 +1,42 @@
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overridden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+
+server:
+  port: 8761
+
+spring:
+  application:
+    name: cloud-registry
+
+logging:
+  file: target/${spring.application.name}.log
+
+management:
+  security:
+    enabled: false #全局关闭Actuator安全认证
+#endpoints:
+#  env:
+#    sensitive: false #细粒度的开放Actuator Endpoints
+
+eureka:
+  client:
+    # Indicates whether this client should fetch eureka registry information from eureka server (default: true)
+    fetch-registry: false
+    # Indicates whether or not this instance should register its information with eureka server for discovery by others (default: true)
+    register-with-eureka: false
+    # Indicates how often(in seconds) to fetch the registry information from the eureka server (default: 30s)
+    registry-fetch-interval-seconds: 10
+    # Indicates how long initially (in seconds) to replicate instance info to the eureka server (default: 30s)
+    instance-info-replication-interval-seconds: 10
+    service-url:
+      defaultZone: http://localhost:${server.port}/eureka/

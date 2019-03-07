@@ -1,0 +1,11 @@
+server:
+  port: 8761
+
+eureka:
+  client:
+    # Indicates whether this client should fetch eureka registry information from eureka server (default: true)
+    fetch-registry: true
+    # Indicates whether or not this instance should register its information with eureka server for discovery by others (default: true)
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8762/eureka/

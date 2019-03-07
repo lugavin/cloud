@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.gavin.cloud.sys.core.mapper.ext.UserExtMapper">
+
+    <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.api.model.User">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+        <result column="salt" property="salt" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="avatar" property="avatar" jdbcType="VARCHAR"/>
+        <result column="lang_key" property="langKey" jdbcType="VARCHAR"/>
+        <result column="activated" property="activated" jdbcType="BIT"/>
+        <result column="activation_key" property="activationKey" jdbcType="VARCHAR"/>
+        <result column="reset_key" property="resetKey" jdbcType="VARCHAR"/>
+        <result column="reset_date" property="resetDate" jdbcType="TIMESTAMP"/>
+        <result column="created_by" property="createdBy" jdbcType="VARCHAR"/>
+        <result column="created_date" property="createdDate" jdbcType="TIMESTAMP"/>
+        <result column="last_modified_by" property="lastModifiedBy" jdbcType="VARCHAR"/>
+        <result column="last_modified_date" property="lastModifiedDate" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, username, `password`, nickname, salt, phone, email, avatar, lang_key, activated,
+        activation_key, reset_key, reset_date, created_by, created_date, last_modified_by,
+        last_modified_date
+    </sql>
+
+    <select id="getList" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_user
+        <where>
+            <if test="id!=null">
+                AND id = #{id}
+            </if>
+            <if test="username!=null and username!=''">
+                AND username = #{username}
+            </if>
+            <if test="nickname!=null and nickname!=''">
+                AND nickname LIKE CONCAT('%',#{nickname},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="getPage" parameterType="com.gavin.cloud.common.base.page.Pageable" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_user
+        <where>
+            <if test="param!=null">
+                <if test="param.username!=null and param.username!=''">
+                    AND username = #{param.username}
+                </if>
+                <if test="param.nickname!=null and param.nickname!=''">
+                    AND nickname LIKE CONCAT('%',#{param.nickname},'%')
+                </if>
+                <if test="param.createStartDate!=null and param.createStartDate!=''">
+                    AND DATE(created_date) >= DATE(#{param.createStartDate})
+                </if>
+                <if test="param.createEndDate!=null and param.createEndDate!=''">
+                    <![CDATA[ AND DATE(created_date) <= DATE(#{param.createEndDate}) ]]>
+                </if>
+                <if test="param.modifyStartDate!=null and param.modifyStartDate!=''">
+                    AND DATE(last_modified_date) >= DATE(#{param.modifyStartDate})
+                </if>
+                <if test="param.modifyEndDate!=null and param.modifyEndDate!=''">
+                    <![CDATA[ AND DATE(last_modified_date) <= DATE(#{param.modifyEndDate}) ]]>
+                </if>
+            </if>
+        </where>
+    </select>
+
+</mapper>

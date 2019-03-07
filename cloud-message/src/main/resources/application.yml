@@ -1,0 +1,32 @@
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overridden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+
+server:
+  port: ${random.int[8080,8090]}
+
+spring:
+  application:
+    name: cloud-message
+  cloud:
+    # https://docs.spring.io/spring-cloud-stream/docs/Ditmars.SR4/reference/htmlsingle/
+    stream:
+      binders:
+        output.destination: my-topic
+        input.destination: my-topic
+
+logging:
+  file: target/${spring.application.name}.log
+
+management:
+  security:
+    enabled: false

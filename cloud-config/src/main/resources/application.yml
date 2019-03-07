@@ -1,0 +1,46 @@
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overridden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+
+server:
+  port: 8000
+
+spring:
+  application:
+    name: cloud-config
+  # To use the native profile just launch the Config Server with "spring.profiles.active=native".
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        # File System Backend
+        native:
+          search-locations: classpath:/repo
+        # Git Backend
+        #git:
+        #  uri: file:///${user.dir}/${spring.application.name}/src/main/resources/repo
+
+logging:
+  file: target/${spring.application.name}.log
+
+management:
+  security:
+    enabled: false #\u5168\u5C40\u5173\u95EDActuator\u5B89\u5168\u8BA4\u8BC1
+#endpoints:
+#  env:
+#    sensitive: false #\u7EC6\u7C92\u5EA6\u7684\u5F00\u653EActuator Endpoints
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

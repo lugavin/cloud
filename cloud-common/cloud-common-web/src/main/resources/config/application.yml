@@ -1,0 +1,63 @@
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overridden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+
+spring:
+    profiles:
+        # The commented value for `active` can be replaced with valid Spring profiles to load.
+        # Otherwise, it will be filled in by maven when building the WAR file
+        # Either way, it can be overridden by `--spring.profiles.active` value passed in the commandline or `-Dspring.profiles.active` set in `JAVA_OPTS`
+        active: dev #spring.profiles.active#
+    session:
+        #store-type: none
+        store-type: redis # https://docs.spring.io/spring-session/docs/current/reference/html5/guides/boot-redis.html
+    messages:
+        basename: i18n/messages
+    jackson:
+        time-zone: Asia/Shanghai
+        date-format: yyyy-MM-dd HH:mm:ss
+        default-property-inclusion: NON_NULL
+        serialization:
+            write_dates_as_timestamps: false
+
+info:
+    project:
+        version: 0.1.0 #project.version#
+
+ribbon:
+    eureka:
+        enabled: true
+
+app.web:
+    async:
+        core-pool-size: 2
+        max-pool-size: 50
+        queue-capacity: 10000
+    cookie:
+        path: /
+        name: x-auth-token
+        maxAge: -1              # 若设置的值不大于0则关闭浏览器失效
+        httpOnly: true          # 若设置为true则通过JS脚本将无法读取到Cookie信息(防止XSS跨站脚本攻击)
+        secure: false           # 若设置为true则只能在Https连接中被浏览器传递到服务端
+        useBase64Encoding: true # https://tools.ietf.org/html/rfc6265
+
+    swagger:
+        title: Emall App RESTful API
+        description: Emall App API documentation
+        termsOfServiceUrl: https://lugavin.github.io
+        contactName: lugavin
+        contactUrl: https://github.com/lugavin
+        contactEmail: lugavin@outlook.com
+        basePackage: com.gavin
+        default-include-pattern: /**
+        protocols: http, https
+        version: ${info.project.version}
