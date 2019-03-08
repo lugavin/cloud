@@ -34,6 +34,11 @@ public class JwtBuilder {
         return this;
     }
 
+    //public JwtBuilder withAud(String... aud) {
+    //    addClaim(PublicClaim.Payload.aud.name(), aud);
+    //    return this;
+    //}
+
     public JwtBuilder withAud(String aud) {
         addClaim(PublicClaim.Payload.aud.name(), aud);
         return this;

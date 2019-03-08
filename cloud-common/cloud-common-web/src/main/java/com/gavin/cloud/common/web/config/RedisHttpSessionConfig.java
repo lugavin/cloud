@@ -1,5 +1,6 @@
 package com.gavin.cloud.common.web.config;
 
+import com.gavin.cloud.common.web.properties.SwaggerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
@@ -21,9 +22,9 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 @EnableRedisHttpSession
 public class RedisHttpSessionConfig {
 
-    private final AppWebProperties.Cookie cookieProperties;
+    private final SwaggerProperties.Cookie cookieProperties;
 
-    public RedisHttpSessionConfig(AppWebProperties appWebProperties) {
+    public RedisHttpSessionConfig(SwaggerProperties appWebProperties) {
         this.cookieProperties = appWebProperties.getCookie();
     }
 

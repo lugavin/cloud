@@ -12,11 +12,11 @@
 # ===================================================================
 
 server:
-  port: 8083
+  port: 8080
 
 spring:
   application:
-    name: cloud-pay
+    name: cloud-test
 
 management:
   security:

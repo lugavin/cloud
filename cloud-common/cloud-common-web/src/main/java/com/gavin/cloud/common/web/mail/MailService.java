@@ -1,7 +1,7 @@
 package com.gavin.cloud.common.web.mail;
 
 import com.gavin.cloud.common.base.util.Constants;
-import com.gavin.cloud.common.web.config.AppWebProperties;
+import com.gavin.cloud.common.web.properties.SwaggerProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -19,7 +19,7 @@ public class MailService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
 
-    private final AppWebProperties.Mail mailProperties;
+    private final SwaggerProperties.Mail mailProperties;
 
     private final JavaMailSender javaMailSender;
 
@@ -27,7 +27,7 @@ public class MailService {
 
     private final SpringTemplateEngine templateEngine;
 
-    public MailService(AppWebProperties appWebProperties,
+    public MailService(SwaggerProperties appWebProperties,
                        JavaMailSender javaMailSender,
                        MessageSource messageSource,
                        SpringTemplateEngine templateEngine) {

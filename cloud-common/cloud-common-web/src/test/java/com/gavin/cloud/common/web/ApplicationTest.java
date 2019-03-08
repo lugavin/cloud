@@ -19,7 +19,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @see <a href="http://www.importnew.com/19102.html">Spring4新特性</a>
+ * @see <a href="http://www.importnew.com/19102.html">spring4新特性</a>
+ * @see <a href="https://docs.spring.io/spring/docs/4.0.x/spring-framework-reference/htmlsingle/">spring-framework-4</a>
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)

@@ -7,6 +7,8 @@ import com.gavin.cloud.auth.dto.KeyAndPasswordDTO;
 import com.gavin.cloud.auth.dto.LoginDTO;
 import com.gavin.cloud.auth.enums.AuthMessageType;
 import com.gavin.cloud.auth.enums.MailTemplateEnum;
+import com.gavin.cloud.auth.service.AccessTokenService;
+import com.gavin.cloud.common.base.dto.LoginUserDTO;
 import com.gavin.cloud.common.base.exception.AppException;
 import com.gavin.cloud.common.base.subject.Permission;
 import com.gavin.cloud.common.base.subject.Subject;
@@ -15,8 +17,10 @@ import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.base.util.Md5Hash;
 import com.gavin.cloud.common.web.auth.RequiresGuest;
 import com.gavin.cloud.common.web.auth.RequiresUser;
-import com.gavin.cloud.common.web.config.AppWebProperties;
+import com.gavin.cloud.common.web.properties.JwtProperties;
+import com.gavin.cloud.common.web.properties.SwaggerProperties;
 import com.gavin.cloud.common.web.mail.MailService;
+import com.gavin.cloud.common.web.util.RequestUtils;
 import com.gavin.cloud.sys.api.dto.RegisterDTO;
 import com.gavin.cloud.sys.api.model.User;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +38,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.CookieGenerator;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -48,7 +54,13 @@ public class AuthController {
     private static final String BASE_URL = "baseUrl";
 
     @Autowired
-    private AppWebProperties appWebProperties;
+    private JwtProperties jwtProperties;
+
+    @Autowired
+    private SwaggerProperties appWebProperties;
+
+    @Autowired
+    private AccessTokenService accessTokenService;
 
     @Autowired
     private MailService mailService;
@@ -74,7 +86,8 @@ public class AuthController {
      */
     @RequiresGuest
     @PostMapping("/login/{type:" + Constants.REGEX_LOGIN_TYPE + "}")
-    public ResponseEntity<Void> login(@Valid LoginDTO loginDTO, @PathVariable int type, HttpServletResponse response) {
+    public ResponseEntity<Void> login(@Valid LoginDTO loginDTO, @PathVariable int type,
+                                      HttpServletRequest request, HttpServletResponse response) {
         User user = userClient.getUser(loginDTO.getUsername(), type);
         if (user == null) {
             throw new AppException(AuthMessageType.ERR_ACCOUNT_NOT_FOUND);
@@ -85,22 +98,22 @@ public class AuthController {
         if (user.getActivated() == null || !user.getActivated()) {
             throw new AppException(AuthMessageType.ERR_ACCOUNT_NOT_ACTIVATED);
         }
-        // File file = ResourceUtils.getFile("classpath:cert.jks");
-        // byte[] privateKey = null;
-        // String token = Jwt.builder()
-        //         .withSub(user.getId())
-        //         .withExp(Long.toString(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + 1800)) // 半小时有效
-        //         .sign(privateKey, Algorithm.Type.RS256);
-        AppWebProperties.Cookie cookie = appWebProperties.getCookie();
-        CookieGenerator cookieGenerator = new CookieGenerator();
-        cookieGenerator.setCookiePath(cookie.getPath());
-        cookieGenerator.setCookieDomain(cookie.getDomain());
-        cookieGenerator.setCookieHttpOnly(cookie.isHttpOnly());
-        cookieGenerator.setCookieMaxAge(cookie.getMaxAge());
-        cookieGenerator.setCookieName(cookie.getName());
-        cookieGenerator.setCookieSecure(cookie.isSecure());
-        // cookieGenerator.addCookie(response, token);
+        String clientIP = RequestUtils.getClientIP(request);
+        String token = accessTokenService.createToken(new LoginUserDTO(user.getId(), user.getUsername(), clientIP));
+        handleCookie(token, response);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    /**
+     * 检查用户登录状态, 如果已登录, 则刷新Token; 如果未登录或登录过期, 则调整到登录页面(前端)
+     */
+    @GetMapping("/account/verify")
+    public ResponseEntity<LoginUserDTO> verify(@CookieValue("accessToken") String accessToken, HttpServletResponse response) {
+        LoginUserDTO loginUserDTO = accessTokenService.verifyToken(accessToken);
+        // 刷新Token(重新生成)
+        String token = accessTokenService.createToken(loginUserDTO);
+        handleCookie(token, response);
+        return ResponseEntity.ok(loginUserDTO);
     }
 
     @RequiresGuest
@@ -161,21 +174,15 @@ public class AuthController {
         accountClient.finishPasswordReset(keyAndPasswordDTO.getKey(), keyAndPasswordDTO.getNewPassword());
     }
 
-    // @RequiresGuest
-    // @GetMapping("/{token}")
-    // public ResponseEntity<Subject> getAccountByToken(@PathVariable String token) {
-    //     return ResponseEntity.ok(subjectService.getSubject(token));
-    // }
-
-    // static class AuthToken {
-    //     private final String token;
-    //     public AuthToken(String token) {
-    //         this.token = token;
-    //     }
-    //     @JsonProperty("x-auth-token")
-    //     public String getToken() {
-    //         return token;
-    //     }
-    // }
+    private void handleCookie(String token, HttpServletResponse response) {
+        CookieGenerator cookieGenerator = new CookieGenerator();
+        cookieGenerator.setCookiePath(jwtProperties.getCookiePath());
+        cookieGenerator.setCookieDomain(jwtProperties.getCookieDomain());
+        cookieGenerator.setCookieHttpOnly(jwtProperties.isCookieHttpOnly());
+        cookieGenerator.setCookieMaxAge(jwtProperties.getCookieMaxAge());
+        cookieGenerator.setCookieName(jwtProperties.getCookieName());
+        cookieGenerator.setCookieSecure(jwtProperties.isCookieSecure());
+        cookieGenerator.addCookie(response, token);
+    }
 
 }

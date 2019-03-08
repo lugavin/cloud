@@ -2,6 +2,7 @@ package com.gavin.cloud.common.web.config;
 
 import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.web.mail.MailService;
+import com.gavin.cloud.common.web.properties.SwaggerProperties;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +15,7 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 public class MailConfig {
 
     @Bean
-    public MailService mailService(AppWebProperties appWebProperties,
+    public MailService mailService(SwaggerProperties appWebProperties,
                                    JavaMailSender javaMailSender,
                                    MessageSource messageSource,
                                    SpringTemplateEngine templateEngine) {

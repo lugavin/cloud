@@ -18,9 +18,6 @@ spring:
   application:
     name: cloud-auth
 
-logging:
-  file: target/${spring.application.name}.log
-
 management:
   security:
     enabled: false
@@ -29,3 +26,7 @@ management:
 feign:
   hystrix:
     enabled: true
+
+app:
+  jwt:
+    private-key: MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBALaR156vt0cF7m7zXT1MAxzkujT34Lk6pPuz7NLWPOzaEKJYwE5aQdtNqRpnYJFJ6mO5d40NsX4U8BEGdCYCRwRLnY5qcOc8tXVZJRrtciSfDX8rdQz5HqsXqYSatOGWtO9vpW9X1ymUbZJqJoNIGSF-e7VTLu6vsqYAm2FsEmZvAgMBAAECgYBxU7x9c2OYQbVMx-JDz3BLOivf_1JOiHmrCHfkNDpjZ8VVkTPmLx6cK-vhSPRnm3NUbeco9qwLsKGIX_IvOdCsaw0ao93_eSvhVz5BKMAIE7EqEciSELgSnD0AGPCistnM8wTP4xVlM7OzIC6thgsLbzqKEJ6H2g3ywFrtVaKzeQJBAO_tAeGd-pIkTI0z7fhmaV-xCqZM59MJBbkdjhgoJVn1pvm8nORYmbtbb-1jLMF-z4YAIUBrnoA8BC1I2M_oPgsCQQDCzR09MtT1whu7XOnH5k11KEa295PmvvqEH7YCK7Oc7jQy3eX0EYLVa-29xp5RCM0OrYXk_CKDsDgnXzWcIgutAkBytSiyGpqi5lHnLI24thXpFzbVPW2Umvquf2_hIsiA0w6q1b9Y-Pc--T9xCnpqZFuJYGSFbS6RdqA0mmB2Pj3zAkAFt0ULXal4CJkNt104u148eNESX1Ncqu_o3pFVoPilOywW7gHoVnczUfZo4iIVGKADtT2_iVJt8MbFCPsmuK0FAkAreClvH_wlic5VV5aWewtU3QiSjdaTkPurJvUq4q8MRWWGqJDW8EW-8Yh4cJdceaMrcSJjgdv-fE_H3SBeTZFV

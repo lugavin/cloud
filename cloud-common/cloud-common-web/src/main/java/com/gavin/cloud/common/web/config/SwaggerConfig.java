@@ -1,5 +1,6 @@
 package com.gavin.cloud.common.web.config;
 
+import com.gavin.cloud.common.web.properties.SwaggerProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,9 +30,9 @@ import static springfox.documentation.builders.PathSelectors.ant;
 @Profile("swagger")
 public class SwaggerConfig {
 
-    private final AppWebProperties.Swagger swaggerProperties;
+    private final SwaggerProperties.Swagger swaggerProperties;
 
-    public SwaggerConfig(AppWebProperties appWebProperties) {
+    public SwaggerConfig(SwaggerProperties appWebProperties) {
         this.swaggerProperties = appWebProperties.getSwagger();
     }
 

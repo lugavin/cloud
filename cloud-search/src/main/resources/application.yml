@@ -22,9 +22,6 @@ spring:
       cluster-name: elasticsearch
       cluster-nodes: 127.0.0.1:9300  # HTTP协议(9200) TCP协议(9300)
 
-logging:
-  file: target/${spring.application.name}.log
-
 management:
   security:
     enabled: false

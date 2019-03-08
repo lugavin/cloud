@@ -24,9 +24,6 @@ spring:
         output.destination: my-topic
         input.destination: my-topic
 
-logging:
-  file: target/${spring.application.name}.log
-
 management:
   security:
     enabled: false

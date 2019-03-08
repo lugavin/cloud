@@ -40,9 +40,4 @@ public abstract class RandomUtils {
         return Base64Utils.encode(randomUUID());
     }
 
-    // public static String randomKey() {
-    //     int hashCode = randomUUID().hashCode();
-    //     return System.currentTimeMillis() + Integer.toString(hashCode > 0 ? hashCode : -hashCode);
-    // }
-
 }

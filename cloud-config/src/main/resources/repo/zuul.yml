@@ -7,25 +7,3 @@ zuul:
     cloud-stream: /stream/**
     cloud-search: /search/**
     cloud-portal: /portal/**
-
-app:
-  jwt:
-    public-key: classpath:cert.cer
-    cookie:
-      path: /
-      name: x-auth-token
-      maxAge: -1              # 若设置的值不大于0则关闭浏览器失效
-      httpOnly: true          # 若设置为true则通过JS脚本将无法读取到Cookie信息(防止XSS跨站脚本攻击)
-      secure: false           # 若设置为true则只能在Https连接中被浏览器传递到服务端
-      useBase64Encoding: true # https://tools.ietf.org/html/rfc6265
-  swagger:
-    title: Emall App RESTful API
-    description: Emall App API documentation
-    termsOfServiceUrl: https://lugavin.github.io
-    contactName: lugavin
-    contactUrl: https://github.com/lugavin
-    contactEmail: lugavin@outlook.com
-    basePackage: com.gavin
-    default-include-pattern: /**
-    protocols: http, https
-    version: ${info.project.version}

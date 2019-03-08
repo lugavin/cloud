@@ -1,9 +1,9 @@
-package com.gavin.cloud.common.web.config;
+package com.gavin.cloud.common.web.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "app.web", ignoreUnknownFields = false)
-public class AppWebProperties {
+@ConfigurationProperties(prefix = "app.swagger", ignoreUnknownFields = false)
+public class SwaggerProperties {
 
     private final Cookie cookie = new Cookie();
 

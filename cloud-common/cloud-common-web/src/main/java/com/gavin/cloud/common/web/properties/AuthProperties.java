@@ -1,4 +1,4 @@
-package com.gavin.cloud.common.web.config;
+package com.gavin.cloud.common.web.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.AntPathMatcher;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 @ConfigurationProperties(prefix = "app.auth", ignoreUnknownFields = false)
-public class AppAuthProperties {
+public class AuthProperties {
 
     private static final String ANON_KEY = "anon";
     private static final String USER_KEY = "user";
@@ -25,7 +25,7 @@ public class AppAuthProperties {
 
     private Map<String, String> accessUrls;
 
-    public AppAuthProperties() {
+    public AuthProperties() {
         this.accessUrls = new LinkedHashMap<>();
         this.anonUrls = new HashSet<>();
         this.userUrls = new HashSet<>();

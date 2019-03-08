@@ -2,6 +2,8 @@ package com.gavin.cloud.common.web.config;
 
 import com.gavin.cloud.common.base.subject.SubjectService;
 import com.gavin.cloud.common.base.util.Constants;
+import com.gavin.cloud.common.web.properties.AuthProperties;
+import com.gavin.cloud.common.web.properties.SwaggerProperties;
 import com.gavin.cloud.common.web.support.SubjectMethodProcessor;
 import com.gavin.cloud.common.web.interceptor.AuthInterceptor;
 import com.gavin.cloud.common.web.service.SubjectServiceImpl;
@@ -22,7 +24,7 @@ import java.util.List;
  * 注意:当添加@EnableWebMvc注解后, WebMvcAutoConfiguration中的配置就不会生效, 会自动覆盖默认静态资源存放的目录而将静态资源定位在src/main/webapp目录.
  */
 @Configuration
-@EnableConfigurationProperties({AppAuthProperties.class, AppWebProperties.class})
+@EnableConfigurationProperties({AuthProperties.class, SwaggerProperties.class})
 public class AppWebConfig extends WebMvcConfigurerAdapter {
 
     private static final String[] EXCLUDE_PATH_PATTERNS = {
