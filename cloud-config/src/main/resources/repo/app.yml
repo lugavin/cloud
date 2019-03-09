@@ -5,8 +5,8 @@ app:
     cookie-path: /
     cookie-name: accessToken
     cookie-max-age: -1             # 若设置的值不大于0则关闭浏览器失效
-    cookie-http-only: true         # 若设置为true则通过JS脚本将无法读取到Cookie信息(防止XSS跨站脚本攻击)
-    cookie-secure: false           # 若设置为true则只能在Https连接中被浏览器传递到服务端
+    use-http-only-cookie: true     # 若设置为true则通过JS脚本将无法读取到Cookie信息(防止XSS跨站脚本攻击)
+    use-secure-cookie: false       # 若设置为true则只能在Https连接中被浏览器传递到服务端
   swagger:
     title: Emall App RESTful API
     description: Emall App API documentation

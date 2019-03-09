@@ -21,3 +21,7 @@ ftp:
 
 oss:
   baseURL: http://192.168.8.99/images
+
+app:
+  privateKey: aaaaaa
+  publicKey: bbbbbb

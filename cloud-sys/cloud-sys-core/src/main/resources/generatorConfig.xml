@@ -17,10 +17,20 @@
         <property name="beginningDelimiter" value='`'/>
         <property name="endingDelimiter" value='`'/>
 
-        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
-        <!--<plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"/>-->
+        <!-- 该插件用来在XxxExample类中生成大小写敏感的LIKE方法 -->
         <plugin type="org.mybatis.generator.plugins.CaseInsensitiveLikePlugin"/>
+        <!--
+        <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"/>
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
+        <plugin type="org.mybatis.generator.plugins.MapperAnnotationPlugin"/>
+        <plugin type="org.mybatis.generator.plugins.FluentBuilderMethodsPlugin"/>
+        <plugin type="org.mybatis.generator.plugins.RenameExampleClassPlugin">
+            <property name="searchString" value="Example$"/>
+            <property name="replaceString" value="Criteria"/>
+        </plugin>
+        -->
+        <plugin type="com.softwareloop.mybatis.generator.plugins.LombokPlugin"/>
 
         <!-- 是否去除自动生成的注释 -->
         <commentGenerator>
@@ -60,7 +70,7 @@
             <!-- enableSubPackages : 是否让schema作为包的后缀 -->
             <property name="enableSubPackages" value="false"/>
             <!-- rootInterface : 给生成的接口添加一个父类 -->
-            <!--<property name="rootInterface" value="com.gavin.cloud.common.mapper.CrudMapper"/>-->
+            <!--<property name="rootInterface" value="com.gavin.cloud.common.mapper.BaseMapper"/>-->
         </javaClientGenerator>
 
         <!-- 指定数据库表 -->

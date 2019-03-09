@@ -16,17 +16,12 @@
     <url>http://maven.apache.org</url>
 
     <dependencies>
+        
         <!-- Common Base -->
         <dependency>
             <groupId>com.gavin.cloud</groupId>
             <artifactId>cloud-common-base</artifactId>
             <version>${project.parent.version}</version>
-        </dependency>
-
-        <!-- Eureka Client -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-eureka</artifactId>
         </dependency>
 
         <!-- Spring Session Data Redis -->
@@ -45,18 +40,21 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- Spring Mail -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- Spring Thymeleaf -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- Swagger REST API -->

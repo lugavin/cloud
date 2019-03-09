@@ -1,4 +1,4 @@
-package com.gavin.cloud.sys.core;
+package com.gavin.cloud;
 
 import com.gavin.cloud.common.core.config.AppCoreConfig;
 import org.springframework.boot.SpringApplication;

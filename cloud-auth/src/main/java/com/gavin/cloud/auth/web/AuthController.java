@@ -178,10 +178,10 @@ public class AuthController {
         CookieGenerator cookieGenerator = new CookieGenerator();
         cookieGenerator.setCookiePath(jwtProperties.getCookiePath());
         cookieGenerator.setCookieDomain(jwtProperties.getCookieDomain());
-        cookieGenerator.setCookieHttpOnly(jwtProperties.isCookieHttpOnly());
+        cookieGenerator.setCookieHttpOnly(jwtProperties.isUseHttpOnlyCookie());
         cookieGenerator.setCookieMaxAge(jwtProperties.getCookieMaxAge());
         cookieGenerator.setCookieName(jwtProperties.getCookieName());
-        cookieGenerator.setCookieSecure(jwtProperties.isCookieSecure());
+        cookieGenerator.setCookieSecure(jwtProperties.isUseSecureCookie());
         cookieGenerator.addCookie(response, token);
     }
 

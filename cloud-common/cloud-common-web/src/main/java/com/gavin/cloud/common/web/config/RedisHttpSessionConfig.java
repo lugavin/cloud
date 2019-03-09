@@ -1,6 +1,6 @@
 package com.gavin.cloud.common.web.config;
 
-import com.gavin.cloud.common.web.properties.SwaggerProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
@@ -22,12 +22,6 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 @EnableRedisHttpSession
 public class RedisHttpSessionConfig {
 
-    private final SwaggerProperties.Cookie cookieProperties;
-
-    public RedisHttpSessionConfig(SwaggerProperties appWebProperties) {
-        this.cookieProperties = appWebProperties.getCookie();
-    }
-
     /**
      * @see RedisHttpSessionConfiguration#setDefaultRedisSerializer
      */
@@ -42,16 +36,9 @@ public class RedisHttpSessionConfig {
     // }
 
     @Bean
+    @ConfigurationProperties("app.cookie")
     public CookieSerializer cookieSerializer() {
-        DefaultCookieSerializer serializer = new DefaultCookieSerializer();
-        serializer.setCookieName(cookieProperties.getName());
-        serializer.setCookiePath(cookieProperties.getPath());
-        serializer.setDomainName(cookieProperties.getDomain());
-        serializer.setUseHttpOnlyCookie(cookieProperties.isHttpOnly());
-        serializer.setUseSecureCookie(cookieProperties.isSecure());
-        serializer.setCookieMaxAge(cookieProperties.getMaxAge());
-        serializer.setUseBase64Encoding(cookieProperties.isUseBase64Encoding());
-        return serializer;
+        return new DefaultCookieSerializer();
     }
 
 }

@@ -18,8 +18,8 @@ public class JwtProperties {
     private String cookieDomain;
     private String cookiePath = DEFAULT_COOKIE_PATH;
     private Integer cookieMaxAge;
-    private boolean cookieSecure = false;
-    private boolean cookieHttpOnly = false;
+    private boolean useHttpOnlyCookie = true;
+    private boolean useSecureCookie = false;
 
     public void setPublicKey(String publicKey) {
         this.publicKey = Base64.getUrlDecoder().decode(publicKey);

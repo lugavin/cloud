@@ -3,8 +3,10 @@ package com.gavin.cloud.sys.core.mapper;
 import com.gavin.cloud.sys.api.model.RolePermission;
 import com.gavin.cloud.sys.api.model.RolePermissionExample;
 import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+@Mapper
 public interface RolePermissionMapper {
     long countByExample(RolePermissionExample example);
 

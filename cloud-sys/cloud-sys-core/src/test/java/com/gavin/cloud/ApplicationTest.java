@@ -1,12 +1,12 @@
-package com.gavin.cloud.sys.core;
+package com.gavin.cloud;
 
+import com.gavin.cloud.common.base.page.Page;
+import com.gavin.cloud.common.base.util.Constants;
+import com.gavin.cloud.common.base.util.JsonUtils;
 import com.gavin.cloud.sys.api.model.User;
 import com.gavin.cloud.sys.api.model.UserExample;
 import com.gavin.cloud.sys.core.mapper.UserMapper;
 import com.gavin.cloud.sys.core.service.UserService;
-import com.gavin.cloud.common.base.page.Page;
-import com.gavin.cloud.common.base.util.Constants;
-import com.gavin.cloud.common.base.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.ibatis.session.SqlSession;
@@ -15,8 +15,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
@@ -38,7 +38,6 @@ import java.util.List;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @ActiveProfiles(Constants.ENV_DEV)
-@MapperScan("com.gavin.cloud.*.core.mapper")
 public class ApplicationTest {
 
     @Autowired

@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
 
 /**
  * Twitter的Snowflake算法(用于分布式自增长ID), 其原理结构如下(每部分用-分开):
@@ -19,8 +23,9 @@ import java.net.NetworkInterface;
 @Slf4j
 public class SnowflakeIdWorker {
 
-    // 开始时间截(2015-01-01), 一旦确定不能变动
-    private static final long twepoch = 1420041600000L;
+    // 开始时间截, 一旦确定不能变动
+    private static final long twepoch = LocalDate.parse("2015-01-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            .atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
     // 机器id所占的位数
     private static final long workerIdBits = 5L;

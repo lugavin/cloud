@@ -8,11 +8,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,17 +31,21 @@ public class ApplicationTest {
     private static final String USER_HKEY = "USER";
 
     @Autowired
+    private ApplicationContext context;
+
+    @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     private MessageSource messageSource;
 
     @Autowired
-    private List<CacheService> list;
+    private List<CacheService> cacheServices;
 
     @Before
     public void setUp() throws Exception {
         Assert.assertNotNull(messageSource);
+        cacheServices = new ArrayList<>(context.getBeansOfType(CacheService.class).values());
     }
 
     @Test
@@ -60,7 +66,7 @@ public class ApplicationTest {
 
     @Test
     public void testInjection() throws Exception {
-        list.forEach(System.err::println);
+        cacheServices.forEach(System.err::println);
     }
 
 }

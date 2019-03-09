@@ -36,4 +36,12 @@ info:
 ribbon:
     eureka:
         enabled: true
-
+app:
+  cookie:
+    cookie-name: accessToken
+    cookie-path: /
+    domain-name:
+    use-http-only-cookie: true
+    use-secure-cookie: false
+    cookie-max-age: -1
+    use-base64-encoding: true

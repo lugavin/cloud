@@ -3,8 +3,10 @@ package com.gavin.cloud.sys.core.mapper;
 import com.gavin.cloud.sys.api.model.UserRole;
 import com.gavin.cloud.sys.api.model.UserRoleExample;
 import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+@Mapper
 public interface UserRoleMapper {
     long countByExample(UserRoleExample example);
 
