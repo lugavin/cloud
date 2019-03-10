@@ -21,3 +21,8 @@ spring:
 management:
   security:
     enabled: false
+
+app:
+  web:
+    contact-name: lugavin
+    contact-url: https://github.com/lugavin
