@@ -9,14 +9,6 @@ public class MacSignerVerifier implements Signer, Verifier {
     private final SecretKey key;
     private final String alg;
 
-    public MacSignerVerifier(SecretKey key) {
-        this(key, Algorithm.Type.HS256);
-    }
-
-    public MacSignerVerifier(SecretKey key, Algorithm.Type type) {
-        this(key, type.value());
-    }
-
     public MacSignerVerifier(SecretKey key, String alg) {
         this.key = key;
         this.alg = alg;
@@ -34,8 +26,8 @@ public class MacSignerVerifier implements Signer, Verifier {
     }
 
     @Override
-    public boolean verify(byte[] data, byte[] signature) {
-        return isEqual(sign(data), signature);
+    public boolean verify(byte[] data, byte[] sig) {
+        return isEqual(sign(data), sig);
     }
 
     @Override

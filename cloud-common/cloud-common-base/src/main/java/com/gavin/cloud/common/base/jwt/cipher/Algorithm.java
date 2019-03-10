@@ -33,13 +33,13 @@ public interface Algorithm {
 
     }
 
-    static Type forName(final String algorithmName) {
+    static Type forType(final String alg) {
         for (Type type : Type.values()) {
-            if (type.name().equalsIgnoreCase(algorithmName)) {
+            if (type.name().equalsIgnoreCase(alg)) {
                 return type;
             }
         }
-        throw new IllegalArgumentException("Unsupported signature algorithm: " + algorithmName);
+        return null;
     }
 
     String getAlgorithm();

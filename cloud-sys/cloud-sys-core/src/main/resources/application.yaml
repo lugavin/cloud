@@ -4,10 +4,10 @@
 # {@link org.mybatis.spring.boot.autoconfigure.MybatisProperties}
 # ===================================================================
 mybatis:
-    #mapper-locations: classpath*:sqlmap/*-mapper.xml
     #type-aliases-package: com.example.domain.model
     #type-handlers-package: com.example.typehandler
     configuration:
+        map-underscore-to-camel-case: true
         lazy-loading-enabled: true
         aggressive-lazy-loading: false
         cache-enabled: false

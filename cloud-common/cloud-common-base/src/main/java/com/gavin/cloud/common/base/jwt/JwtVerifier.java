@@ -1,11 +1,14 @@
 package com.gavin.cloud.common.base.jwt;
 
 import com.gavin.cloud.common.base.jwt.cipher.Algorithm;
+import com.gavin.cloud.common.base.jwt.cipher.CryptoHolder;
 import com.gavin.cloud.common.base.jwt.cipher.SignerVerifierFactory;
-import com.gavin.cloud.common.base.jwt.cipher.Verifier;
+import com.gavin.cloud.common.base.jwt.cipher.SignerVerifierHandler;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class JwtVerifier {
 
@@ -20,10 +23,18 @@ public class JwtVerifier {
     }
 
     public boolean verify(byte[] key) {
-        Verifier verifier = SignerVerifierFactory.newVerifier(key, Algorithm.forName(header.getAlg()));
-        byte[] signed = (parts[0] + "." + parts[1]).getBytes(StandardCharsets.UTF_8);
-        byte[] signature = Base64.getUrlDecoder().decode(parts[2]);
-        return verifier.verify(signed, signature);
+        Algorithm.Type alg = Algorithm.forType(header.getAlg());
+        if (alg == null) {
+            throw new IllegalArgumentException("Unsupported signature algorithm: " + header.getAlg());
+        }
+        for (SignerVerifierHandler signerVerifierHandler : SignerVerifierFactory.getSignerVerifierHandler()) {
+            if (signerVerifierHandler.supportsAlgorithm(alg.name())) {
+                byte[] data = (parts[0] + "." + parts[1]).getBytes(UTF_8);
+                CryptoHolder cryptoHolder = new CryptoHolder(alg.value(), key, data);
+                return signerVerifierHandler.verify(cryptoHolder, Base64.getUrlDecoder().decode(parts[2]));
+            }
+        }
+        return false;
     }
 
     public Header getHeader() {

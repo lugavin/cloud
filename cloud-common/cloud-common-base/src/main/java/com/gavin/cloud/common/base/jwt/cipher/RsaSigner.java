@@ -9,25 +9,17 @@ public class RSASigner implements Signer {
     private final RSAPrivateKey key;
     private final String alg;
 
-    public RSASigner(RSAPrivateKey key) {
-        this(key, Algorithm.Type.RS256);
-    }
-
-    public RSASigner(RSAPrivateKey key, Algorithm.Type type) {
-        this(key, type.value());
-    }
-
     public RSASigner(RSAPrivateKey key, String alg) {
         this.key = key;
         this.alg = alg;
     }
 
     @Override
-    public byte[] sign(byte[] bytes) {
+    public byte[] sign(byte[] data) {
         try {
             Signature sig = Signature.getInstance(alg);
             sig.initSign(key);
-            sig.update(bytes);
+            sig.update(data);
             return sig.sign();
         } catch (GeneralSecurityException e) {
             throw new RuntimeException(e);

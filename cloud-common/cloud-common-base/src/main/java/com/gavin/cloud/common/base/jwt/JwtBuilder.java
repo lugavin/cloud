@@ -1,13 +1,16 @@
 package com.gavin.cloud.common.base.jwt;
 
 import com.gavin.cloud.common.base.jwt.cipher.Algorithm;
+import com.gavin.cloud.common.base.jwt.cipher.CryptoHolder;
 import com.gavin.cloud.common.base.jwt.cipher.SignerVerifierFactory;
+import com.gavin.cloud.common.base.jwt.cipher.SignerVerifierHandler;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class JwtBuilder {
 
@@ -35,7 +38,7 @@ public class JwtBuilder {
     }
 
     //public JwtBuilder withAud(String... aud) {
-    //    addClaim(PublicClaim.Payload.aud.name(), aud);
+    //    addClaim(PublicClaim.Payload.aud.name(), Arrays.asList(aud));
     //    return this;
     //}
 
@@ -71,15 +74,21 @@ public class JwtBuilder {
     }
 
     public String sign(byte[] key, Algorithm.Type alg) {
-        header.put(PublicClaim.Header.alg.name(), alg.name());
-        header.put(PublicClaim.Header.typ.name(), Header.JWT_TYPE);
-        String headerJson = JsonHelper.fromMap(header);
-        String payloadJson = JsonHelper.fromMap(payload);
-        String headerBase64Encoded = Base64.getUrlEncoder().encodeToString(headerJson.getBytes(StandardCharsets.UTF_8));
-        String payloadBase64Encoded = Base64.getUrlEncoder().encodeToString(payloadJson.getBytes(StandardCharsets.UTF_8));
-        String signed = headerBase64Encoded + "." + payloadBase64Encoded;
-        byte[] signature = SignerVerifierFactory.newSigner(key, alg).sign(signed.getBytes(StandardCharsets.UTF_8));
-        return signed + "." + Base64.getUrlEncoder().encodeToString(signature);
+        for (SignerVerifierHandler signerVerifierHandler : SignerVerifierFactory.getSignerVerifierHandler()) {
+            if (signerVerifierHandler.supportsAlgorithm(alg.name())) {
+                header.put(PublicClaim.Header.alg.name(), alg.name());
+                header.put(PublicClaim.Header.typ.name(), Header.JWT_TYPE);
+                String headerJson = JsonHelper.fromMap(header);
+                String payloadJson = JsonHelper.fromMap(payload);
+                String headerBase64Encoded = Base64.getUrlEncoder().encodeToString(headerJson.getBytes(UTF_8));
+                String payloadBase64Encoded = Base64.getUrlEncoder().encodeToString(payloadJson.getBytes(UTF_8));
+                byte[] data = (headerBase64Encoded + "." + payloadBase64Encoded).getBytes(UTF_8);
+                CryptoHolder cryptoHolder = new CryptoHolder(alg.value(), key, data);
+                byte[] sig = signerVerifierHandler.sign(cryptoHolder);
+                return headerBase64Encoded + "." + payloadBase64Encoded + "." + Base64.getUrlEncoder().encodeToString(sig);
+            }
+        }
+        throw new IllegalArgumentException("Unsupported signature algorithm: " + alg.name());
     }
 
     private void addClaim(String name, String value) {
