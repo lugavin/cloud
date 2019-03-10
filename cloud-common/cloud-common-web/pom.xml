@@ -24,6 +24,12 @@
             <version>${project.parent.version}</version>
         </dependency>
 
+        <!-- Eureka Client -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-eureka</artifactId>
+        </dependency>
+
         <!-- Spring Session Data Redis -->
         <dependency>
             <groupId>org.springframework.session</groupId>
