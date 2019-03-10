@@ -3,6 +3,7 @@ package com.gavin.cloud.common.base.jwt.cipher;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import java.security.GeneralSecurityException;
+import java.security.MessageDigest;
 
 public class MACSignerVerifier implements Signer, Verifier {
 
@@ -25,28 +26,30 @@ public class MACSignerVerifier implements Signer, Verifier {
         }
     }
 
+    /**
+     * <pre>{@code
+     * static boolean isEqual(byte[] a, byte[] b) {
+     *     if (a.length != b.length) {
+     *         return false;
+     *     }
+     *     int result = 0;
+     *     for (int i = 0; i < a.length; i++) {
+     *         result |= a[i] ^ b[i];
+     *     }
+     *     return result == 0;
+     * }
+     * }</pre>
+     *
+     * @see <a href="https://codahale.com/a-lesson-in-timing-attacks/">MessageDigest#isEqual</a>
+     */
     @Override
     public boolean verify(byte[] data, byte[] sig) {
-        return isEqual(sign(data), sig);
+        return MessageDigest.isEqual(sign(data), sig);
     }
 
     @Override
     public String getAlgorithm() {
         return alg;
-    }
-
-    /**
-     * @see <a href="https://codahale.com/a-lesson-in-timing-attacks/"></a>
-     */
-    private boolean isEqual(byte[] a, byte[] b) {
-        if (a.length != b.length) {
-            return false;
-        }
-        int xor = 0;
-        for (int i = 0; i < a.length; i++) {
-            xor |= a[i] ^ b[i];
-        }
-        return xor == 0;
     }
 
 }
