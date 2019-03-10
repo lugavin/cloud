@@ -7,7 +7,7 @@ import java.util.List;
 public abstract class SignerVerifierFactory {
 
     private static List<SignerVerifierHandler> signerVerifierHandlers = Arrays.asList(
-            new MacSignerVerifierHandler(),
+            new MACSignerVerifierHandler(),
             new RSASignerVerifierHandler()
     );
 
