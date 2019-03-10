@@ -7,8 +7,8 @@ import com.gavin.cloud.auth.dto.KeyAndPasswordDTO;
 import com.gavin.cloud.auth.dto.LoginDTO;
 import com.gavin.cloud.auth.enums.AuthMessageType;
 import com.gavin.cloud.auth.enums.MailTemplateEnum;
-import com.gavin.cloud.auth.service.AccessTokenService;
-import com.gavin.cloud.common.base.dto.LoginUserDTO;
+import com.gavin.cloud.auth.service.AuthService;
+import com.gavin.cloud.common.base.dto.ActiveUser;
 import com.gavin.cloud.common.base.exception.AppException;
 import com.gavin.cloud.common.base.subject.Permission;
 import com.gavin.cloud.common.base.subject.Subject;
@@ -60,7 +60,7 @@ public class AuthController {
     private SwaggerProperties appWebProperties;
 
     @Autowired
-    private AccessTokenService accessTokenService;
+    private AuthService authService;
 
     @Autowired
     private MailService mailService;
@@ -99,7 +99,7 @@ public class AuthController {
             throw new AppException(AuthMessageType.ERR_ACCOUNT_NOT_ACTIVATED);
         }
         String clientIP = RequestUtils.getClientIP(request);
-        String token = accessTokenService.createToken(new LoginUserDTO(user.getId(), user.getUsername(), clientIP));
+        String token = authService.createToken(new ActiveUser(user.getId(), user.getUsername(), clientIP));
         handleCookie(token, response);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -108,12 +108,12 @@ public class AuthController {
      * 检查用户登录状态, 如果已登录, 则刷新Token; 如果未登录或登录过期, 则调整到登录页面(前端)
      */
     @GetMapping("/account/verify")
-    public ResponseEntity<LoginUserDTO> verify(@CookieValue("accessToken") String accessToken, HttpServletResponse response) {
-        LoginUserDTO loginUserDTO = accessTokenService.verifyToken(accessToken);
+    public ResponseEntity<ActiveUser> verify(@CookieValue("accessToken") String accessToken, HttpServletResponse response) {
+        ActiveUser activeUser = authService.verifyToken(accessToken);
         // 刷新Token(重新生成)
-        String token = accessTokenService.createToken(loginUserDTO);
+        String token = authService.createToken(activeUser);
         handleCookie(token, response);
-        return ResponseEntity.ok(loginUserDTO);
+        return ResponseEntity.ok(activeUser);
     }
 
     @RequiresGuest

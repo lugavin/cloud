@@ -1,6 +1,8 @@
 package com.gavin.cloud;
 
+import com.gavin.cloud.auth.properties.AuthProperties;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
 
@@ -21,6 +23,7 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
  */
 @SpringCloudApplication
 @EnableFeignClients
+@EnableConfigurationProperties(AuthProperties.class)
 public class AuthApp {
 
     public static void main(String[] args) {

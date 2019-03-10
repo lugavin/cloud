@@ -66,7 +66,7 @@ public class JwtVerifier {
     }
 
     private boolean verifyClaims(Payload payload) {
-        return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) < Long.parseLong(payload.getExp());
+        return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) <= Long.parseLong(payload.getExp());
     }
 
     private static String decodeFromBase64(String src) {
