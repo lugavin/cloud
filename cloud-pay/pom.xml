@@ -15,10 +15,19 @@
     <name>${project.artifactId}</name>
     <url>http://maven.apache.org</url>
 
+    <properties>
+        <wxpay-sdk.version>0.0.3</wxpay-sdk.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.wxpay</groupId>
+            <artifactId>wxpay-sdk</artifactId>
+            <version>${wxpay-sdk.version}</version>
         </dependency>
     </dependencies>
 
