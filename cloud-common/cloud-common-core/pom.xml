@@ -22,8 +22,6 @@
             <groupId>com.gavin.cloud</groupId>
             <artifactId>cloud-common-base</artifactId>
             <version>${project.parent.version}</version>
-            <!-- 可选依赖: 如A依赖于B并且B依赖于C, 现在B标记C为可选的, 那么A可以不使用C -->
-            <optional>true</optional>
         </dependency>
 
         <!-- JDBC Driver -->
@@ -42,6 +40,7 @@
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
+            <!-- 可选依赖: 如A依赖于B并且B依赖于C, 现在B标记C为可选的, 那么A可以不使用C -->
             <optional>true</optional>
         </dependency>
 

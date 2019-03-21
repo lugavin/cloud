@@ -12,42 +12,29 @@
 # ===================================================================
 
 spring:
-    profiles:
-        include: swagger #http://127.0.0.1:8080/swagger-ui.html
-    devtools:
-        restart:
-            enabled: true
-        livereload:
-            enabled: false
-    redis:
-        host: 127.0.0.1
-        port: 6379
-        timeout: 10000
-        password: #secret#
-    jackson:
-        serialization:
-            indent_output: true
-    mail:
-        host: smtp.qq.com
-        username: lu774374302@qq.com
-        password: fbxthbgaymolbegf
-        properties:
-            mail.smtp.auth: true
-            mail.smtp.starttls.enable: true
-            mail.smtp.starttls.required: true
+  profiles:
+    include: swagger #http://127.0.0.1:8080/swagger-ui.html
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    timeout: 10000
+    password: #secret#
+  jackson:
+    serialization:
+      indent_output: true
 
 eureka:
-    instance:
-        prefer-ip-address: true
-    client:
-        service-url:
-            defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
 
 ribbon:
-    ReadTimeout: 60000
-    ConnectTimeout: 60000
-    MaxAutoRetries: 1
-    MaxAutoRetriesNextServer: 1
+  ReadTimeout: 60000
+  ConnectTimeout: 60000
+  MaxAutoRetries: 1
+  MaxAutoRetriesNextServer: 1
 
 # See https://github.com/Netflix/Hystrix/wiki/Configuration
 # Feign和Ribbon在整合了Hystrix后可能会出现首次调用失败的问题, 造成该问题的原因是Hystrix默认的超时时间是1秒,
@@ -57,21 +44,17 @@ ribbon:
 # - 延长Hystrix的超时时间(hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=10000)
 # - 禁用Feign的Hystrix(不推荐使用)
 hystrix:
-    command:
-        default:
-            execution:
-                #timeout:
-                #    enabled: false # 禁用Hystrix的超时时间
-                isolation:
-                    thread:
-                        timeoutInMilliseconds: 60000 # 设置Hystrix的超时时间为60秒
+  command:
+    default:
+      execution:
+        #timeout:
+        #  enabled: false # 禁用Hystrix的超时时间
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000 # 设置Hystrix的超时时间为60秒
 
 logging:
-    level:
-        com.gavin: DEBUG
-        org.springframework.jdbc: DEBUG
+  level:
+    com.gavin.cloud: DEBUG
+    org.springframework.jdbc: DEBUG
 
-app.web:
-    mail:
-        from: ${spring.mail.username}
-        base-url: http://127.0.0.1

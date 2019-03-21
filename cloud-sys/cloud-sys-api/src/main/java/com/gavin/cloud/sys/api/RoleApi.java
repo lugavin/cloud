@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface RoleApi {
 
-    @GetMapping("/roles/{userId}/codes")
-    List<String> getRoles(@PathVariable("userId") String userId);
+    @GetMapping("/roles/{uid}/codes")
+    List<String> getRoles(@PathVariable("uid") String uid);
 
 }

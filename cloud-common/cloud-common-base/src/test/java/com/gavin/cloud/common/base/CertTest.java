@@ -33,8 +33,8 @@ public class CertTest {
         privateKey = exportPrivateKeyFromKeystore(key.getFile(), "gavin", "P@ssw0rd");
         URL cert = Objects.requireNonNull(classLoader.getResource("cert.cer"));
         publicKey = extractPublicKeyFromCertificate(cert.getFile());
-        System.out.printf(PUBLIC_KEY_FORMAT, Base64.getEncoder().encodeToString(publicKey.getEncoded())).println();
-        System.out.printf(PRIVATE_KEY_FORMAT, Base64.getEncoder().encodeToString(privateKey.getEncoded())).println();
+        System.out.printf(PUBLIC_KEY_FORMAT, Base64.getUrlEncoder().encodeToString(publicKey.getEncoded())).println();
+        System.out.printf(PRIVATE_KEY_FORMAT, Base64.getUrlEncoder().encodeToString(privateKey.getEncoded())).println();
     }
 
     @Test

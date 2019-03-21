@@ -1,7 +1,8 @@
 package com.gavin.cloud.common.web.config;
 
-import com.gavin.cloud.common.web.properties.SwaggerProperties;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -30,10 +31,10 @@ import static springfox.documentation.builders.PathSelectors.ant;
 @Profile("swagger")
 public class SwaggerConfig {
 
-    private final SwaggerProperties.Swagger swaggerProperties;
-
-    public SwaggerConfig(SwaggerProperties appWebProperties) {
-        this.swaggerProperties = appWebProperties.getSwagger();
+    @Bean
+    @ConfigurationProperties(prefix = "app.swagger", ignoreUnknownFields = false)
+    public SwaggerProperties swaggerProperties() {
+        return new SwaggerProperties();
     }
 
     /**
@@ -46,6 +47,8 @@ public class SwaggerConfig {
         log.debug("Starting Swagger");
         StopWatch watch = new StopWatch();
         watch.start();
+
+        SwaggerProperties swaggerProperties = swaggerProperties();
         Contact contact = new Contact(
                 swaggerProperties.getContactName(),
                 swaggerProperties.getContactUrl(),
@@ -76,6 +79,25 @@ public class SwaggerConfig {
         watch.stop();
         log.debug("Started Swagger in {} ms", watch.getTotalTimeMillis());
         return docket;
+    }
+
+    @Data
+    private static class SwaggerProperties {
+
+        private String title;
+        private String description;
+        private String version;
+        private String termsOfServiceUrl;
+        private String contactName;
+        private String contactUrl;
+        private String contactEmail;
+        private String license;
+        private String licenseUrl;
+        private String basePackage;
+        private String defaultIncludePattern;
+        private String host;
+        private String[] protocols;
+
     }
 
 }

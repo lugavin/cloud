@@ -12,6 +12,7 @@
 # ===================================================================
 
 server:
+  address: 127.0.0.1
   port: ${random.int[8080,8090]}
 
 spring:
@@ -23,6 +24,8 @@ management:
     enabled: false
 
 app:
-  web:
-    contact-name: lugavin
-    contact-url: https://github.com/lugavin
+  zookeeper:
+    address: 127.0.0.1:2181
+    root: /election
+  contact-name: lugavin
+  contact-url: https://github.com/lugavin

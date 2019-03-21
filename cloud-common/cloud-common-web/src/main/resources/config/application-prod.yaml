@@ -12,43 +12,34 @@
 # ===================================================================
 
 spring:
-    devtools:
-        restart:
-            enabled: false
-        livereload:
-            enabled: false
-    redis:
-        host: 127.0.0.1
-        port: 6379
-        timeout: 10000
-        password: #secret#
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    timeout: 10000
+    password: #secret#
 
 eureka:
-    instance:
-        prefer-ip-address: true
-    client:
-        service-url:
-            defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
 
 ribbon:
-    ReadTimeout: 10000
-    ConnectTimeout: 10000
-    MaxAutoRetries: 1
-    MaxAutoRetriesNextServer: 1
+  ReadTimeout: 10000
+  ConnectTimeout: 10000
+  MaxAutoRetries: 1
+  MaxAutoRetriesNextServer: 1
 
 # See https://github.com/Netflix/Hystrix/wiki/Configuration
 hystrix:
-    command:
-        default:
-            execution:
-                isolation:
-                    thread:
-                        timeoutInMilliseconds: 10000
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000
 logging:
-    level:
-        com.gavin: INFO
-        org.springframework.jdbc: WARN
-
-app.web:
-    cookie:
-        domain: emall.com # 设置Cookie在多个域(www.emall.com|search.emall.com)下共享
+  level:
+    com.gavin.cloud: INFO
+    org.springframework.jdbc: WARN

@@ -2,24 +2,18 @@ package com.gavin.cloud.auth.web;
 
 import com.gavin.cloud.auth.client.AccountClient;
 import com.gavin.cloud.auth.client.PermissionClient;
+import com.gavin.cloud.auth.client.RoleClient;
 import com.gavin.cloud.auth.client.UserClient;
+import com.gavin.cloud.auth.config.properties.JwtExtProperties;
 import com.gavin.cloud.auth.dto.KeyAndPasswordDTO;
 import com.gavin.cloud.auth.dto.LoginDTO;
 import com.gavin.cloud.auth.enums.AuthMessageType;
-import com.gavin.cloud.auth.enums.MailTemplateEnum;
-import com.gavin.cloud.auth.service.AuthService;
-import com.gavin.cloud.common.base.dto.ActiveUser;
+import com.gavin.cloud.common.base.auth.ActiveUser;
+import com.gavin.cloud.common.base.auth.JwtHelper;
 import com.gavin.cloud.common.base.exception.AppException;
-import com.gavin.cloud.common.base.subject.Permission;
-import com.gavin.cloud.common.base.subject.Subject;
-import com.gavin.cloud.common.base.subject.SubjectService;
 import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.base.util.Md5Hash;
-import com.gavin.cloud.common.web.auth.RequiresGuest;
-import com.gavin.cloud.common.web.auth.RequiresUser;
-import com.gavin.cloud.common.web.properties.JwtProperties;
-import com.gavin.cloud.common.web.properties.SwaggerProperties;
-import com.gavin.cloud.common.web.mail.MailService;
+import com.gavin.cloud.common.web.annotation.RequiresGuest;
 import com.gavin.cloud.common.web.util.RequestUtils;
 import com.gavin.cloud.sys.api.dto.RegisterDTO;
 import com.gavin.cloud.sys.api.model.User;
@@ -41,10 +35,7 @@ import org.springframework.web.util.CookieGenerator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 @RestController
 public class AuthController {
@@ -54,16 +45,7 @@ public class AuthController {
     private static final String BASE_URL = "baseUrl";
 
     @Autowired
-    private JwtProperties jwtProperties;
-
-    @Autowired
-    private SwaggerProperties appWebProperties;
-
-    @Autowired
-    private AuthService authService;
-
-    @Autowired
-    private MailService mailService;
+    private JwtExtProperties jwtProperties;
 
     @Autowired
     private AccountClient accountClient;
@@ -72,10 +54,10 @@ public class AuthController {
     private UserClient userClient;
 
     @Autowired
-    private PermissionClient permissionClient;
+    private RoleClient roleClient;
 
     @Autowired
-    private SubjectService subjectService;
+    private PermissionClient permissionClient;
 
     /**
      * POST  /login/{type} : User login.
@@ -86,7 +68,7 @@ public class AuthController {
      */
     @RequiresGuest
     @PostMapping("/login/{type:" + Constants.REGEX_LOGIN_TYPE + "}")
-    public ResponseEntity<Void> login(@Valid LoginDTO loginDTO, @PathVariable int type,
+    public ResponseEntity<Void> login(@Valid @RequestBody LoginDTO loginDTO, @PathVariable int type,
                                       HttpServletRequest request, HttpServletResponse response) {
         User user = userClient.getUser(loginDTO.getUsername(), type);
         if (user == null) {
@@ -98,8 +80,12 @@ public class AuthController {
         if (user.getActivated() == null || !user.getActivated()) {
             throw new AppException(AuthMessageType.ERR_ACCOUNT_NOT_ACTIVATED);
         }
+
+        List<String> roles = roleClient.getRoles(user.getId());
         String clientIP = RequestUtils.getClientIP(request);
-        String token = authService.createToken(new ActiveUser(user.getId(), user.getUsername(), clientIP));
+        ActiveUser activeUser = new ActiveUser(user.getId(), user.getUsername(), clientIP, roles);
+        String token = createToken(activeUser);
+
         handleCookie(token, response);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -109,32 +95,32 @@ public class AuthController {
      */
     @GetMapping("/account/verify")
     public ResponseEntity<ActiveUser> verify(@CookieValue("accessToken") String accessToken, HttpServletResponse response) {
-        ActiveUser activeUser = authService.verifyToken(accessToken);
+        ActiveUser activeUser = JwtHelper.verifyToken(accessToken, jwtProperties.getPublicKey());
         // 刷新Token(重新生成)
-        String token = authService.createToken(activeUser);
+        String token = createToken(activeUser);
         handleCookie(token, response);
         return ResponseEntity.ok(activeUser);
     }
 
     @RequiresGuest
     @GetMapping("/logout")
-    public void logout() {
-        subjectService.removeSubject();
+    public void logout(HttpServletResponse response) {
+        handleCookie(null, response);
     }
 
-    @RequiresUser
-    @GetMapping("/menus")
-    public ResponseEntity<List<Permission>> getMenus() {
-        return ResponseEntity.ok(subjectService.getSubject().getMenus());
-    }
+    //@RequiresUser
+    //@GetMapping("/menus")
+    //public ResponseEntity<List<Permission>> getMenus() {
+    //    return ResponseEntity.ok(subjectService.getSubject().getMenus());
+    //}
 
-    @GetMapping
-    public ResponseEntity<?> getAccount(@RequestParam(required = false) String jsonpCallback) {
-        Subject subject = subjectService.getSubject();
+    @GetMapping("/account/{token}")
+    public ResponseEntity<?> getAccount(@PathVariable("token") String token, @RequestParam(required = false) String jsonpCallback) {
+        ActiveUser activeUser = JwtHelper.verifyToken(token, jwtProperties.getPublicKey());
         if (StringUtils.isEmpty(jsonpCallback)) {
-            return ResponseEntity.ok(subject);
+            return ResponseEntity.ok(activeUser);
         }
-        MappingJacksonValue jacksonValue = new MappingJacksonValue(subject);
+        MappingJacksonValue jacksonValue = new MappingJacksonValue(activeUser);
         jacksonValue.setJsonpFunction(jsonpCallback);
         return ResponseEntity.ok(jacksonValue);
     }
@@ -143,35 +129,41 @@ public class AuthController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public void registerAccount(@Valid RegisterDTO registerDTO) {
-        User user = accountClient.register(registerDTO);
-        Map<String, Object> variables = new HashMap<>();
-        variables.put(USER, user);
-        variables.put(BASE_URL, appWebProperties.getMail().getBaseUrl());
-        Locale locale = StringUtils.isNotBlank(user.getLangKey()) ? Locale.forLanguageTag(user.getLangKey()) : Locale.getDefault();
-        mailService.sendEmailFromTemplate(MailTemplateEnum.ACCOUNT_ACTIVATION, registerDTO.getEmail(), variables, locale);
+        // TODO 通过消息通知发送邮件
+        //User user = accountClient.register(registerDTO);
+        //Map<String, Object> variables = new HashMap<>();
+        //variables.put(USER, user);
+        //variables.put(BASE_URL, mailProperties.getBaseUrl());
+        //Locale locale = StringUtils.isNotBlank(user.getLangKey()) ? Locale.forLanguageTag(user.getLangKey()) : Locale.getDefault();
+        //mailService.sendEmailFromTemplate(MailTemplateEnum.ACCOUNT_ACTIVATION, registerDTO.getEmail(), variables, locale);
     }
 
     @RequiresGuest
-    @GetMapping("/activate")
+    @GetMapping("/account/activate")
     public void activateAccount(@RequestParam String key) {
         accountClient.activateRegistration(key);
     }
 
     @RequiresGuest
-    @PostMapping("/reset-password/init")
+    @PostMapping("/account/reset-password/init")
     public void requestPasswordReset(@RequestBody String mail) {
-        User user = accountClient.requestPasswordReset(mail);
-        Map<String, Object> variables = new HashMap<>();
-        variables.put(USER, user);
-        variables.put(BASE_URL, appWebProperties.getMail().getBaseUrl());
-        Locale locale = StringUtils.isNotBlank(user.getLangKey()) ? Locale.forLanguageTag(user.getLangKey()) : Locale.getDefault();
-        mailService.sendEmailFromTemplate(MailTemplateEnum.PASSWORD_RESET, mail, variables, locale);
+        // TODO 通过消息通知发送邮件
+        // User user = accountClient.requestPasswordReset(mail);
+        // Map<String, Object> variables = new HashMap<>();
+        // variables.put(USER, user);
+        // variables.put(BASE_URL, mailProperties.getBaseUrl());
+        // Locale locale = StringUtils.isNotBlank(user.getLangKey()) ? Locale.forLanguageTag(user.getLangKey()) : Locale.getDefault();
+        // mailService.sendEmailFromTemplate(MailTemplateEnum.PASSWORD_RESET, mail, variables, locale);
     }
 
     @RequiresGuest
-    @PostMapping("/reset-password/finish")
+    @PostMapping("/account/reset-password/finish")
     public void finishPasswordReset(@Valid @RequestBody KeyAndPasswordDTO keyAndPasswordDTO) {
         accountClient.finishPasswordReset(keyAndPasswordDTO.getKey(), keyAndPasswordDTO.getNewPassword());
+    }
+
+    private String createToken(ActiveUser activeUser) {
+        return JwtHelper.createToken(activeUser, jwtProperties.getPrivateKey(), jwtProperties.getValidityInSeconds());
     }
 
     private void handleCookie(String token, HttpServletResponse response) {

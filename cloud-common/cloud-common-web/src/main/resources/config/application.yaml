@@ -12,36 +12,31 @@
 # ===================================================================
 
 spring:
-    profiles:
-        # The commented value for `active` can be replaced with valid Spring profiles to load.
-        # Otherwise, it will be filled in by maven when building the WAR file
-        # Either way, it can be overridden by `--spring.profiles.active` value passed in the commandline or `-Dspring.profiles.active` set in `JAVA_OPTS`
-        active: dev #spring.profiles.active#
-    session:
-        #store-type: none
-        store-type: redis # https://docs.spring.io/spring-session/docs/current/reference/html5/guides/boot-redis.html
-    messages:
-        basename: i18n/messages
-    jackson:
-        time-zone: Asia/Shanghai
-        date-format: yyyy-MM-dd HH:mm:ss
-        default-property-inclusion: NON_NULL
-        serialization:
-            write_dates_as_timestamps: false
-
-info:
-    project:
-        version: 0.1.0 #project.version#
+  profiles:
+    # The commented value for `active` can be replaced with valid Spring profiles to load.
+    # Otherwise, it will be filled in by maven when building the WAR file
+    # Either way, it can be overridden by `--spring.profiles.active` value passed in the commandline or `-Dspring.profiles.active` set in `JAVA_OPTS`
+    active: dev #spring.profiles.active#
+  jackson:
+    time-zone: Asia/Shanghai
+    date-format: yyyy-MM-dd HH:mm:ss
+    default-property-inclusion: NON_NULL
+    serialization:
+      write_dates_as_timestamps: false
 
 ribbon:
-    eureka:
-        enabled: true
+  eureka:
+    enabled: true
+
 app:
-  cookie:
-    cookie-name: accessToken
-    cookie-path: /
-    domain-name:
-    use-http-only-cookie: true
-    use-secure-cookie: false
-    cookie-max-age: -1
-    use-base64-encoding: true
+  swagger:
+    title: Emall App RESTful API
+    description: Emall App API documentation
+    termsOfServiceUrl: https://lugavin.github.io
+    contactName: lugavin
+    contactUrl: https://github.com/lugavin
+    contactEmail: lugavin@outlook.com
+    basePackage: com.gavin.cloud
+    default-include-pattern: /**
+    protocols: http, https
+    version: 0.1.0

@@ -1,6 +1,5 @@
 package com.gavin.cloud.common.web;
 
-import com.gavin.cloud.common.base.cache.CacheService;
 import com.gavin.cloud.common.base.util.RandomUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -8,15 +7,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.MessageSource;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -31,21 +26,11 @@ public class ApplicationTest {
     private static final String USER_HKEY = "USER";
 
     @Autowired
-    private ApplicationContext context;
-
-    @Autowired
     private RedisTemplate<String, Object> redisTemplate;
-
-    @Autowired
-    private MessageSource messageSource;
-
-    @Autowired
-    private List<CacheService> cacheServices;
 
     @Before
     public void setUp() throws Exception {
-        Assert.assertNotNull(messageSource);
-        cacheServices = new ArrayList<>(context.getBeansOfType(CacheService.class).values());
+        Assert.assertNotNull(redisTemplate);
     }
 
     @Test
@@ -62,11 +47,6 @@ public class ApplicationTest {
 
         String name = opsForHash.get(USER_HKEY, "name");
         Assert.assertTrue("gavin".equals(name));
-    }
-
-    @Test
-    public void testInjection() throws Exception {
-        cacheServices.forEach(System.err::println);
     }
 
 }

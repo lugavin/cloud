@@ -1,12 +1,6 @@
 package com.gavin.cloud.common.web.interceptor;
 
-import com.gavin.cloud.common.base.subject.Subject;
-import com.gavin.cloud.common.base.subject.SubjectService;
-import com.gavin.cloud.common.web.auth.Logical;
-import com.gavin.cloud.common.web.auth.RequiresGuest;
-import com.gavin.cloud.common.web.auth.RequiresPermissions;
-import com.gavin.cloud.common.web.auth.RequiresUser;
-import org.springframework.http.HttpStatus;
+import com.gavin.cloud.common.web.annotation.RequiresPermissions;
 import org.springframework.web.method.HandlerMethod;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,16 +18,16 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class AuthInterceptor extends AbstractInterceptor {
 
-    private final SubjectService subjectService;
-
-    public AuthInterceptor(SubjectService subjectService) {
-        this.subjectService = subjectService;
-    }
+//    private final SubjectService subjectService;
+//
+//    public AuthInterceptor(SubjectService subjectService) {
+//        this.subjectService = subjectService;
+//    }
 
     @Override
     public boolean doPreHandle(HttpServletRequest request, HttpServletResponse response, HandlerMethod handlerMethod) throws Exception {
 
-        // 判断是否为匿名访问地址(不用登录即可访问)
+/*        // 判断是否为匿名访问地址(不用登录即可访问)
         if (handlerMethod.hasMethodAnnotation(RequiresGuest.class)) {
             return true;
         }
@@ -55,15 +49,15 @@ public class AuthInterceptor extends AbstractInterceptor {
                 response.setStatus(HttpStatus.FORBIDDEN.value());
                 return false;
             }
-        }
+        }*/
 
         return true;
 
     }
 
-    private boolean isPermitted(Subject subject, String[] permissions, Logical logical) {
-        return logical == Logical.AND ? subject.isPermittedAll(permissions) : subject.isPermittedAny(permissions);
-    }
+    // private boolean isPermitted(Subject subject, String[] permissions, Logical logical) {
+    //     return logical == Logical.AND ? subject.isPermittedAll(permissions) : subject.isPermittedAny(permissions);
+    // }
 
 }
 

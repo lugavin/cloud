@@ -17,7 +17,7 @@ spring:
         serviceId: cloud-config
       #uri: http://localhost:8000/
       label: master
-      name: zuul
+      name: app
       profile: default
 
 
