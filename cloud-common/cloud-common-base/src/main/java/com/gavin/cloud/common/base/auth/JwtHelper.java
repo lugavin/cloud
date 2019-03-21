@@ -1,7 +1,7 @@
 package com.gavin.cloud.common.base.auth;
 
-import com.gavin.cloud.common.base.exception.AppException;
-import com.gavin.cloud.common.base.exception.CommonMessageType;
+import com.gavin.cloud.common.base.problem.AppException;
+import com.gavin.cloud.common.base.problem.CommonMessageType;
 import com.gavin.cloud.common.base.util.JsonUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

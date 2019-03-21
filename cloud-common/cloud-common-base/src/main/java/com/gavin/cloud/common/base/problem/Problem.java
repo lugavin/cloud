@@ -1,8 +1,11 @@
-package com.gavin.cloud.common.base.exception;
+package com.gavin.cloud.common.base.problem;
 
 import java.util.Map;
 
-public interface Exceptional {
+/**
+ * @see <a href="https://tools.ietf.org/html/rfc7807">RFC 7807: Problem Details for HTTP APIs</a>
+ */
+public interface Problem {
 
     /**
      * @return the HTTP status code
@@ -32,6 +35,10 @@ public interface Exceptional {
      */
     default long getTimestamp() {
         return System.currentTimeMillis();
+    }
+
+    static ExceptionalBuilder builder() {
+        return new ExceptionalBuilder();
     }
 
 }

@@ -1,4 +1,4 @@
-package com.gavin.cloud.common.base.exception;
+package com.gavin.cloud.common.base.problem;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -67,9 +67,16 @@ public abstract class AbstractException extends RuntimeException implements Exce
     }
 
     @Override
+    public AbstractException getCause() {
+        // cast is safe, since the only way to set this is our constructor
+        return (AbstractException) super.getCause();
+    }
+
+    @Override
     public String getMessage() {
         return Stream.of(title, detail)
                 .filter(Objects::nonNull)
                 .collect(joining(": "));
     }
+
 }

@@ -24,14 +24,23 @@ spring:
     serialization:
       write_dates_as_timestamps: false
 
+
+
+management:
+  security:
+    enabled: false #全局关闭Actuator安全认证
+#endpoints:
+#  env:
+#    sensitive: false #细粒度的开放Actuator Endpoints
+
 ribbon:
   eureka:
     enabled: true
 
 app:
   swagger:
-    title: Emall App RESTful API
-    description: Emall App API documentation
+    title: Cloud App RESTful API
+    description: Cloud App API documentation
     termsOfServiceUrl: https://lugavin.github.io
     contactName: lugavin
     contactUrl: https://github.com/lugavin

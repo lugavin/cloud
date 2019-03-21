@@ -1,4 +1,4 @@
-package com.gavin.cloud.common.base.exception;
+package com.gavin.cloud.common.base.problem;
 
 import java.util.Map;
 

@@ -1,8 +1,8 @@
 package com.gavin.cloud.sys.web;
 
-import com.gavin.cloud.sys.core.enums.CmsMessageType;
+import com.gavin.cloud.sys.core.enums.SysMessageType;
 import com.gavin.cloud.sys.core.service.PictureService;
-import com.gavin.cloud.common.base.exception.AppException;
+import com.gavin.cloud.common.base.problem.AppException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +27,7 @@ public class PictureResource {
             String imageURL = pictureService.upload(local);
             return ResponseEntity.ok(imageURL);
         } catch (IOException e) {
-            throw new AppException(CmsMessageType.ERR_UPLOAD_PICTURE, "Picture upload failed.", e);
+            throw new AppException(SysMessageType.ERR_UPLOAD_PICTURE, "Picture upload failed.", e);
         }
     }
 

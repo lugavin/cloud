@@ -1,7 +1,7 @@
 package com.gavin.cloud.auth.enums;
 
-import com.gavin.cloud.common.base.exception.MessageType;
-import com.gavin.cloud.common.base.exception.Status;
+import com.gavin.cloud.common.base.problem.MessageType;
+import com.gavin.cloud.common.base.problem.Status;
 
 public enum AuthMessageType implements MessageType {
 

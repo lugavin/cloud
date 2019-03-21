@@ -10,7 +10,7 @@ import com.gavin.cloud.auth.dto.LoginDTO;
 import com.gavin.cloud.auth.enums.AuthMessageType;
 import com.gavin.cloud.common.base.auth.ActiveUser;
 import com.gavin.cloud.common.base.auth.JwtHelper;
-import com.gavin.cloud.common.base.exception.AppException;
+import com.gavin.cloud.common.base.problem.AppException;
 import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.base.util.Md5Hash;
 import com.gavin.cloud.common.web.annotation.RequiresGuest;

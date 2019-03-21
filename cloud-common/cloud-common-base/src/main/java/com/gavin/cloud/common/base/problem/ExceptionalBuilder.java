@@ -1,4 +1,4 @@
-package com.gavin.cloud.common.base.exception;
+package com.gavin.cloud.common.base.problem;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -15,9 +15,13 @@ public final class ExceptionalBuilder {
     private Status status;
     private String title;
     private String detail;
-    private Throwable cause;
+    private Exceptional cause;
 
-    private final Map<String, Object> parameters = new LinkedHashMap<>();
+    private final Map<String, Object> parameters;
+
+    ExceptionalBuilder() {
+        this.parameters = new LinkedHashMap<>();
+    }
 
     public ExceptionalBuilder withStatus(final Status status) {
         this.status = status;
@@ -34,7 +38,7 @@ public final class ExceptionalBuilder {
         return this;
     }
 
-    public ExceptionalBuilder withCause(final Throwable cause) {
+    public ExceptionalBuilder withCause(final Exceptional cause) {
         this.cause = cause;
         return this;
     }
@@ -48,11 +52,7 @@ public final class ExceptionalBuilder {
     }
 
     public Exceptional build() {
-        return new AppException(status, title, detail, cause, new LinkedHashMap<>(parameters));
-    }
-
-    public static ExceptionalBuilder newInstance() {
-        return new ExceptionalBuilder();
+        return new DefaultProblem(status, title, detail, cause, new LinkedHashMap<>(parameters));
     }
 
 }

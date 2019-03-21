@@ -9,8 +9,8 @@ import com.gavin.cloud.sys.core.mapper.UserRoleMapper;
 import com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper;
 import com.gavin.cloud.sys.core.mapper.ext.UserRoleExtMapper;
 import com.gavin.cloud.sys.core.service.RoleService;
-import com.gavin.cloud.sys.core.enums.CmsMessageType;
-import com.gavin.cloud.common.base.exception.AppException;
+import com.gavin.cloud.sys.core.enums.SysMessageType;
+import com.gavin.cloud.common.base.problem.AppException;
 import com.gavin.cloud.common.base.page.Page;
 import com.gavin.cloud.common.base.page.PageRequest;
 import com.gavin.cloud.common.base.util.RandomUtils;
@@ -49,7 +49,7 @@ public class RoleServiceImpl implements RoleService {
         criteria.andCodeEqualTo(role.getCode());
         long rows = roleMapper.countByExample(example);
         if (rows > 0) {
-            throw new AppException(CmsMessageType.ERR_ROLE_ALREADY_USED);
+            throw new AppException(SysMessageType.ERR_ROLE_ALREADY_USED);
         }
         role.setId(RandomUtils.randomUUID());
         roleMapper.insert(role);

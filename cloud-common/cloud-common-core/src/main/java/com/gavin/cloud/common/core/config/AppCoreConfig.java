@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @see org.mybatis.spring.annotation.MapperScan
  * @see org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration
  */
 @Configuration

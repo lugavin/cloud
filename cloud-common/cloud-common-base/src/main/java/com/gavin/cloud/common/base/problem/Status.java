@@ -1,4 +1,4 @@
-package com.gavin.cloud.common.base.exception;
+package com.gavin.cloud.common.base.problem;
 
 /**
  * Enumeration of HTTP status codes.
@@ -84,7 +84,6 @@ public enum Status {
     NETWORK_AUTHENTICATION_REQUIRED(511, "Network Authentication Required");
 
     private final int statusCode;
-
     private final String reasonPhrase;
 
     Status(int statusCode, String reasonPhrase) {

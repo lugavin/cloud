@@ -6,8 +6,8 @@ import com.gavin.cloud.sys.api.model.UserExample;
 import com.gavin.cloud.sys.core.mapper.UserMapper;
 import com.gavin.cloud.sys.core.mapper.ext.UserExtMapper;
 import com.gavin.cloud.sys.core.service.UserService;
-import com.gavin.cloud.sys.core.enums.CmsMessageType;
-import com.gavin.cloud.common.base.exception.AppException;
+import com.gavin.cloud.sys.core.enums.SysMessageType;
+import com.gavin.cloud.common.base.problem.AppException;
 import com.gavin.cloud.common.base.page.Page;
 import com.gavin.cloud.common.base.page.PageRequest;
 import com.gavin.cloud.common.base.util.Constants;
@@ -39,13 +39,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(User user) {
         if (isAlreadyUsed(user.getUsername(), LoginType.USERNAME)) {
-            throw new AppException(CmsMessageType.ERR_ACCOUNT_ALREADY_USED, "Username has already used!");
+            throw new AppException(SysMessageType.ERR_ACCOUNT_ALREADY_USED, "Username has already used!");
         }
         if (isAlreadyUsed(user.getEmail(), LoginType.EMAIL)) {
-            throw new AppException(CmsMessageType.ERR_ACCOUNT_ALREADY_USED, "Email has already used!");
+            throw new AppException(SysMessageType.ERR_ACCOUNT_ALREADY_USED, "Email has already used!");
         }
         if (StringUtils.isNotBlank(user.getPhone()) && isAlreadyUsed(user.getPhone(), LoginType.PHONE)) {
-            throw new AppException(CmsMessageType.ERR_ACCOUNT_ALREADY_USED, "Phone has already used!");
+            throw new AppException(SysMessageType.ERR_ACCOUNT_ALREADY_USED, "Phone has already used!");
         }
         if (StringUtils.isBlank(user.getLangKey())) {
             user.setLangKey(Constants.DEFAULT_LANGUAGE);

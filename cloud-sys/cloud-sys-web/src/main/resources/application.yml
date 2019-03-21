@@ -18,6 +18,3 @@ spring:
   application:
     name: cloud-sys
 
-management:
-  security:
-    enabled: false

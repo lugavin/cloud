@@ -1,8 +1,8 @@
 package com.gavin.cloud.sys.core.service.impl;
 
 import com.gavin.cloud.sys.core.service.PictureService;
-import com.gavin.cloud.common.base.exception.AppException;
-import com.gavin.cloud.common.base.exception.CommonMessageType;
+import com.gavin.cloud.common.base.problem.AppException;
+import com.gavin.cloud.common.base.problem.CommonMessageType;
 import com.gavin.cloud.common.base.util.FtpUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.beans.factory.annotation.Value;

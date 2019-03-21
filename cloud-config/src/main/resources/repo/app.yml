@@ -18,8 +18,10 @@ app:
   auth:
     anonUrls:
       - /rest/sys/**
-      - /rest/auth/**
+      - /rest/auth/login/**
+      - /rest/auth/register/**
     userUrls:
-      - /rest/auth/account/**
+      - /rest/auth/logout/**
     authcUrls:
-      - /rest/sys/user/**
+      - /rest/sys/**
+      - /rest/auth/**

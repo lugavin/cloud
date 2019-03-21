@@ -1,9 +1,9 @@
 package com.gavin.cloud.common.web.aop;
 
-import com.gavin.cloud.common.base.exception.AbstractException;
-import com.gavin.cloud.common.base.exception.CommonMessageType;
-import com.gavin.cloud.common.base.exception.Exceptional;
-import com.gavin.cloud.common.base.exception.ExceptionalBuilder;
+import com.gavin.cloud.common.base.problem.AbstractException;
+import com.gavin.cloud.common.base.problem.CommonMessageType;
+import com.gavin.cloud.common.base.problem.Exceptional;
+import com.gavin.cloud.common.base.problem.Problem;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -22,31 +22,33 @@ import java.util.stream.Collectors;
  * @see org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
  */
 @RestControllerAdvice
-public class AppExceptionHandler extends ExceptionalAdviceTrait {
+public class AppExceptionHandler extends AbstractExceptionHandler {
 
     @ExceptionHandler(AbstractException.class)
-    public ResponseEntity<Exceptional> handleAppException(AbstractException ex, NativeWebRequest request) {
+    public ResponseEntity<Problem> handleAppException(AbstractException ex, NativeWebRequest request) {
         return create(ex, ex, request);
     }
 
     @ExceptionHandler({BindException.class})
-    public ResponseEntity<Exceptional> handleValidationException(BindException ex, NativeWebRequest request) {
+    public ResponseEntity<Problem> handleValidationException(BindException ex, NativeWebRequest request) {
         return handleValidationException(ex, request, ex.getBindingResult());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Exceptional> handleValidationException(MethodArgumentNotValidException ex, NativeWebRequest request) {
+    public ResponseEntity<Problem> handleValidationException(MethodArgumentNotValidException ex, NativeWebRequest request) {
         return handleValidationException(ex, request, ex.getBindingResult());
     }
 
-    private ResponseEntity<Exceptional> handleValidationException(Throwable throwable, NativeWebRequest request, BindingResult bindingResult) {
-        List<String> errors = bindingResult.getFieldErrors().stream().map(fieldError -> fieldError.getField() + ":" + fieldError.getDefaultMessage()).collect(Collectors.toList());
-        Exceptional exceptional = ExceptionalBuilder.newInstance()
+    private ResponseEntity<Problem> handleValidationException(Throwable throwable, NativeWebRequest request, BindingResult bindingResult) {
+        List<String> errors = bindingResult.getFieldErrors().stream()
+                .map(fieldError -> fieldError.getField() + ":" + fieldError.getDefaultMessage())
+                .collect(Collectors.toList());
+        Exceptional exceptional = Problem.builder()
                 .withStatus(CommonMessageType.ERR_VALIDATION.getStatus())
                 .withTitle(CommonMessageType.ERR_VALIDATION.getPhrase())
                 .with("fieldErrors", errors)
                 .build();
-        return create(exceptional, throwable, request);
+        return create(throwable, exceptional, request);
     }
 
 }
