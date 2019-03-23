@@ -25,20 +25,28 @@ import com.gavin.cloud.common.base.problem.ThrowableProblem;
 import com.gavin.cloud.common.base.problem.UnknownStatus;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 public final class ProblemModule extends Module {
 
     private final boolean stackTraces;
+    private final Map<Integer, StatusType> statuses;
 
     public ProblemModule() {
-        this(Boolean.FALSE);
+        this(Boolean.FALSE, new Class[]{Status.class});
     }
 
-    public ProblemModule(boolean stackTraces) {
+    public <E extends Enum & StatusType> ProblemModule(boolean stackTraces, Class<? extends E>[] types) {
+        this(stackTraces, buildIndex(types));
+    }
+
+    private ProblemModule(boolean stackTraces, Map<Integer, StatusType> statuses) {
         this.stackTraces = stackTraces;
+        this.statuses = statuses;
     }
 
     @Override
@@ -54,29 +62,30 @@ public final class ProblemModule extends Module {
     @Override
     public void setupModule(final SetupContext context) {
         final SimpleModule module = new SimpleModule();
+
         module.setMixInAnnotation(Exceptional.class, stackTraces ?
                 ExceptionalWithStacktraceMixin.class :
                 ExceptionalMixin.class);
+
         module.setMixInAnnotation(Problem.class, ProblemMixIn.class);
-        module.addSerializer(StatusType.class, new StatusTypeJsonSerializer());
-        module.addDeserializer(StatusType.class, new StatusTypeJsonDeserializer());
+
+        module.addSerializer(StatusType.class, new StatusTypeSerializer());
+        module.addDeserializer(StatusType.class, new StatusTypeDeserializer(statuses));
+
         module.setupModule(context);
     }
 
-    private static class StatusTypeJsonSerializer extends JsonSerializer<StatusType> {
-        @Override
-        public void serialize(StatusType status, JsonGenerator json, SerializerProvider serializers) throws IOException {
-            json.writeNumber(status.getStatusCode());
+    private static <E extends Enum & StatusType> Map<Integer, StatusType> buildIndex(Class<? extends E>[] types) {
+        final Map<Integer, StatusType> index = new HashMap<>();
+        for (Class<? extends E> type : types) {
+            for (E status : type.getEnumConstants()) {
+                if (index.containsKey(status.getStatusCode())) {
+                    throw new IllegalArgumentException("Duplicate status codes are not allowed");
+                }
+                index.put(status.getStatusCode(), status);
+            }
         }
-    }
-
-    private static class StatusTypeJsonDeserializer extends JsonDeserializer<StatusType> {
-        @Override
-        public StatusType deserialize(final JsonParser json, final DeserializationContext context) throws IOException {
-            final int statusCode = json.getIntValue();
-            StatusType status = Status.fromStatusCode(statusCode);
-            return status == null ? new UnknownStatus(statusCode) : status;
-        }
+        return index;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -108,11 +117,38 @@ public final class ProblemModule extends Module {
 
     }
 
+    @JsonInclude(NON_EMPTY)
     private interface ProblemMixIn extends Problem {
 
         @Override
         @JsonAnyGetter
         Map<String, Object> getParameters();
+
+    }
+
+    private final class StatusTypeSerializer extends JsonSerializer<StatusType> {
+
+        @Override
+        public void serialize(final StatusType status, final JsonGenerator json, final SerializerProvider serializers) throws IOException {
+            json.writeNumber(status.getStatusCode());
+        }
+
+    }
+
+    private final class StatusTypeDeserializer extends JsonDeserializer<StatusType> {
+
+        private final Map<Integer, StatusType> index;
+
+        StatusTypeDeserializer(final Map<Integer, StatusType> index) {
+            this.index = index;
+        }
+
+        @Override
+        public StatusType deserialize(final JsonParser json, final DeserializationContext context) throws IOException {
+            final int statusCode = json.getIntValue();
+            final StatusType status = index.get(statusCode);
+            return status == null ? new UnknownStatus(statusCode) : status;
+        }
 
     }
 

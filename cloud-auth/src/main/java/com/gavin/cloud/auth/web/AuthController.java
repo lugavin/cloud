@@ -87,7 +87,7 @@ public class AuthController {
         ActiveUser activeUser = new ActiveUser(user.getId(), user.getUsername(), clientIP, roles);
         String token = createToken(activeUser);
 
-        handleCookie(token, response);
+        handleCookie(token, request, response);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -95,18 +95,19 @@ public class AuthController {
      * 检查用户登录状态, 如果已登录, 则刷新Token; 如果未登录或登录过期, 则调整到登录页面(前端)
      */
     @GetMapping("/account/verify")
-    public ResponseEntity<ActiveUser> verify(@CookieValue("accessToken") String accessToken, HttpServletResponse response) {
+    public ResponseEntity<ActiveUser> verify(@CookieValue("accessToken") String accessToken,
+                                             HttpServletRequest request, HttpServletResponse response) {
         ActiveUser activeUser = JwtHelper.verifyToken(accessToken, jwtProperties.getPublicKey());
         // 刷新Token(重新生成)
         String token = createToken(activeUser);
-        handleCookie(token, response);
+        handleCookie(token, request, response);
         return ResponseEntity.ok(activeUser);
     }
 
     @RequiresGuest
     @GetMapping("/logout")
-    public void logout(HttpServletResponse response) {
-        handleCookie(null, response);
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        handleCookie(null, request, response);
     }
 
     //@RequiresUser
@@ -167,10 +168,16 @@ public class AuthController {
         return JwtHelper.createToken(activeUser, jwtProperties.getPrivateKey(), jwtProperties.getValidityInSeconds());
     }
 
-    private void handleCookie(String token, HttpServletResponse response) {
+    private void handleCookie(String token, HttpServletRequest request, HttpServletResponse response) {
         CookieGenerator cookieGenerator = new CookieGenerator();
         cookieGenerator.setCookiePath(jwtProperties.getCookiePath());
-        cookieGenerator.setCookieDomain(jwtProperties.getCookieDomain());
+        String domain = jwtProperties.getCookieDomain();
+        if (StringUtils.isEmpty(domain)) {
+            domain = RequestUtils.getDomainName(request);
+        }
+        if (!StringUtils.isEmpty(domain)) {
+            cookieGenerator.setCookieDomain(domain);
+        }
         cookieGenerator.setCookieHttpOnly(jwtProperties.isUseHttpOnlyCookie());
         cookieGenerator.setCookieMaxAge(jwtProperties.getCookieMaxAge());
         cookieGenerator.setCookieName(jwtProperties.getCookieName());

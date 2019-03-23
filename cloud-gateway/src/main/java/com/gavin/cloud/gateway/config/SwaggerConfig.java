@@ -1,5 +1,6 @@
 package com.gavin.cloud.gateway.config;
 
+import com.gavin.cloud.common.base.util.Constants;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.netflix.zuul.filters.Route;
 import org.springframework.cloud.netflix.zuul.filters.RouteLocator;
@@ -14,10 +15,13 @@ import java.util.List;
 
 /**
  * Retrieves all registered microservices Swagger resources.
+ * For example:
+ *
+ * <a href="http://127.0.0.1:9000/rest/auth/swagger-ui.html">Auth RESTful API</a>
  */
 @Primary
 @Component
-@Profile("swagger")
+@Profile(Constants.PROFILE_SWAGGER)
 public class SwaggerConfig implements SwaggerResourcesProvider {
 
     private final RouteLocator routeLocator;
@@ -39,7 +43,7 @@ public class SwaggerConfig implements SwaggerResourcesProvider {
 
         //Add the registered microservices swagger docs as additional swagger resources
         List<Route> routes = routeLocator.getRoutes();
-        routes.forEach((route) -> resources.add(swaggerResource(route.getId(), route.getFullPath().replace("**", "v2/api-docs"))));
+        routes.forEach(route -> resources.add(swaggerResource(route.getId(), route.getFullPath().replace("**", "v2/api-docs"))));
 
         return resources;
     }

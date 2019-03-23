@@ -36,7 +36,7 @@ import java.util.List;
 @Slf4j
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@ActiveProfiles(Constants.ENV_DEV)
+@ActiveProfiles(Constants.PROFILE_DEV)
 public class ApplicationTest {
 
     @Autowired

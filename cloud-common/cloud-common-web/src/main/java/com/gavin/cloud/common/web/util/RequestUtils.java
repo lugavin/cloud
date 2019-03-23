@@ -3,12 +3,12 @@ package com.gavin.cloud.common.web.util;
 import com.gavin.cloud.common.base.util.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.util.UrlPathHelper;
-import org.springframework.web.util.WebUtils;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 public abstract class RequestUtils {
+
+    private static final String EMPTY = "";
 
     public static final String X_FORWARDED_FOR_HEADER = "X-Forwarded-For";
     public static final String X_REAL_IP_HEADER = "X-Real-IP";
@@ -31,17 +31,37 @@ public abstract class RequestUtils {
         return request.getRemoteAddr();
     }
 
-    public static String getAccessToken(HttpServletRequest request, String name) {
-        Cookie cookie = WebUtils.getCookie(request, name);
-        if (cookie != null) {
-            return cookie.getValue();
-        }
-        String token = request.getHeader(name);
-        return StringUtils.isNotBlank(token) ? token : request.getParameter(name);
-    }
-
     public static String getPathWithinApplication(HttpServletRequest request) {
         return urlPathHelper.getPathWithinApplication(request);
+    }
+
+    public static String getDomainName(HttpServletRequest request) {
+        String domainName;
+        String serverName = request.getRequestURL().toString();
+        if (EMPTY.equals(serverName)) {
+            domainName = EMPTY;
+        } else {
+            serverName = serverName.toLowerCase().substring(7);
+            final int end = serverName.indexOf("/");
+            serverName = serverName.substring(0, end);
+            final String[] domains = serverName.split("\\.");
+            int len = domains.length;
+            if (len > 3) {
+                // www.xxx.com.cn
+                domainName = domains[len - 3] + "." + domains[len - 2] + "." + domains[len - 1];
+            } else if (len <= 3 && len > 1) {
+                // xxx.com or xxx.cn
+                domainName = domains[len - 2] + "." + domains[len - 1];
+            } else {
+                domainName = serverName;
+            }
+        }
+
+        if (domainName.indexOf(":") > 0) {
+            domainName = domainName.split(":")[0];
+        }
+
+        return domainName;
     }
 
 }

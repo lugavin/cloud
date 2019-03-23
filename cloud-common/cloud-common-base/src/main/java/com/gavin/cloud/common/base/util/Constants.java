@@ -2,10 +2,9 @@ package com.gavin.cloud.common.base.util;
 
 public interface Constants {
 
-    String ENV_DEV = "dev";
-    String ENV_PROD = "prod";
-
-    String SESSION_NAMESPACE = "Subject";
+    String PROFILE_DEV = "dev";
+    String PROFILE_PROD = "prod";
+    String PROFILE_SWAGGER = "swagger";
 
     String DATE_FORMAT = "yyyy-MM-dd";
     String TIME_FORMAT = "HH:mm:ss";

@@ -18,6 +18,6 @@ spring:
       #uri: http://localhost:8000/
       label: master
       profile: default
-      name: app
+      name: application
 
 
