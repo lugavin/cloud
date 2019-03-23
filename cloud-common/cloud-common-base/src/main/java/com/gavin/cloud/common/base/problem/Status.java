@@ -6,7 +6,7 @@ package com.gavin.cloud.common.base.problem;
  * @see <a href="http://www.iana.org/assignments/http-status-codes">HTTP Status Code Registry</a>
  * @see <a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes">List of HTTP status codes - Wikipedia</a>
  */
-public enum Status {
+public enum Status implements StatusType {
 
     // --- 1xx Informational ---
 
@@ -91,10 +91,12 @@ public enum Status {
         this.reasonPhrase = reasonPhrase;
     }
 
+    @Override
     public int getStatusCode() {
         return statusCode;
     }
 
+    @Override
     public String getReasonPhrase() {
         return reasonPhrase;
     }

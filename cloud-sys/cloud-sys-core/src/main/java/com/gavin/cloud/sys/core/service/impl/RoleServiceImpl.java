@@ -1,5 +1,8 @@
 package com.gavin.cloud.sys.core.service.impl;
 
+import com.gavin.cloud.common.base.page.Page;
+import com.gavin.cloud.common.base.page.PageRequest;
+import com.gavin.cloud.common.base.util.RandomUtils;
 import com.gavin.cloud.sys.api.model.Role;
 import com.gavin.cloud.sys.api.model.RoleExample;
 import com.gavin.cloud.sys.api.model.UserRole;
@@ -8,12 +11,8 @@ import com.gavin.cloud.sys.core.mapper.RoleMapper;
 import com.gavin.cloud.sys.core.mapper.UserRoleMapper;
 import com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper;
 import com.gavin.cloud.sys.core.mapper.ext.UserRoleExtMapper;
+import com.gavin.cloud.sys.core.problem.RoleAlreadyUsedException;
 import com.gavin.cloud.sys.core.service.RoleService;
-import com.gavin.cloud.sys.core.enums.SysMessageType;
-import com.gavin.cloud.common.base.problem.AppException;
-import com.gavin.cloud.common.base.page.Page;
-import com.gavin.cloud.common.base.page.PageRequest;
-import com.gavin.cloud.common.base.util.RandomUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,7 +48,7 @@ public class RoleServiceImpl implements RoleService {
         criteria.andCodeEqualTo(role.getCode());
         long rows = roleMapper.countByExample(example);
         if (rows > 0) {
-            throw new AppException(SysMessageType.ERR_ROLE_ALREADY_USED);
+            throw new RoleAlreadyUsedException();
         }
         role.setId(RandomUtils.randomUUID());
         roleMapper.insert(role);

@@ -17,4 +17,3 @@ server:
 spring:
   application:
     name: cloud-sys
-

@@ -1,18 +1,19 @@
 package com.gavin.cloud.sys.core.service.impl;
 
-import com.gavin.cloud.sys.api.enums.LoginType;
-import com.gavin.cloud.sys.api.model.User;
-import com.gavin.cloud.sys.api.model.UserExample;
-import com.gavin.cloud.sys.core.mapper.UserMapper;
-import com.gavin.cloud.sys.core.mapper.ext.UserExtMapper;
-import com.gavin.cloud.sys.core.service.UserService;
-import com.gavin.cloud.sys.core.enums.SysMessageType;
-import com.gavin.cloud.common.base.problem.AppException;
 import com.gavin.cloud.common.base.page.Page;
 import com.gavin.cloud.common.base.page.PageRequest;
 import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.base.util.Md5Hash;
 import com.gavin.cloud.common.base.util.RandomUtils;
+import com.gavin.cloud.sys.api.model.User;
+import com.gavin.cloud.sys.api.model.UserExample;
+import com.gavin.cloud.sys.core.enums.LoginType;
+import com.gavin.cloud.sys.core.mapper.UserMapper;
+import com.gavin.cloud.sys.core.mapper.ext.UserExtMapper;
+import com.gavin.cloud.sys.core.problem.EmailAlreadyUsedException;
+import com.gavin.cloud.sys.core.problem.LoginAlreadyUsedException;
+import com.gavin.cloud.sys.core.problem.PhoneAlreadyUsedException;
+import com.gavin.cloud.sys.core.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +40,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(User user) {
         if (isAlreadyUsed(user.getUsername(), LoginType.USERNAME)) {
-            throw new AppException(SysMessageType.ERR_ACCOUNT_ALREADY_USED, "Username has already used!");
+            throw new LoginAlreadyUsedException();
         }
         if (isAlreadyUsed(user.getEmail(), LoginType.EMAIL)) {
-            throw new AppException(SysMessageType.ERR_ACCOUNT_ALREADY_USED, "Email has already used!");
+            throw new EmailAlreadyUsedException();
         }
         if (StringUtils.isNotBlank(user.getPhone()) && isAlreadyUsed(user.getPhone(), LoginType.PHONE)) {
-            throw new AppException(SysMessageType.ERR_ACCOUNT_ALREADY_USED, "Phone has already used!");
+            throw new PhoneAlreadyUsedException();
         }
         if (StringUtils.isBlank(user.getLangKey())) {
             user.setLangKey(Constants.DEFAULT_LANGUAGE);

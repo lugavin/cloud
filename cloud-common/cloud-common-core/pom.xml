@@ -28,6 +28,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Database Connection Pool -->
@@ -49,7 +50,7 @@
             <groupId>org.mybatis.generator</groupId>
             <artifactId>mybatis-generator-core</artifactId>
             <version>${mybatis-generator.version}</version>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
 
         <!-- Spring Boot Test -->

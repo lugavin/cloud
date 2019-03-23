@@ -38,3 +38,7 @@ zuul:
   #  max-semaphores: 500
   add-host-header: true
   sensitiveHeaders: #Cookie, Set-Cookie, Authorization
+
+logging:
+  level:
+    com.netflix.config.sources.URLConfigurationSource: ERROR

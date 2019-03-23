@@ -23,12 +23,16 @@
             <artifactId>logback-classic</artifactId>
         </dependency>
 
+        <!-- Google Findbugs -->
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+        </dependency>
         <!-- Google Guava -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
-
         <!-- Google Gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -68,11 +72,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.55</version>
         </dependency>
 
     </dependencies>

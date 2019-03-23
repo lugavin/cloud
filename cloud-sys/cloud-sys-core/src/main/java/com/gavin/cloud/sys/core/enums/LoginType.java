@@ -1,4 +1,4 @@
-package com.gavin.cloud.sys.api.enums;
+package com.gavin.cloud.sys.core.enums;
 
 public enum LoginType {
 

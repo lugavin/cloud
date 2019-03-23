@@ -37,3 +37,7 @@ eureka:
     instance-info-replication-interval-seconds: 10
     service-url:
       defaultZone: http://localhost:${server.port}/eureka/
+
+logging:
+  level:
+    com.netflix.config.sources.URLConfigurationSource: ERROR

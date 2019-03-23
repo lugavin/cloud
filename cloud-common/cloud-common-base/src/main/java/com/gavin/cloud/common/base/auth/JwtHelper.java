@@ -1,7 +1,6 @@
 package com.gavin.cloud.common.base.auth;
 
-import com.gavin.cloud.common.base.problem.AppException;
-import com.gavin.cloud.common.base.problem.CommonMessageType;
+import com.gavin.cloud.common.base.problem.AuthenticationException;
 import com.gavin.cloud.common.base.util.JsonUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -39,7 +38,7 @@ public abstract class JwtHelper {
     }
 
     @SuppressWarnings("unchecked")
-    public static ActiveUser verifyToken(@NonNull String token, @NonNull PublicKey publicKey) {
+    public static ActiveUser verifyToken(@NonNull String token, @NonNull PublicKey publicKey) throws AuthenticationException {
         try {
             Claims claims = Jwts.parser()
                     .setSigningKey(publicKey)
@@ -54,7 +53,7 @@ public abstract class JwtHelper {
             return new ActiveUser(uid, username, clientIP, roles);
         } catch (Exception e) {
             //Don't trust the JWT!
-            throw new AppException(CommonMessageType.ERR_AUTHC);
+            throw new AuthenticationException("The token is illegal.");
         }
     }
 

@@ -7,10 +7,11 @@ import com.gavin.cloud.auth.client.UserClient;
 import com.gavin.cloud.auth.config.properties.JwtExtProperties;
 import com.gavin.cloud.auth.dto.KeyAndPasswordDTO;
 import com.gavin.cloud.auth.dto.LoginDTO;
-import com.gavin.cloud.auth.enums.AuthMessageType;
+import com.gavin.cloud.auth.problem.AccountNotActivatedException;
+import com.gavin.cloud.auth.problem.AccountNotFoundException;
+import com.gavin.cloud.auth.problem.InvalidPasswordException;
 import com.gavin.cloud.common.base.auth.ActiveUser;
 import com.gavin.cloud.common.base.auth.JwtHelper;
-import com.gavin.cloud.common.base.problem.AppException;
 import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.base.util.Md5Hash;
 import com.gavin.cloud.common.web.annotation.RequiresGuest;
@@ -72,13 +73,13 @@ public class AuthController {
                                       HttpServletRequest request, HttpServletResponse response) {
         User user = userClient.getUser(loginDTO.getUsername(), type);
         if (user == null) {
-            throw new AppException(AuthMessageType.ERR_ACCOUNT_NOT_FOUND);
+            throw new AccountNotFoundException();
         }
         if (!Md5Hash.hash(loginDTO.getPassword(), user.getSalt()).equals(user.getPassword())) {
-            throw new AppException(AuthMessageType.ERR_INVALID_PASSWORD);
+            throw new InvalidPasswordException();
         }
         if (user.getActivated() == null || !user.getActivated()) {
-            throw new AppException(AuthMessageType.ERR_ACCOUNT_NOT_ACTIVATED);
+            throw new AccountNotActivatedException();
         }
 
         List<String> roles = roleClient.getRoles(user.getId());

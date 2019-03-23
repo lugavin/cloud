@@ -70,7 +70,7 @@
             <!-- enableSubPackages : 是否让schema作为包的后缀 -->
             <property name="enableSubPackages" value="false"/>
             <!-- rootInterface : 给生成的接口添加一个父类 -->
-            <!--<property name="rootInterface" value="com.gavin.cloud.common.mapper.BaseMapper"/>-->
+            <!--<property name="rootInterface" value="com.gavin.cloud.common.mapper.CrudMapper"/>-->
         </javaClientGenerator>
 
         <!-- 指定数据库表 -->

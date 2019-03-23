@@ -14,14 +14,14 @@
 spring:
   profiles:
     include: swagger #http://127.0.0.1:8080/swagger-ui.html
+  output:
+    ansi:
+      enabled: ALWAYS
   redis:
     host: 127.0.0.1
     port: 6379
     timeout: 10000
     password: #secret#
-  jackson:
-    serialization:
-      indent_output: true
 
 eureka:
   instance:
@@ -52,9 +52,3 @@ hystrix:
         isolation:
           thread:
             timeoutInMilliseconds: 60000 # 设置Hystrix的超时时间为60秒
-
-logging:
-  level:
-    com.gavin.cloud: DEBUG
-    org.springframework.jdbc: DEBUG
-

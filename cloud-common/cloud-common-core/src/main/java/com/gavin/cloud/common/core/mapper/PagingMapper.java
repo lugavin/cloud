@@ -6,7 +6,7 @@ import com.gavin.cloud.common.base.page.Pageable;
 import java.util.List;
 import java.util.Map;
 
-public interface PagingMapper extends Mapper {
+public interface PagingMapper {
 
     <T> List<T> getList(Map<String, Object> param);
 

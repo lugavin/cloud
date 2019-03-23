@@ -39,7 +39,3 @@ hystrix:
         isolation:
           thread:
             timeoutInMilliseconds: 10000
-logging:
-  level:
-    com.gavin.cloud: INFO
-    org.springframework.jdbc: WARN

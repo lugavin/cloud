@@ -1,15 +1,15 @@
 package com.gavin.cloud.sys.core.service.impl;
 
+import com.gavin.cloud.common.base.util.Md5Hash;
+import com.gavin.cloud.common.base.util.RandomUtils;
 import com.gavin.cloud.sys.api.dto.RegisterDTO;
 import com.gavin.cloud.sys.api.model.User;
 import com.gavin.cloud.sys.api.model.UserExample;
 import com.gavin.cloud.sys.core.mapper.UserMapper;
+import com.gavin.cloud.sys.core.problem.EmailNotFoundException;
+import com.gavin.cloud.sys.core.problem.UserNotFoundException;
 import com.gavin.cloud.sys.core.service.AccountService;
 import com.gavin.cloud.sys.core.service.UserService;
-import com.gavin.cloud.common.base.problem.AppException;
-import com.gavin.cloud.common.base.problem.CommonMessageType;
-import com.gavin.cloud.common.base.util.Md5Hash;
-import com.gavin.cloud.common.base.util.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +42,7 @@ public class AccountServiceImpl implements AccountService {
         example.createCriteria().andActivationKeyEqualTo(key);
         List<User> users = userMapper.selectByExample(example);
         if (users.size() < 1) {
-            throw new AppException(CommonMessageType.ERR_BUSINESS, "No user was found for this reset key");
+            throw new UserNotFoundException();
         }
         User user = users.get(0);
         user.setActivated(true);
@@ -57,7 +57,7 @@ public class AccountServiceImpl implements AccountService {
         example.createCriteria().andEmailEqualTo(mail);
         List<User> users = userMapper.selectByExample(example);
         if (users.size() < 1) {
-            throw new AppException(CommonMessageType.ERR_BUSINESS, "Email address not registered");
+            throw new EmailNotFoundException();
         }
         User user = users.get(0);
         user.setResetKey(RandomUtils.randomNumeric());
@@ -72,7 +72,7 @@ public class AccountServiceImpl implements AccountService {
         example.createCriteria().andActivationKeyEqualTo(key);
         List<User> users = userMapper.selectByExample(example);
         if (users.size() < 1) {
-            throw new AppException(CommonMessageType.ERR_BUSINESS, "No user was found for this reset key");
+            throw new UserNotFoundException();
         }
         User user = users.get(0);
         user.setSalt(RandomUtils.randomAlphanumeric());
@@ -87,7 +87,7 @@ public class AccountServiceImpl implements AccountService {
     public void changePassword(String id, String password) {
         User user = userMapper.selectByPrimaryKey(id);
         if (user == null) {
-            throw new AppException(CommonMessageType.ERR_BUSINESS, "No user was found for this id");
+            throw new UserNotFoundException();
         }
         user.setSalt(RandomUtils.randomAlphanumeric());
         user.setPassword(Md5Hash.hash(user.getPassword(), user.getSalt()));

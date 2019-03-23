@@ -1,8 +1,7 @@
 package com.gavin.cloud.sys.core.service.impl;
 
+import com.gavin.cloud.common.base.problem.InternalServerErrorException;
 import com.gavin.cloud.sys.core.service.PictureService;
-import com.gavin.cloud.common.base.problem.AppException;
-import com.gavin.cloud.common.base.problem.CommonMessageType;
 import com.gavin.cloud.common.base.util.FtpUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +37,7 @@ public class PictureServiceImpl implements PictureService {
     public String upload(InputStream local) {
         FTPClient ftpClient = FtpUtils.connect(host, port);
         if (!FtpUtils.login(ftpClient, username, password)) {
-            throw new AppException(CommonMessageType.ERR_SERVER, "Ftp service is not available.");
+            throw new InternalServerErrorException("Ftp service is not available.");
         }
         String filePath = new SimpleDateFormat("/yyyy/MM/dd/").format(new Date());
         String filename = UUID.randomUUID().toString();

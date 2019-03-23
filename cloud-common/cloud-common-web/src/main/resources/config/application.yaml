@@ -24,8 +24,6 @@ spring:
     serialization:
       write_dates_as_timestamps: false
 
-
-
 management:
   security:
     enabled: false #全局关闭Actuator安全认证
@@ -36,6 +34,10 @@ management:
 ribbon:
   eureka:
     enabled: true
+
+logging:
+  level:
+    com.netflix.config.sources.URLConfigurationSource: ERROR
 
 app:
   swagger:
