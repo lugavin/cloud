@@ -49,14 +49,15 @@ public class AuthFilter extends ZuulFilter {
     public Object run() {
         // (2)判断Token是否有效
         RequestContext ctx = RequestContext.getCurrentContext();
-        Cookie cookie = WebUtils.getCookie(ctx.getRequest(), jwtProperties.getCookieName());
         try {
+            Cookie cookie = WebUtils.getCookie(ctx.getRequest(), jwtProperties.getCookieName());
             return JwtHelper.verifyToken(cookie.getValue(), jwtProperties.getPublicKey());
             // (3)判断是否为公共访问地址(登录后均可访问)
             // (4)判断是否为授权访问地址(登录后需要授权才可访问)
         } catch (Exception e) {
-            ctx.setSendZuulResponse(Boolean.FALSE);
             ctx.setResponseStatusCode(HttpStatus.UNAUTHORIZED.value());
+            ctx.setSendZuulResponse(Boolean.FALSE);
+            log.debug("Access Control: filtered unauthorized access on endpoint {}", ctx.getRequest().getRequestURI());
         }
         return null;
     }

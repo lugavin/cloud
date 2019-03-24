@@ -1,10 +1,18 @@
 package com.gavin.cloud.common.web.config;
 
+import com.gavin.cloud.common.base.auth.ActiveUser;
+import com.gavin.cloud.common.base.auth.AuthProperties;
+import com.gavin.cloud.common.base.auth.JwtProperties;
 import com.gavin.cloud.common.base.util.Constants;
+import com.gavin.cloud.common.web.context.SubjectContextHolder;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.MethodParameter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -18,10 +26,13 @@ import java.util.List;
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
-    private static final String[] EXCLUDE_PATH_PATTERNS = {
-            "/v2/api-docs",
-            "/swagger-resources/**",
-    };
+    private final AuthProperties authProperties;
+    private final JwtProperties jwtProperties;
+
+    public WebMvcConfig(AuthProperties authProperties, JwtProperties jwtProperties) {
+        this.authProperties = authProperties;
+        this.jwtProperties = jwtProperties;
+    }
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
@@ -35,7 +46,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // registry.addInterceptor(new AuthInterceptor(subjectService())).excludePathPatterns(EXCLUDE_PATH_PATTERNS);
+        //registry.addInterceptor(new ContextLifecycleInterceptor());
+        //registry.addInterceptor(new AuthInterceptor(jwtProperties));
     }
 
     /**
@@ -43,17 +55,22 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
      */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        // argumentResolvers.add(new HandlerMethodArgumentResolver() {
-        //     @Override
-        //     public boolean supportsParameter(MethodParameter parameter) {
-        //         return parameter.getParameterType().isAssignableFrom(ActiveUser.class);
-        //     }
+        //argumentResolvers.add(new SubjectHandlerMethodArgumentResolver());
+    }
 
-        //     @Override
-        //     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        //         return SubjectContextHolder.getContext().getSubject();
-        //     }
-        // });
+    private static class SubjectHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
+
+        @Override
+        public boolean supportsParameter(MethodParameter parameter) {
+            return parameter.getParameterType().isAssignableFrom(ActiveUser.class);
+        }
+
+        @Override
+        public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+                                      NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+            return SubjectContextHolder.getContext().getSubject();
+        }
+
     }
 
 }

@@ -30,6 +30,12 @@
             <artifactId>spring-cloud-starter-eureka</artifactId>
         </dependency>
 
+        <!-- Spring Cloud Config -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+
         <!-- Spring AOP -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -43,13 +49,11 @@
         </dependency>
 
         <!-- Problems for Spring WEB -->
-        <!--
         <dependency>
             <groupId>org.zalando</groupId>
             <artifactId>problem-spring-web</artifactId>
             <version>${problem-spring-web.version}</version>
         </dependency>
-        -->
 
         <!-- Swagger REST API -->
         <dependency>

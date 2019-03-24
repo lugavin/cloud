@@ -39,7 +39,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-public class AuthController {
+public class AuthResource {
 
     private static final String USER = "user";
 
@@ -85,7 +85,7 @@ public class AuthController {
         List<String> roles = roleClient.getRoles(user.getId());
         String clientIP = WebUtils.getClientIP(request);
         String token = createToken(new ActiveUser(user.getId(), user.getUsername(), clientIP, roles));
-        handleCookie(token, request, response);
+        createCookie(request, response, token);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -98,14 +98,14 @@ public class AuthController {
         ActiveUser activeUser = JwtHelper.verifyToken(accessToken, jwtProperties.getPublicKey());
         // 刷新Token(重新生成)
         String token = createToken(activeUser);
-        handleCookie(token, request, response);
+        createCookie(request, response, token);
         return ResponseEntity.ok(activeUser);
     }
 
     @RequiresGuest
     @GetMapping("/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
-        handleCookie(null, request, response);
+        clearCookie(request, response);
     }
 
     //@RequiresUser
@@ -166,8 +166,21 @@ public class AuthController {
         return JwtHelper.createToken(activeUser, jwtProperties.getPrivateKey(), jwtProperties.getValidityInSeconds());
     }
 
-    private void handleCookie(String token, HttpServletRequest request, HttpServletResponse response) {
+    private void createCookie(HttpServletRequest request, HttpServletResponse response, String token) {
         CookieGenerator cookieGenerator = new CookieGenerator();
+        setCookieProperties(request, cookieGenerator);
+        cookieGenerator.setCookieMaxAge(jwtProperties.getCookieMaxAge());
+        cookieGenerator.addCookie(response, token);
+    }
+
+    private void clearCookie(HttpServletRequest request, HttpServletResponse response) {
+        CookieGenerator cookieGenerator = new CookieGenerator();
+        setCookieProperties(request, cookieGenerator);
+        cookieGenerator.setCookieMaxAge(0);
+        cookieGenerator.addCookie(response, "");
+    }
+
+    private void setCookieProperties(HttpServletRequest request, CookieGenerator cookieGenerator) {
         cookieGenerator.setCookiePath(jwtProperties.getCookiePath());
         String cookieDomain = jwtProperties.getCookieDomain();
         if (StringUtils.isEmpty(cookieDomain)) {
@@ -177,10 +190,8 @@ public class AuthController {
             cookieGenerator.setCookieDomain(cookieDomain);
         }
         cookieGenerator.setCookieHttpOnly(jwtProperties.isUseHttpOnlyCookie());
-        cookieGenerator.setCookieMaxAge(jwtProperties.getCookieMaxAge());
         cookieGenerator.setCookieName(jwtProperties.getCookieName());
         cookieGenerator.setCookieSecure(jwtProperties.isUseSecureCookie());
-        cookieGenerator.addCookie(response, token);
     }
 
 }

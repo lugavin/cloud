@@ -32,12 +32,6 @@ import static springfox.documentation.builders.PathSelectors.ant;
 @Profile(Constants.PROFILE_SWAGGER)
 public class SwaggerConfig {
 
-    @Bean
-    @ConfigurationProperties(prefix = "app.swagger", ignoreUnknownFields = false)
-    public SwaggerProperties swaggerProperties() {
-        return new SwaggerProperties();
-    }
-
     /**
      * Springfox configuration for the API Swagger docs.
      *
@@ -80,6 +74,12 @@ public class SwaggerConfig {
         watch.stop();
         log.debug("Started Swagger in {} ms", watch.getTotalTimeMillis());
         return docket;
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "app.swagger", ignoreUnknownFields = false)
+    public SwaggerProperties swaggerProperties() {
+        return new SwaggerProperties();
     }
 
     @Data

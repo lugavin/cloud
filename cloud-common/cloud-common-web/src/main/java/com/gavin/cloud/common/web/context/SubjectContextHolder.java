@@ -9,8 +9,6 @@ import com.gavin.cloud.common.base.auth.ActiveUser;
  * @author Gavin Lu
  * @see org.springframework.security.core.context.SecurityContextHolder
  * @see org.springframework.security.core.context.ThreadLocalSecurityContextHolderStrategy
- * @see org.springframework.security.core.context.SecurityContextHolder
- * @see org.springframework.security.core.context.ThreadLocalSecurityContextHolderStrategy
  * @see com.netflix.zuul.context.ContextLifecycleFilter
  */
 public final class SubjectContextHolder {

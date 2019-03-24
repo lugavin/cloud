@@ -18,10 +18,10 @@ app:
     use-secure-cookie: false       # 若设置为true则只能在Https连接中被浏览器传递到服务端
   auth:
     anonUrls:
-      - /rest/*/v2/api-docs/**
-      - /rest/*/swagger-resources/**
-      - /rest/*/webjars/springfox-swagger-ui/**
-      - /rest/*/swagger-ui.html
+      - /**/v2/api-docs/**
+      - /**/swagger-resources/**
+      - /**/webjars/springfox-swagger-ui/**
+      - /**/swagger-ui.html
       - /rest/auth/login/**
       - /rest/auth/register/**
     userUrls:

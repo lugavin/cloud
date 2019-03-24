@@ -5,17 +5,23 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
+/**
+ * @see org.springframework.boot.json.GsonJsonParser
+ * @see org.springframework.boot.json.JsonParserFactory
+ */
 public abstract class JsonUtils {
 
-    private static Gson gson;
+    private static final TypeToken<?> MAP_TYPE = new MapTypeToken();
 
-    static {
-        GsonBuilder builder = new GsonBuilder();
-        builder.setDateFormat(Constants.DATETIME_FORMAT);
-        gson = builder.create();
-    }
+    private static final TypeToken<?> LIST_TYPE = new ListTypeToken();
+
+    private static Gson gson = new GsonBuilder()
+            .setDateFormat(Constants.DATETIME_FORMAT)
+            .create();
 
     public static String toJson(Object src) {
         return gson.toJson(src);
@@ -30,11 +36,25 @@ public abstract class JsonUtils {
     }
 
     public static Map<String, Object> toMap(String json) {
-        return fromJson(json, new TypeToken<Map<String, Object>>() {}.getType());
+        return gson.fromJson(json, MAP_TYPE.getType());
     }
 
-    public static <T> T fromMap(Map<String, Object> map, Class<T> clazz) {
-        return gson.fromJson(gson.toJsonTree(map), clazz);
+    public static List<Object> toList(String json) {
+        return parseList(json, (trimmed) -> gson.fromJson(trimmed, LIST_TYPE.getType()));
+    }
+
+    private static <R> R parseList(String json, Function<String, R> parser) {
+        String trimmed = json != null ? json.trim() : "";
+        if (trimmed.startsWith("[")) {
+            return parser.apply(trimmed);
+        }
+        throw new IllegalArgumentException("Cannot parse JSON");
+    }
+
+    private static final class MapTypeToken extends TypeToken<Map<String, Object>> {
+    }
+
+    private static final class ListTypeToken extends TypeToken<List<Object>> {
     }
 
 }

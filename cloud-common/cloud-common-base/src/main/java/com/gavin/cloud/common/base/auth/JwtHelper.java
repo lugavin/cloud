@@ -16,6 +16,9 @@ import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * @see <a href="https://github.com/jhipster/generator-jhipster/blob/master/generators/server/templates/src/main/java/package/web/filter/RefreshTokenFilter.java.ejs">RefreshTokenFilter</a>
+ */
 public abstract class JwtHelper {
 
     public static String createToken(@NonNull ActiveUser activeUser,

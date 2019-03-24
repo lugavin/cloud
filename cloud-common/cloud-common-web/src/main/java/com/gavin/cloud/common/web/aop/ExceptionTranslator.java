@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * @see org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
  */
 @RestControllerAdvice
-public class ExceptionTranslator implements AdviceTrait {
+public class ExceptionTranslator implements ProblemAdviceTrait {
 
     @ExceptionHandler(ThrowableProblem.class)
     public ResponseEntity<Problem> handleProblem(ThrowableProblem problem, NativeWebRequest request) {

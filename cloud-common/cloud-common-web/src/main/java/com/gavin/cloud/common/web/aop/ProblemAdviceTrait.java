@@ -15,9 +15,9 @@ import org.springframework.web.context.request.NativeWebRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
-public interface AdviceTrait {
+public interface ProblemAdviceTrait {
 
-    Logger LOG = LoggerFactory.getLogger(AdviceTrait.class);
+    Logger LOG = LoggerFactory.getLogger(ProblemAdviceTrait.class);
 
     default ResponseEntity<Problem> create(final ThrowableProblem problem,
                                            final NativeWebRequest request) {
