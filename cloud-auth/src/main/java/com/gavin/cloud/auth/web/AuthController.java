@@ -15,7 +15,7 @@ import com.gavin.cloud.common.base.auth.JwtHelper;
 import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.base.util.Md5Hash;
 import com.gavin.cloud.common.web.annotation.RequiresGuest;
-import com.gavin.cloud.common.web.util.RequestUtils;
+import com.gavin.cloud.common.web.util.WebUtils;
 import com.gavin.cloud.sys.api.dto.RegisterDTO;
 import com.gavin.cloud.sys.api.model.User;
 import org.apache.commons.lang3.StringUtils;
@@ -83,10 +83,8 @@ public class AuthController {
         }
 
         List<String> roles = roleClient.getRoles(user.getId());
-        String clientIP = RequestUtils.getClientIP(request);
-        ActiveUser activeUser = new ActiveUser(user.getId(), user.getUsername(), clientIP, roles);
-        String token = createToken(activeUser);
-
+        String clientIP = WebUtils.getClientIP(request);
+        String token = createToken(new ActiveUser(user.getId(), user.getUsername(), clientIP, roles));
         handleCookie(token, request, response);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -171,12 +169,12 @@ public class AuthController {
     private void handleCookie(String token, HttpServletRequest request, HttpServletResponse response) {
         CookieGenerator cookieGenerator = new CookieGenerator();
         cookieGenerator.setCookiePath(jwtProperties.getCookiePath());
-        String domain = jwtProperties.getCookieDomain();
-        if (StringUtils.isEmpty(domain)) {
-            domain = RequestUtils.getDomainName(request);
+        String cookieDomain = jwtProperties.getCookieDomain();
+        if (StringUtils.isEmpty(cookieDomain)) {
+            cookieDomain = WebUtils.getCookieDomain(request);
         }
-        if (!StringUtils.isEmpty(domain)) {
-            cookieGenerator.setCookieDomain(domain);
+        if (StringUtils.isNotEmpty(cookieDomain)) {
+            cookieGenerator.setCookieDomain(cookieDomain);
         }
         cookieGenerator.setCookieHttpOnly(jwtProperties.isUseHttpOnlyCookie());
         cookieGenerator.setCookieMaxAge(jwtProperties.getCookieMaxAge());

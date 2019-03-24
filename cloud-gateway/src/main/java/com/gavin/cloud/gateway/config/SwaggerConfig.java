@@ -1,7 +1,6 @@
 package com.gavin.cloud.gateway.config;
 
 import com.gavin.cloud.common.base.util.Constants;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.netflix.zuul.filters.Route;
 import org.springframework.cloud.netflix.zuul.filters.RouteLocator;
 import org.springframework.context.annotation.Primary;
@@ -26,11 +25,8 @@ public class SwaggerConfig implements SwaggerResourcesProvider {
 
     private final RouteLocator routeLocator;
 
-    private final DiscoveryClient discoveryClient;
-
-    public SwaggerConfig(RouteLocator routeLocator, DiscoveryClient discoveryClient) {
+    public SwaggerConfig(RouteLocator routeLocator) {
         this.routeLocator = routeLocator;
-        this.discoveryClient = discoveryClient;
     }
 
     @Override
@@ -38,12 +34,12 @@ public class SwaggerConfig implements SwaggerResourcesProvider {
 
         List<SwaggerResource> resources = new ArrayList<>();
 
-        //Add the default swagger resource that correspond to the gateway's own swagger doc
+        // Add the default swagger resource that correspond to the gateway's own swagger doc
         resources.add(swaggerResource("default", "/v2/api-docs"));
 
-        //Add the registered microservices swagger docs as additional swagger resources
+        // Add the registered microservices swagger docs as additional swagger resources
         List<Route> routes = routeLocator.getRoutes();
-        routes.forEach(route -> resources.add(swaggerResource(route.getId(), route.getFullPath().replace("**", "v2/api-docs"))));
+        routes.forEach(r -> resources.add(swaggerResource(r.getId(), r.getFullPath().replace("**", "v2/api-docs"))));
 
         return resources;
     }

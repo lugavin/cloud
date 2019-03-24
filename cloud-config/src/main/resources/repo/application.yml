@@ -1,4 +1,4 @@
-# http://127.0.0.1:8000/app-default.yml
+# http://127.0.0.1:8000/application-default.yml
 # config服务端修改配置信息后, config客户端需要手动refresh(http://ip:port/refresh)才能生效
 zuul:
   prefix: /rest
@@ -12,7 +12,7 @@ app:
     validity-in-seconds: 1800
     cookie-path: /
     cookie-name: accessToken
-    cookie-domain:
+    cookie-domain:                 # 顶级域名(domain.com)
     cookie-max-age: -1             # 若设置的值不大于0则关闭浏览器失效
     use-http-only-cookie: true     # 若设置为true则通过JS脚本将无法读取到Cookie信息(防止XSS跨站脚本攻击)
     use-secure-cookie: false       # 若设置为true则只能在Https连接中被浏览器传递到服务端
