@@ -14,7 +14,7 @@ public class DistributedLockTest {
                 lock.lock();
                 try {
                     String orderNo = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + String.format("%06d", ++start);
-                    System.err.println(Thread.currentThread().getName() + " >>> " + orderNo);
+                    System.err.printf("%s >>> 创建订单 [%s]", Thread.currentThread().getName(), orderNo).println();
                 } finally {
                     lock.unlock();
                 }

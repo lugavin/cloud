@@ -3,6 +3,7 @@ package com.gavin.cloud.common.web.interceptor;
 import com.gavin.cloud.common.base.auth.ActiveUser;
 import com.gavin.cloud.common.base.auth.JwtHelper;
 import com.gavin.cloud.common.base.auth.JwtProperties;
+import com.gavin.cloud.common.base.problem.AuthenticationException;
 import com.gavin.cloud.common.web.annotation.Logical;
 import com.gavin.cloud.common.web.annotation.RequiresGuest;
 import com.gavin.cloud.common.web.annotation.RequiresPermissions;
@@ -11,11 +12,11 @@ import com.gavin.cloud.common.web.context.SubjectContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 
 /**
  * 权限设计思路
@@ -48,7 +49,10 @@ public class AuthInterceptor extends AbstractInterceptor {
 
         // 需要登录才可访问
         try {
-            Cookie cookie = WebUtils.getCookie(request, jwtProperties.getCookieName());
+            Cookie cookie = Arrays.stream(request.getCookies())
+                    .filter(c -> jwtProperties.getCookieName().equals(c.getName()))
+                    .findFirst()
+                    .orElseThrow(AuthenticationException::new);
             ActiveUser activeUser = JwtHelper.verifyToken(cookie.getValue(), jwtProperties.getPublicKey());
             SubjectContextHolder.getContext().setSubject(activeUser);
         } catch (Exception e) {

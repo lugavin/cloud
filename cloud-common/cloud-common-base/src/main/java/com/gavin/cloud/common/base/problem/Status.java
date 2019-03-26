@@ -2,6 +2,7 @@ package com.gavin.cloud.common.base.problem;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -106,11 +107,12 @@ public enum Status implements StatusType {
         return reasonPhrase;
     }
 
-    private static final Map<Integer, Status> MAP = Arrays.stream(Status.values())
+    private static final Map<Integer, StatusType> MAP = Arrays.stream(Status.values())
             .collect(Collectors.toMap(Status::getStatusCode, Function.identity()));
 
-    public static Status fromStatusCode(int statusCode) {
-        return MAP.get(statusCode);
+    public static StatusType fromStatusCode(int statusCode) {
+        return Optional.ofNullable(MAP.get(statusCode))
+                .orElse(new UnknownStatus(statusCode));
     }
 
 }

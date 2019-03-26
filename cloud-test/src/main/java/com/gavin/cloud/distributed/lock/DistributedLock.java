@@ -3,6 +3,7 @@ package com.gavin.cloud.distributed.lock;
 import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.ZkClient;
 
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -22,8 +23,6 @@ public class DistributedLock implements Lock {
 
     private final ZkClient zkClient;
     private final String lockName;
-
-    private CountDownLatch countDownLatch;
 
     public DistributedLock(String lockName) {
         this.lockName = ROOT_PATH + "/" + lockName;
@@ -57,29 +56,17 @@ public class DistributedLock implements Lock {
 
     @Override
     public void unlock() {
-        if (zkClient != null) {
+        Optional.ofNullable(zkClient).ifPresent(zk -> {
             zkClient.close();
             System.err.println(Thread.currentThread().getName() + " >>> 释放锁");
-        }
+        });
     }
 
     protected void waitForLock() {
-        // 事件监听
-        IZkDataListener dataListener = new IZkDataListener() {
-            @Override
-            public void handleDataChange(String dataPath, Object data) throws Exception {
-            }
-
-            @Override
-            public void handleDataDeleted(String dataPath) throws Exception {
-                if (countDownLatch != null) {
-                    countDownLatch.countDown();
-                }
-            }
-        };
-
         if (zkClient.exists(lockName)) {
-            countDownLatch = new CountDownLatch(1);
+            CountDownLatch countDownLatch = new CountDownLatch(1);
+            // 事件监听
+            IZkDataListener dataListener = new DataDeletedListener(countDownLatch);
             // 订阅事件通知
             zkClient.subscribeDataChanges(lockName, dataListener);
             try {
@@ -89,6 +76,25 @@ public class DistributedLock implements Lock {
             // 取消事件订阅
             zkClient.unsubscribeDataChanges(lockName, dataListener);
         }
+    }
+
+    private static class DataDeletedListener implements IZkDataListener {
+
+        private final CountDownLatch countDownLatch;
+
+        private DataDeletedListener(CountDownLatch countDownLatch) {
+            this.countDownLatch = countDownLatch;
+        }
+
+        @Override
+        public void handleDataChange(String dataPath, Object data) throws Exception {
+        }
+
+        @Override
+        public void handleDataDeleted(String dataPath) throws Exception {
+            Optional.ofNullable(countDownLatch).ifPresent(CountDownLatch::countDown);
+        }
+
     }
 
 }

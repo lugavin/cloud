@@ -1,20 +1,18 @@
 package com.gavin.cloud.distributed.election;
 
-import com.gavin.cloud.test.AppProperties;
+import com.gavin.cloud.config.properties.AppProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.ZkClient;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
 
 @Slf4j
 @Component
-@EnableConfigurationProperties(AppProperties.class)
 public class MasterElection implements ApplicationRunner {
 
     private final ServerProperties serverProperties;
