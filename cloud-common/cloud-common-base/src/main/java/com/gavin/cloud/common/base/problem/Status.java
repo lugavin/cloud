@@ -1,5 +1,10 @@
 package com.gavin.cloud.common.base.problem;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 /**
  * Enumeration of HTTP status codes.
  *
@@ -101,13 +106,11 @@ public enum Status implements StatusType {
         return reasonPhrase;
     }
 
+    private static final Map<Integer, Status> MAP = Arrays.stream(Status.values())
+            .collect(Collectors.toMap(Status::getStatusCode, Function.identity()));
+
     public static Status fromStatusCode(int statusCode) {
-        for (Status status : Status.values()) {
-            if (status.statusCode == statusCode) {
-                return status;
-            }
-        }
-        return null;
+        return MAP.get(statusCode);
     }
 
 }

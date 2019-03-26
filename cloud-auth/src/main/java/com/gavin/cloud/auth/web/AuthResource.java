@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class AuthResource {
@@ -71,10 +72,8 @@ public class AuthResource {
     @PostMapping("/login/{type:" + Constants.REGEX_LOGIN_TYPE + "}")
     public ResponseEntity<Void> login(@Valid @RequestBody LoginDTO loginDTO, @PathVariable int type,
                                       HttpServletRequest request, HttpServletResponse response) {
-        User user = userClient.getUser(loginDTO.getUsername(), type);
-        if (user == null) {
-            throw new AccountNotFoundException();
-        }
+        User user = Optional.ofNullable(userClient.getUser(loginDTO.getUsername(), type))
+                .orElseThrow(AccountNotFoundException::new);
         if (!Md5Hash.hash(loginDTO.getPassword(), user.getSalt()).equals(user.getPassword())) {
             throw new InvalidPasswordException();
         }

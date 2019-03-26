@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -85,10 +86,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void changePassword(String id, String password) {
-        User user = userMapper.selectByPrimaryKey(id);
-        if (user == null) {
-            throw new UserNotFoundException();
-        }
+        User user = Optional.ofNullable(userMapper.selectByPrimaryKey(id))
+                .orElseThrow(UserNotFoundException::new);
         user.setSalt(RandomUtils.randomAlphanumeric());
         user.setPassword(Md5Hash.hash(user.getPassword(), user.getSalt()));
         user.setLastModifiedBy(user.getUsername());
