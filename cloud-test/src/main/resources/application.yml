@@ -18,6 +18,13 @@ server:
 spring:
   application:
     name: cloud-test
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    timeout: 10000
+    password: #secret#
+    redisson:
+      config: classpath:redisson.yml
 
 management:
   security:

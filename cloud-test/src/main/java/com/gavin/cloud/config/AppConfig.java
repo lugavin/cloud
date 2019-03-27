@@ -6,6 +6,7 @@ import com.gavin.cloud.test.ServiceB;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Configuration
 public class AppConfig {
@@ -14,6 +15,11 @@ public class AppConfig {
     @ConfigurationProperties("app")
     public AppProperties appProperties() {
         return new AppProperties();
+    }
+
+    @Bean
+    public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
+        return new ThreadPoolTaskExecutor();
     }
 
     @Bean
