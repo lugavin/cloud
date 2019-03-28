@@ -2,6 +2,7 @@ package com.gavin.cloud.distributed.redisson;
 
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.Redisson;
+import org.redisson.api.RAtomicLong;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -25,7 +26,6 @@ public class RedissonTest {
                 lock.unlock();
             }
         }
-
     }
 
 }
