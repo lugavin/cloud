@@ -20,7 +20,7 @@ public abstract class JsonUtils {
     private static final TypeToken<?> LIST_TYPE = new ListTypeToken();
 
     private static Gson gson = new GsonBuilder()
-            .setDateFormat(Constants.DATETIME_FORMAT)
+            .setDateFormat(Constants.FORMATTER_DATETIME)
             .create();
 
     public static String toJson(Object src) {

@@ -16,7 +16,9 @@ import org.springframework.web.method.HandlerMethod;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 权限设计思路
@@ -87,8 +89,12 @@ public class AuthInterceptor extends AbstractInterceptor {
     }
 
     private boolean isPermitted(ActiveUser subject, String[] permissions, Logical logical) {
-        //return logical == Logical.AND ? subject.isPermittedAll(permissions) : subject.isPermittedAny(permissions);
-        return Boolean.TRUE;
+        List<String> roles = subject.getRoles();
+        //TODO 根据角色从缓存中获取权限信息
+        List<String> perms = new ArrayList<>();
+        return logical == Logical.AND
+                ? perms.containsAll(Arrays.asList(permissions))
+                : Arrays.stream(permissions).anyMatch(perms::contains);
     }
 
 }

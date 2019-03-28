@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(Md5Hash.hash(user.getPassword(), user.getSalt()));
         user.setActivated(Boolean.FALSE);
         user.setActivationKey(RandomUtils.randomNumeric());
-        user.setCreatedBy(Constants.SYSTEM_ACCOUNT);
+        user.setCreatedBy(Constants.ACCOUNT_SYSTEM);
         user.setCreatedDate(Calendar.getInstance().getTime());
         userMapper.insert(user);
         return user;

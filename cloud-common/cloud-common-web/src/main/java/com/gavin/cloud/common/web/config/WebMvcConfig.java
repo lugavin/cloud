@@ -37,9 +37,9 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         DateTimeFormatterRegistrar registrar = new DateTimeFormatterRegistrar();
-        registrar.setDateFormatter(DateTimeFormatter.ofPattern(Constants.DATE_FORMAT));
-        registrar.setTimeFormatter(DateTimeFormatter.ofPattern(Constants.TIME_FORMAT));
-        registrar.setDateTimeFormatter(DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT));
+        registrar.setDateFormatter(DateTimeFormatter.ofPattern(Constants.FORMATTER_DATE));
+        registrar.setTimeFormatter(DateTimeFormatter.ofPattern(Constants.FORMATTER_TIME));
+        registrar.setDateTimeFormatter(DateTimeFormatter.ofPattern(Constants.FORMATTER_DATETIME));
         // registrar.setUseIsoFormat(Boolean.TRUE);
         registrar.registerFormatters(registry);
     }

@@ -26,10 +26,6 @@ spring:
     redisson:
       config: classpath:redisson.yml
 
-management:
-  security:
-    enabled: false
-
 app:
   zookeeper:
     address: 127.0.0.1:2181
