@@ -1,9 +1,9 @@
 package com.gavin.cloud.mail.config;
 
 import com.gavin.cloud.common.base.util.Constants;
-import com.gavin.cloud.mail.service.MailService;
 import com.gavin.cloud.mail.config.properties.MailProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import com.gavin.cloud.mail.service.MailService;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,15 +13,19 @@ import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 @Configuration
-@EnableConfigurationProperties(MailProperties.class)
 public class MailConfig {
 
     @Bean
-    public MailService mailService(MailProperties mailProperties,
-                                   JavaMailSender javaMailSender,
+    @ConfigurationProperties(prefix = "app.mail", ignoreUnknownFields = false)
+    public MailProperties mailProperties() {
+        return new MailProperties();
+    }
+
+    @Bean
+    public MailService mailService(JavaMailSender javaMailSender,
                                    MessageSource messageSource,
                                    SpringTemplateEngine templateEngine) {
-        return new MailService(mailProperties, javaMailSender, messageSource, templateEngine);
+        return new MailService(mailProperties(), javaMailSender, messageSource, templateEngine);
     }
 
     @Bean

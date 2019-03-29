@@ -8,19 +8,13 @@ public interface Dialect {
     String COUNT_REPLACEMENT_TEMPLATE = "SELECT COUNT(1) %s";
     Pattern ORDER_BY_PATTERN = Pattern.compile("\\s+ORDER\\s+BY\\s+.*", Pattern.CASE_INSENSITIVE);
 
-    String getLimitQueryString(String sql, int page, int pageSize);
+    String getLimitQueryString(String sql, int offset, int pageSize);
 
-    /**
-     * @param sql      select sql
-     * @param page     current page
-     * @param pageSize page size
-     * @return count sql
-     */
-    default String getLimitString(String sql, int page, int pageSize) {
+    default String getLimitString(String sql, int offset, int pageSize) {
         if (sql == null || sql.length() == 0) {
             throw new IllegalArgumentException("The argument [sql] is required and it must not be null.");
         }
-        return getLimitQueryString(sql, page, pageSize);
+        return getLimitQueryString(sql, offset, pageSize);
     }
 
     default String getCountString(String sql) {
@@ -29,7 +23,6 @@ public interface Dialect {
         }
         return String.format(COUNT_REPLACEMENT_TEMPLATE, removeSelect(removeOrderBy(sql)));
     }
-
 
     /**
      * Remove select clause

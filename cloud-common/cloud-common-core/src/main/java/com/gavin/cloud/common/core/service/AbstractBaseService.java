@@ -2,6 +2,7 @@ package com.gavin.cloud.common.core.service;
 
 import com.gavin.cloud.common.base.model.Model;
 import com.gavin.cloud.common.core.mapper.CrudMapper;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,37 +16,37 @@ public abstract class AbstractBaseService<T extends Model> implements BaseServic
 
     @Override
     @Transactional
-    public int create(T model) {
+    public int create(@NonNull T model) {
         return crudMapper.insertSelective(model);
     }
 
     @Override
     @Transactional
-    public int create(List<T> models) {
+    public int create(@NonNull List<T> models) {
         return crudMapper.insertBatch(models);
     }
 
     @Override
     @Transactional
-    public int update(T model) {
+    public int update(@NonNull T model) {
         return crudMapper.updateByPrimaryKeySelective(model);
     }
 
     @Override
     @Transactional
-    public int delete(Serializable id) {
+    public int delete(@NonNull Serializable id) {
         return crudMapper.deleteByPrimaryKey(id);
     }
 
     @Override
     @Transactional
-    public int delete(Serializable[] ids) {
+    public int delete(@NonNull Serializable[] ids) {
         return crudMapper.deleteBatch(ids);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public T getById(Serializable id) {
+    public T getById(@NonNull Serializable id) {
         return crudMapper.selectByPrimaryKey(id);
     }
 

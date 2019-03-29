@@ -1,5 +1,11 @@
 package com.gavin.cloud.sys.core.enums;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 /**
  * 枚举类:
  * (1)枚举的构造函数为私有的
@@ -9,18 +15,11 @@ public enum ResourceType {
 
     MENU, FUNC;
 
-    /*
-    private static Map<String, ResourceType> types = new HashMap<>();
-
-    static {
-        for (ResourceType resourceType : ResourceType.values()) {
-            types.put(resourceType.name(), resourceType);
-        }
-    }
+    private static final Map<String, ResourceType> MAP = Arrays.stream(ResourceType.values())
+            .collect(Collectors.toMap(Enum::name, Function.identity()));
 
     public static ResourceType forType(String type) {
-        return types.get(type);
+        return MAP.get(Objects.requireNonNull(type).toUpperCase());
     }
-    */
 
 }

@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 @Slf4j
@@ -62,7 +63,7 @@ public class PageInterceptor implements Interceptor {
             Dialect dialect = holder.getDialect();
             int totalItems = holder.getCount();
 
-            String limitSql = dialect.getLimitString(boundSql.getSql(), page, pageSize);
+            String limitSql = dialect.getLimitString(boundSql.getSql(), (page - 1) * pageSize, pageSize);
             args[ROW_BOUNDS_INDEX] = new RowBounds(RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
             args[MAPPED_STATEMENT_INDEX] = newMappedStatement(ms, boundSql, limitSql);
             List<?> items = (List<?>) invocation.proceed();
@@ -159,13 +160,14 @@ public class PageInterceptor implements Interceptor {
         return builder.build();
     }
 
+    /**
+     * @see org.apache.ibatis.mapping.VendorDatabaseIdProvider#getDatabaseProductName
+     */
     private Dialect getDatabaseDialect(Connection conn) throws SQLException {
         String dbType = conn.getMetaData().getDatabaseProductName();
-        Database database = Database.fromType(dbType);
-        if (database == null) {
-            throw new RuntimeException("Unsupported database type: " + dbType);
-        }
-        return database.getDialect();
+        return Optional.ofNullable(Database.fromType(dbType))
+                .orElseThrow(() -> new RuntimeException("Unsupported database type: " + dbType))
+                .getDialect();
     }
 
     private static class DialectCountHolder {

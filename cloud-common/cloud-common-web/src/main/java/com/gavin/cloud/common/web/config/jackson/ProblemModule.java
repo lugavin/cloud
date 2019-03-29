@@ -27,6 +27,7 @@ import com.gavin.cloud.common.base.problem.UnknownStatus;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
@@ -146,8 +147,8 @@ public final class ProblemModule extends Module {
         @Override
         public StatusType deserialize(final JsonParser json, final DeserializationContext context) throws IOException {
             final int statusCode = json.getIntValue();
-            final StatusType status = index.get(statusCode);
-            return status == null ? new UnknownStatus(statusCode) : status;
+            return Optional.ofNullable(index.get(statusCode))
+                    .orElse(new UnknownStatus(statusCode));
         }
 
     }

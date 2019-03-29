@@ -208,7 +208,7 @@ public class ValidationAspect {
         return null;
     }
 
-    static class ValidationProcessor {
+    private static class ValidationProcessor {
 
         private final Validator validator;
 

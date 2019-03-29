@@ -10,7 +10,7 @@ public enum PermissionStatus {
         this.value = value;
     }
 
-    public String getValue() {
+    public String value() {
         return value;
     }
 

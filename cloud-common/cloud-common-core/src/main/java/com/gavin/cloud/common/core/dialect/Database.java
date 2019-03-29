@@ -2,10 +2,13 @@ package com.gavin.cloud.common.core.dialect;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * org.apache.ibatis.type.JdbcType
+ */
 public enum Database {
 
     ORACLE(new OracleDialect()),
@@ -25,8 +28,7 @@ public enum Database {
             .collect(Collectors.toMap(Enum::name, Function.identity()));
 
     public static Database fromType(final String type) {
-        return Optional.ofNullable(MAP.get(type.toUpperCase()))
-                .orElseThrow(() -> new RuntimeException("Unsupported database type"));
+        return MAP.get(Objects.requireNonNull(type).toUpperCase());
     }
 
 }
