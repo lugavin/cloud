@@ -10,7 +10,9 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
+    <groupId>com.gavin.cloud</groupId>
     <artifactId>cloud-test</artifactId>
+    <version>1.0-SNAPSHOT</version>
 
     <name>${project.artifactId}</name>
     <url>http://maven.apache.org</url>
@@ -23,7 +25,6 @@
         <zkclient.version>0.9</zkclient.version>
         <redisson.version>3.10.4</redisson.version>
         <jsch.version>0.1.54</jsch.version>
-        <spring-retry.version>1.2.2.RELEASE</spring-retry.version>
     </properties>
 
     <dependencies>
@@ -38,11 +39,9 @@
             <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
 
-        <!-- Spring Retry -->
         <dependency>
             <groupId>org.springframework.retry</groupId>
             <artifactId>spring-retry</artifactId>
-            <version>${spring-retry.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>

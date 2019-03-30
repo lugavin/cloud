@@ -41,7 +41,7 @@ public class ValidationAspect {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidationAspect.class);
 
-    private final Map<Method, Method> methodCache = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Method, Method> methodCache = new ConcurrentHashMap<>();
 
     private final ValidationProcessor validationProcessor;
     // private final ParameterNameDiscoverer parameterNameDiscoverer;
@@ -83,22 +83,11 @@ public class ValidationAspect {
         LOGGER.debug("Validation method {}.{}({}) with argument[s] = {}", methodSignature.getDeclaringTypeName(),
                 methodSignature.getName(), StringUtils.join(parameterNames, ", "), Arrays.toString(joinPoint.getArgs()));
 
-        Method targetMethod = methodCache.get(method);
-        if (targetMethod == null) {
-            targetMethod = findTargetInterfaceMethod(target, methodName, parameterTypes);
-            if (targetMethod == null) {
-                return;
-            }
-            methodCache.putIfAbsent(method, targetMethod);
-        }
-        if (!hasConstraintParameter(targetMethod)) {
+        // Method targetMethod = findTargetInterfaceMethod(target, methodName, parameterTypes);
+        Method targetMethod = methodCache.computeIfAbsent(method, m -> findTargetInterfaceMethod(target, methodName, parameterTypes));
+        if (targetMethod == null || !hasConstraintParameter(targetMethod)) {
             return;
         }
-
-        // Method targetMethod = findTargetInterfaceMethod(target, methodName, parameterTypes);
-        // if (targetMethod == null || !hasConstraintParameter(targetMethod)) {
-        //     return;
-        // }
 
         // (1)校验方法入参
         List<String> violations = validationProcessor.validateParameters(target, targetMethod, parameterValues);

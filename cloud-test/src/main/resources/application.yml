@@ -13,7 +13,7 @@
 
 server:
   address: 127.0.0.1
-  port: ${random.int[8080,8090]}
+  port: ${random.int[8088,8089]}
 
 spring:
   application:

@@ -16,6 +16,7 @@
     <url>http://maven.apache.org</url>
 
     <dependencies>
+        <!-- Config Server -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-config-server</artifactId>

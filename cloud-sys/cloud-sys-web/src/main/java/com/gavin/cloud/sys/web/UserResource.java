@@ -1,12 +1,12 @@
 package com.gavin.cloud.sys.web;
 
-import com.gavin.cloud.sys.core.enums.LoginType;
-import com.gavin.cloud.sys.api.model.User;
-import com.gavin.cloud.sys.core.service.UserService;
 import com.gavin.cloud.common.base.page.Page;
 import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.web.annotation.RequiresPermissions;
 import com.gavin.cloud.common.web.util.HeaderUtils;
+import com.gavin.cloud.sys.api.model.User;
+import com.gavin.cloud.sys.core.enums.LoginType;
+import com.gavin.cloud.sys.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;

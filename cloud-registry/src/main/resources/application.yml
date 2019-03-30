@@ -32,9 +32,9 @@ eureka:
     # Indicates whether or not this instance should register its information with eureka server for discovery by others (default: true)
     register-with-eureka: false
     # Indicates how often(in seconds) to fetch the registry information from the eureka server (default: 30s)
-    registry-fetch-interval-seconds: 10
+    registry-fetch-interval-seconds: 30
     # Indicates how long initially (in seconds) to replicate instance info to the eureka server (default: 30s)
-    instance-info-replication-interval-seconds: 10
+    instance-info-replication-interval-seconds: 30
     service-url:
       defaultZone: http://localhost:${server.port}/eureka/
 

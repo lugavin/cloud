@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -18,10 +19,10 @@ public class ServiceConsumer {
     private static final String ZK_SERVERS = "127.0.0.1:2181";
     private static final String SERVICE_PATH = "/services/sys-service";
 
+    private final AtomicInteger reqCount = new AtomicInteger(0);
+
     private final ZkClient zkClient;
     private List<String> providers;
-
-    private int reqCount;
 
     public ServiceConsumer() {
         this.zkClient = new ZkClient(ZK_SERVERS);
@@ -60,7 +61,7 @@ public class ServiceConsumer {
      * 基于请求数实现本地负载均衡
      */
     private String getServer() {
-        return providers.get(reqCount++ % providers.size());
+        return providers.get(reqCount.incrementAndGet() % providers.size());
     }
 
     public static void main(String[] args) throws IOException {

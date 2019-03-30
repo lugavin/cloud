@@ -25,9 +25,9 @@ management:
 #  env:
 #    sensitive: false #细粒度的开放Actuator Endpoints
 
-#ribbon:
-#  eureka:
-#    enabled: true
+ribbon:
+  eureka:
+    enabled: true # 是否在Ribbon中使用Eureka
 
 # https://projects.spring.io/spring-cloud/spring-cloud.html
 zuul:

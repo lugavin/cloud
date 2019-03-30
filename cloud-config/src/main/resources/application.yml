@@ -38,6 +38,8 @@ management:
 #    sensitive: false #细粒度的开放Actuator Endpoints
 
 eureka:
+  instance:
+    prefer-ip-address: true
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/

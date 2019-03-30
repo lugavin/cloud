@@ -16,15 +16,9 @@
     <url>http://maven.apache.org</url>
 
     <dependencies>
-        <!-- Feign实现服务的消费以及均衡负载 -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-feign</artifactId>
-        </dependency>
-        <!-- Hystrix服务熔断处理(只作用在服务调用的一端) -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-hystrix</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
         </dependency>
     </dependencies>
 

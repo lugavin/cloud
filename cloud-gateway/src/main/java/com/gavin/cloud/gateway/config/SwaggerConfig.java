@@ -1,6 +1,7 @@
 package com.gavin.cloud.gateway.config;
 
 import com.gavin.cloud.common.base.util.Constants;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.netflix.zuul.filters.Route;
 import org.springframework.cloud.netflix.zuul.filters.RouteLocator;
 import org.springframework.context.annotation.Primary;
@@ -25,8 +26,11 @@ public class SwaggerConfig implements SwaggerResourcesProvider {
 
     private final RouteLocator routeLocator;
 
-    public SwaggerConfig(RouteLocator routeLocator) {
+    private final DiscoveryClient discoveryClient;
+
+    public SwaggerConfig(RouteLocator routeLocator, DiscoveryClient discoveryClient) {
         this.routeLocator = routeLocator;
+        this.discoveryClient = discoveryClient;
     }
 
     @Override
@@ -45,6 +49,8 @@ public class SwaggerConfig implements SwaggerResourcesProvider {
     }
 
     private SwaggerResource swaggerResource(String name, String location) {
+        // 根据serviceName获取所有服务实例(一个服务可部署多个实例)
+        //List<ServiceInstance> instances = discoveryClient.getInstances(name);
         SwaggerResource swaggerResource = new SwaggerResource();
         swaggerResource.setName(name);
         swaggerResource.setLocation(location);

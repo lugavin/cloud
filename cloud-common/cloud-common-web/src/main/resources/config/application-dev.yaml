@@ -32,26 +32,3 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
-
-ribbon:
-  ReadTimeout: 60000
-  ConnectTimeout: 60000
-  MaxAutoRetries: 1
-  MaxAutoRetriesNextServer: 1
-
-# See https://github.com/Netflix/Hystrix/wiki/Configuration
-# Feign和Ribbon在整合了Hystrix后可能会出现首次调用失败的问题, 造成该问题的原因是Hystrix默认的超时时间是1秒,
-# 如果超过这个时间尚未响应, 将会进入fallback代码, 而首次请求往往会比较慢(因为Spring的懒加载机制, 要实例化一些类), 这个响应时间可能就超过1秒.
-# 解决办法:
-# - 禁用Hystrix的超时时间(hystrix.command.default.execution.timeout.enabled=false)
-# - 延长Hystrix的超时时间(hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=10000)
-# - 禁用Feign的Hystrix(不推荐使用)
-hystrix:
-  command:
-    default:
-      execution:
-        #timeout:
-        #  enabled: false # 禁用Hystrix的超时时间
-        isolation:
-          thread:
-            timeoutInMilliseconds: 60000 # 设置Hystrix的超时时间为60秒

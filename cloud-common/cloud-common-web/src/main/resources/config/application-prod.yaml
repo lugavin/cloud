@@ -23,19 +23,4 @@ eureka:
     prefer-ip-address: true
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
-
-ribbon:
-  ReadTimeout: 10000
-  ConnectTimeout: 10000
-  MaxAutoRetries: 1
-  MaxAutoRetriesNextServer: 1
-
-# See https://github.com/Netflix/Hystrix/wiki/Configuration
-hystrix:
-  command:
-    default:
-      execution:
-        isolation:
-          thread:
-            timeoutInMilliseconds: 10000
+      defaultZone: http://localhost:8761/eureka/, http://localhost:8762/eureka/
