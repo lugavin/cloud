@@ -25,12 +25,12 @@ public class ApplicationTest {
     private GitHubClient client;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         Assert.assertNotNull(client);
     }
 
     @Test
-    public void testLoadBalancer() throws Exception {
+    public void testLoadBalancer() {
         IntStream.rangeClosed(1, 5).forEach(i -> {
             ServiceInstance serviceInstance = loadBalancer.choose("stores");
             System.err.println(String.format("[%d] %s:%s", i, serviceInstance.getHost(), serviceInstance.getPort()));
@@ -38,7 +38,7 @@ public class ApplicationTest {
     }
 
     @Test
-    public void testFeignClient() throws Exception {
+    public void testFeignClient() {
         Optional.ofNullable(client.getUser("lugavin"))
                 .ifPresent(System.err::println);
     }

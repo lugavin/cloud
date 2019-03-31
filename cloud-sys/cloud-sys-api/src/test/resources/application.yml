@@ -9,9 +9,23 @@ stores:
   ribbon:
     listOfServers: google.com, apple.com
 
+ribbon:
+  ReadTimeout: 1000
+  ConnectTimeout: 1000
+  MaxAutoRetries: 1
+  MaxAutoRetriesNextServer: 1
+
 feign:
   hystrix:
     enabled: true
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000
 
 api:
   github:
