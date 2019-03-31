@@ -3,8 +3,10 @@ package com.gavin.cloud;
 import com.gavin.cloud.common.base.page.Page;
 import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.base.util.JsonUtils;
-import com.gavin.cloud.sys.api.model.User;
-import com.gavin.cloud.sys.api.model.UserExample;
+import com.gavin.cloud.sys.core.mapper.ext.PermissionExtMapper;
+import com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper;
+import com.gavin.cloud.sys.pojo.User;
+import com.gavin.cloud.sys.pojo.UserExample;
 import com.gavin.cloud.sys.core.mapper.UserMapper;
 import com.gavin.cloud.sys.core.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 当在Junit单元测试类中加了{@link SpringBootTest}注解时, 如果你的单元测试方法上加了{@link Transactional}注解,
@@ -44,6 +47,12 @@ public class ApplicationTest {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private RoleExtMapper roleExtMapper;
+
+    @Autowired
+    private PermissionExtMapper permissionExtMapper;
 
     @Autowired
     private UserService userService;
@@ -106,7 +115,7 @@ public class ApplicationTest {
 
     @Test
     @Transactional(readOnly = true)
-    public void testDeleteNotActivatedUsers() throws Exception {
+    public void testSelectByExample() throws Exception {
         Date sysTime = Calendar.getInstance().getTime();
         UserExample example = new UserExample();
         UserExample.Criteria criteria = example.createCriteria();
@@ -114,6 +123,20 @@ public class ApplicationTest {
         criteria.andCreatedDateNotBetween(DateUtils.addDays(sysTime, -3), sysTime);
         List<User> users = userMapper.selectByExample(example);
         log.info(JsonUtils.toJson(users));
+    }
+
+    @Test
+    @Transactional(readOnly = true)
+    public void testGetRoles() throws Exception {
+        roleExtMapper.getList(Collections.emptyMap())
+                .forEach(r -> log.info("====== {} ======", JsonUtils.toJson(r)));
+    }
+
+    @Test
+    @Transactional(readOnly = true)
+    public void testGetPermission() throws Exception {
+        Optional.ofNullable(permissionExtMapper.getById("11"))
+                .ifPresent(r -> log.info("====== {} ======", JsonUtils.toJson(r)));
     }
 
     @Test

@@ -1,6 +1,6 @@
 package com.gavin.cloud.sys.core.service;
 
-import com.gavin.cloud.sys.api.model.Permission;
+import com.gavin.cloud.sys.pojo.Permission;
 
 import java.util.List;
 

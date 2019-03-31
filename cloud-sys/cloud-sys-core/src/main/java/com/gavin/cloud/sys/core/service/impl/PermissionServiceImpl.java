@@ -1,9 +1,9 @@
 package com.gavin.cloud.sys.core.service.impl;
 
-import com.gavin.cloud.sys.api.model.Permission;
-import com.gavin.cloud.sys.api.model.PermissionExample;
-import com.gavin.cloud.sys.api.model.RolePermission;
-import com.gavin.cloud.sys.api.model.RolePermissionExample;
+import com.gavin.cloud.sys.pojo.Permission;
+import com.gavin.cloud.sys.pojo.PermissionExample;
+import com.gavin.cloud.sys.pojo.RolePermission;
+import com.gavin.cloud.sys.pojo.RolePermissionExample;
 import com.gavin.cloud.sys.core.mapper.RolePermissionMapper;
 import com.gavin.cloud.sys.core.mapper.ext.PermissionExtMapper;
 import com.gavin.cloud.sys.core.mapper.ext.RolePermissionExtMapper;

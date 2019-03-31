@@ -7,10 +7,14 @@ mybatis:
   #type-aliases-package: com.example.domain.model
   #type-handlers-package: com.example.typehandler
   configuration:
+    # 开启自动驼峰命名规则
     map-underscore-to-camel-case: true
+    # 开启延迟加载
     lazy-loading-enabled: true
     aggressive-lazy-loading: false
+    # 禁用二级缓存
     cache-enabled: false
+    #database-id: mysql
 
 ftp:
   host: 192.168.8.99

@@ -1,8 +1,8 @@
-package com.gavin.cloud.sys.api.model.ext;
+package com.gavin.cloud.sys.pojo.vo;
 
-import com.gavin.cloud.sys.api.model.Permission;
+import com.gavin.cloud.sys.pojo.Permission;
 
-public class PermissionExt extends Permission {
+public class PermissionVO extends Permission {
 
     private String parentName;
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.gavin.cloud.sys.core.mapper.PermissionMapper">
-  <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.api.model.Permission">
+  <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.pojo.Permission">
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="name" jdbcType="VARCHAR" property="name" />
@@ -73,7 +73,7 @@
   <sql id="Base_Column_List">
     id, code, `name`, `type`, icon, url, seq, is_parent, parent_id
   </sql>
-  <select id="selectByExample" parameterType="com.gavin.cloud.sys.api.model.PermissionExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.gavin.cloud.sys.pojo.PermissionExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -97,13 +97,13 @@
     delete from sys_permission
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <delete id="deleteByExample" parameterType="com.gavin.cloud.sys.api.model.PermissionExample">
+  <delete id="deleteByExample" parameterType="com.gavin.cloud.sys.pojo.PermissionExample">
     delete from sys_permission
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.gavin.cloud.sys.api.model.Permission">
+  <insert id="insert" parameterType="com.gavin.cloud.sys.pojo.Permission">
     insert into sys_permission (id, code, `name`, 
       `type`, icon, url, seq, 
       is_parent, parent_id)
@@ -111,7 +111,7 @@
       #{type,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{seq,jdbcType=INTEGER}, 
       #{isParent,jdbcType=BIT}, #{parentId,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.gavin.cloud.sys.api.model.Permission">
+  <insert id="insertSelective" parameterType="com.gavin.cloud.sys.pojo.Permission">
     insert into sys_permission
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -172,7 +172,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.gavin.cloud.sys.api.model.PermissionExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.gavin.cloud.sys.pojo.PermissionExample" resultType="java.lang.Long">
     select count(*) from sys_permission
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -228,7 +228,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.gavin.cloud.sys.api.model.Permission">
+  <update id="updateByPrimaryKeySelective" parameterType="com.gavin.cloud.sys.pojo.Permission">
     update sys_permission
     <set>
       <if test="code != null">
@@ -258,7 +258,7 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.gavin.cloud.sys.api.model.Permission">
+  <update id="updateByPrimaryKey" parameterType="com.gavin.cloud.sys.pojo.Permission">
     update sys_permission
     set code = #{code,jdbcType=VARCHAR},
       `name` = #{name,jdbcType=VARCHAR},

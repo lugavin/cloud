@@ -1,4 +1,4 @@
-package com.gavin.cloud.sys.api.model;
+package com.gavin.cloud.sys.pojo;
 
 import java.util.ArrayList;
 import java.util.List;

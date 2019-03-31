@@ -1,6 +1,6 @@
 package com.gavin.cloud.sys.web;
 
-import com.gavin.cloud.sys.api.model.Role;
+import com.gavin.cloud.sys.pojo.Role;
 import com.gavin.cloud.sys.core.service.RoleService;
 import com.gavin.cloud.common.base.page.Page;
 import com.gavin.cloud.common.web.annotation.RequiresPermissions;

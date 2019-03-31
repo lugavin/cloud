@@ -1,9 +1,5 @@
 package com.gavin.cloud.auth.web;
 
-import com.gavin.cloud.auth.client.AccountClient;
-import com.gavin.cloud.auth.client.PermissionClient;
-import com.gavin.cloud.auth.client.RoleClient;
-import com.gavin.cloud.auth.client.UserClient;
 import com.gavin.cloud.auth.config.properties.JwtExtProperties;
 import com.gavin.cloud.auth.dto.KeyAndPasswordDTO;
 import com.gavin.cloud.auth.dto.LoginDTO;
@@ -16,8 +12,12 @@ import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.base.util.Md5Hash;
 import com.gavin.cloud.common.web.annotation.RequiresGuest;
 import com.gavin.cloud.common.web.util.WebUtils;
-import com.gavin.cloud.sys.api.dto.RegisterDTO;
-import com.gavin.cloud.sys.api.model.User;
+import com.gavin.cloud.sys.api.AccountApi;
+import com.gavin.cloud.sys.api.PermissionApi;
+import com.gavin.cloud.sys.api.RoleApi;
+import com.gavin.cloud.sys.api.UserApi;
+import com.gavin.cloud.sys.pojo.User;
+import com.gavin.cloud.sys.pojo.dto.RegisterDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,16 +50,16 @@ public class AuthResource {
     private JwtExtProperties jwtProperties;
 
     @Autowired
-    private AccountClient accountClient;
+    private AccountApi accountApi;
 
     @Autowired
-    private UserClient userClient;
+    private UserApi userApi;
 
     @Autowired
-    private RoleClient roleClient;
+    private RoleApi roleApi;
 
     @Autowired
-    private PermissionClient permissionClient;
+    private PermissionApi permissionApi;
 
     /**
      * POST  /login/{type} : User login.
@@ -72,7 +72,7 @@ public class AuthResource {
     @PostMapping("/login/{type:" + Constants.REGEX_LOGIN_TYPE + "}")
     public ResponseEntity<Void> login(@Valid @RequestBody LoginDTO loginDTO, @PathVariable int type,
                                       HttpServletRequest request, HttpServletResponse response) {
-        User user = Optional.ofNullable(userClient.getUser(loginDTO.getUsername(), type))
+        User user = Optional.ofNullable(userApi.getUser(loginDTO.getUsername(), type))
                 .orElseThrow(AccountNotFoundException::new);
         if (!Md5Hash.hash(loginDTO.getPassword(), user.getSalt()).equals(user.getPassword())) {
             throw new InvalidPasswordException();
@@ -81,7 +81,7 @@ public class AuthResource {
             throw new AccountNotActivatedException();
         }
 
-        List<String> roles = roleClient.getRoles(user.getId());
+        List<String> roles = roleApi.getRoles(user.getId());
         String clientIP = WebUtils.getClientIP(request);
         String token = createToken(new ActiveUser(user.getId(), user.getUsername(), clientIP, roles));
         createCookie(request, response, token);
@@ -129,7 +129,7 @@ public class AuthResource {
     @ResponseStatus(HttpStatus.CREATED)
     public void registerAccount(@Valid RegisterDTO registerDTO) {
         // TODO 通过消息通知发送邮件
-        //User user = accountClient.register(registerDTO);
+        //User user = accountApi.register(registerDTO);
         //Map<String, Object> variables = new HashMap<>();
         //variables.put(USER, user);
         //variables.put(BASE_URL, mailProperties.getBaseUrl());
@@ -140,14 +140,14 @@ public class AuthResource {
     @RequiresGuest
     @GetMapping("/account/activate")
     public void activateAccount(@RequestParam String key) {
-        accountClient.activateRegistration(key);
+        accountApi.activateRegistration(key);
     }
 
     @RequiresGuest
     @PostMapping("/account/reset-password/init")
     public void requestPasswordReset(@RequestBody String mail) {
         // TODO 通过消息通知发送邮件
-        // User user = accountClient.requestPasswordReset(mail);
+        // User user = accountApi.requestPasswordReset(mail);
         // Map<String, Object> variables = new HashMap<>();
         // variables.put(USER, user);
         // variables.put(BASE_URL, mailProperties.getBaseUrl());
@@ -158,7 +158,7 @@ public class AuthResource {
     @RequiresGuest
     @PostMapping("/account/reset-password/finish")
     public void finishPasswordReset(@Valid @RequestBody KeyAndPasswordDTO keyAndPasswordDTO) {
-        accountClient.finishPasswordReset(keyAndPasswordDTO.getKey(), keyAndPasswordDTO.getNewPassword());
+        accountApi.finishPasswordReset(keyAndPasswordDTO.getKey(), keyAndPasswordDTO.getNewPassword());
     }
 
     private String createToken(ActiveUser activeUser) {

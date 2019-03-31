@@ -4,13 +4,13 @@
 
 <mapper namespace="com.gavin.cloud.sys.core.mapper.ext.RolePermissionExtMapper">
 
-    <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.api.model.RolePermission">
+    <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.pojo.RolePermission">
         <id column="id" property="id" jdbcType="VARCHAR"/>
         <result column="role_id" property="roleId" jdbcType="VARCHAR"/>
         <result column="permission_id" property="permissionId" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <insert id="insertBatch" parameterType="com.gavin.cloud.sys.api.model.RolePermission">
+    <insert id="insertBatch" parameterType="com.gavin.cloud.sys.pojo.RolePermission" databaseId="mysql">
         INSERT INTO sys_role_permission (id, role_id, permission_id) VALUES
         <foreach collection="list" item="item" separator=",">
             (

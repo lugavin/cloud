@@ -4,7 +4,7 @@
 
 <mapper namespace="com.gavin.cloud.sys.core.mapper.ext.UserExtMapper">
 
-    <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.api.model.User">
+    <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.pojo.User">
         <id column="id" property="id" jdbcType="VARCHAR"/>
         <result column="username" property="username" jdbcType="VARCHAR"/>
         <result column="password" property="password" jdbcType="VARCHAR"/>
@@ -30,7 +30,7 @@
         last_modified_date
     </sql>
 
-    <select id="getList" parameterType="map" resultMap="BaseResultMap">
+    <select id="getList" parameterType="map" resultMap="BaseResultMap" databaseId="mysql">
         SELECT
         <include refid="Base_Column_List"/>
         FROM sys_user
@@ -47,7 +47,7 @@
         </where>
     </select>
 
-    <select id="getPage" parameterType="com.gavin.cloud.common.base.page.Pageable" resultMap="BaseResultMap">
+    <select id="getPage" parameterType="com.gavin.cloud.common.base.page.Pageable" resultMap="BaseResultMap" databaseId="mysql">
         SELECT
         <include refid="Base_Column_List"/>
         FROM sys_user

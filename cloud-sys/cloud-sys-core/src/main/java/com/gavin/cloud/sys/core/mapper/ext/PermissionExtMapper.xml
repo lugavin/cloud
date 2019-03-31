@@ -5,7 +5,7 @@
 
 <mapper namespace="com.gavin.cloud.sys.core.mapper.ext.PermissionExtMapper">
 
-    <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.api.model.Permission">
+    <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.pojo.Permission">
         <id column="id" property="id" jdbcType="VARCHAR"/>
         <result column="code" property="code" jdbcType="VARCHAR"/>
         <result column="name" property="name" jdbcType="VARCHAR"/>
@@ -18,39 +18,44 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, code, `name`, `type`, icon, url, seq, is_parent, parent_id
+        a.id, a.code, a.`name`, a.`type`, a.icon, a.url, a.seq, a.is_parent, a.parent_id
     </sql>
 
     <select id="getMenus" parameterType="string" resultMap="BaseResultMap">
-        SELECT
-          <include refid="Base_Column_List"/>
-          FROM sys_permission
+        SELECT <include refid="Base_Column_List"/>
+          FROM sys_permission a
          WHERE type = 'MENU'
-           AND id IN (
-            SELECT permission_id
-              FROM sys_role_permission
-             WHERE role_id IN (
-               SELECT role_id
-                 FROM sys_user_role
-                WHERE user_id = #{id}
+           AND a.id IN (
+            SELECT b.permission_id
+              FROM sys_role_permission b
+             WHERE b.role_id IN (
+               SELECT c.role_id
+                 FROM sys_user_role c
+                WHERE c.user_id = #{id}
              )
            )
     </select>
 
     <select id="getFuncs" parameterType="string" resultMap="BaseResultMap">
-        SELECT
-          <include refid="Base_Column_List"/>
-          FROM sys_permission
+        SELECT <include refid="Base_Column_List"/>
+          FROM sys_permission a
          WHERE type = 'FUNC'
-           AND id IN (
-            SELECT permission_id
-              FROM sys_role_permission
-             WHERE role_id IN (
-               SELECT role_id
-                 FROM sys_user_role
-                WHERE user_id = #{id}
+           AND a.id IN (
+            SELECT b.permission_id
+              FROM sys_role_permission b
+             WHERE b.role_id IN (
+               SELECT c.role_id
+                 FROM sys_user_role c
+                WHERE c.user_id = #{id}
              )
            )
+    </select>
+
+    <select id="getById" parameterType="string" resultType="com.gavin.cloud.sys.pojo.vo.PermissionVO">
+        SELECT <include refid="Base_Column_List"/>, b.name AS parentName
+          FROM sys_permission a LEFT JOIN sys_permission b
+            ON a.parent_id = b.id
+         WHERE a.id = #{id}
     </select>
 
 </mapper>

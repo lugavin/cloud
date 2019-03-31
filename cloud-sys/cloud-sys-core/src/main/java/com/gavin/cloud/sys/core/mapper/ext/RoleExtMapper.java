@@ -1,6 +1,6 @@
 package com.gavin.cloud.sys.core.mapper.ext;
 
-import com.gavin.cloud.sys.api.model.Role;
+import com.gavin.cloud.sys.pojo.Role;
 import com.gavin.cloud.common.base.page.Page;
 import com.gavin.cloud.common.base.page.Pageable;
 import org.apache.ibatis.annotations.Mapper;

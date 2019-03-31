@@ -18,11 +18,6 @@
     <dependencies>
         <dependency>
             <groupId>com.gavin.cloud</groupId>
-            <artifactId>cloud-common-base</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.gavin.cloud</groupId>
             <artifactId>cloud-common-web</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
@@ -31,7 +26,6 @@
             <artifactId>cloud-sys-core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-
         <!-- Spring Cloud Sleuth -->
         <!--
         <dependency>
@@ -47,7 +41,6 @@
             <artifactId>spring-cloud-stream-binder-kafka</artifactId>
         </dependency>
         -->
-
     </dependencies>
 
     <build>

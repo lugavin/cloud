@@ -2,8 +2,8 @@ package com.gavin.cloud.sys.web;
 
 import com.gavin.cloud.common.web.annotation.RequiresGuest;
 import com.gavin.cloud.sys.core.service.AccountService;
-import com.gavin.cloud.sys.api.dto.RegisterDTO;
-import com.gavin.cloud.sys.api.model.User;
+import com.gavin.cloud.sys.pojo.User;
+import com.gavin.cloud.sys.pojo.dto.RegisterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -17,9 +17,10 @@
     <url>http://maven.apache.org</url>
 
     <modules>
-        <module>cloud-sys-api</module>
+        <module>cloud-sys-pojo</module>
         <module>cloud-sys-core</module>
         <module>cloud-sys-web</module>
+        <module>cloud-sys-api</module>
     </modules>
 
 </project>

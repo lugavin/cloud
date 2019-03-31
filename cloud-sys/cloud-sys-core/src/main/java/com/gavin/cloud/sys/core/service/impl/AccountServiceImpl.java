@@ -2,14 +2,14 @@ package com.gavin.cloud.sys.core.service.impl;
 
 import com.gavin.cloud.common.base.util.Md5Hash;
 import com.gavin.cloud.common.base.util.RandomUtils;
-import com.gavin.cloud.sys.api.dto.RegisterDTO;
-import com.gavin.cloud.sys.api.model.User;
-import com.gavin.cloud.sys.api.model.UserExample;
 import com.gavin.cloud.sys.core.mapper.UserMapper;
 import com.gavin.cloud.sys.core.problem.EmailNotFoundException;
 import com.gavin.cloud.sys.core.problem.UserNotFoundException;
 import com.gavin.cloud.sys.core.service.AccountService;
 import com.gavin.cloud.sys.core.service.UserService;
+import com.gavin.cloud.sys.pojo.User;
+import com.gavin.cloud.sys.pojo.UserExample;
+import com.gavin.cloud.sys.pojo.dto.RegisterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

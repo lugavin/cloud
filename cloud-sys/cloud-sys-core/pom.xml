@@ -18,17 +18,12 @@
     <dependencies>
         <dependency>
             <groupId>com.gavin.cloud</groupId>
-            <artifactId>cloud-common-base</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.gavin.cloud</groupId>
             <artifactId>cloud-common-core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>com.gavin.cloud</groupId>
-            <artifactId>cloud-sys-api</artifactId>
+            <artifactId>cloud-sys-pojo</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <!-- MyBatis -->

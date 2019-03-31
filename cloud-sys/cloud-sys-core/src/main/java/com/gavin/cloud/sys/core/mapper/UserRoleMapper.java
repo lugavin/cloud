@@ -1,7 +1,7 @@
 package com.gavin.cloud.sys.core.mapper;
 
-import com.gavin.cloud.sys.api.model.UserRole;
-import com.gavin.cloud.sys.api.model.UserRoleExample;
+import com.gavin.cloud.sys.pojo.UserRole;
+import com.gavin.cloud.sys.pojo.UserRoleExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

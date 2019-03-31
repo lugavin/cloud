@@ -7,17 +7,35 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * org.apache.ibatis.type.JdbcType
+ * @see org.apache.ibatis.type.JdbcType
  */
 public enum Database {
 
-    ORACLE(new OracleDialect()),
-    MYSQL(new MySQLDialect());
+    MYSQL("MySQL", new MySQLDialect()),
+    ORACLE("Oracle", new OracleDialect()),
+    //SQLSERVER("SQL Server", "sqlserver", new SQLServerDialect())
+    ;
 
+    private final String type;
+    private final String alias;
     private final Dialect dialect;
 
-    Database(Dialect dialect) {
+    Database(String type, Dialect dialect) {
+        this(type, type.toLowerCase(), dialect);
+    }
+
+    Database(String type, String alias, Dialect dialect) {
+        this.type = type;
+        this.alias = alias;
         this.dialect = dialect;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getAlias() {
+        return alias;
     }
 
     public Dialect getDialect() {
@@ -25,10 +43,10 @@ public enum Database {
     }
 
     private static final Map<String, Database> MAP = Arrays.stream(Database.values())
-            .collect(Collectors.toMap(Enum::name, Function.identity()));
+            .collect(Collectors.toMap(Database::getType, Function.identity()));
 
-    public static Database fromType(final String type) {
-        return MAP.get(Objects.requireNonNull(type).toUpperCase());
+    public static Database fromType(final String productName) {
+        return MAP.get(Objects.requireNonNull(productName));
     }
 
 }

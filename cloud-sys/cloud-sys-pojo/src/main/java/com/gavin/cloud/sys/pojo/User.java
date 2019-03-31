@@ -1,4 +1,4 @@
-package com.gavin.cloud.sys.api.model;
+package com.gavin.cloud.sys.pojo;
 
 import java.io.Serializable;
 import java.util.Date;

@@ -1,6 +1,6 @@
 package com.gavin.cloud.sys.core.mapper.ext;
 
-import com.gavin.cloud.sys.api.model.RolePermission;
+import com.gavin.cloud.sys.pojo.RolePermission;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

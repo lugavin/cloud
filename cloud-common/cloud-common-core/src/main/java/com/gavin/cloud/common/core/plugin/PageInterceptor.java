@@ -164,10 +164,10 @@ public class PageInterceptor implements Interceptor {
      * @see org.apache.ibatis.mapping.VendorDatabaseIdProvider#getDatabaseProductName
      */
     private Dialect getDatabaseDialect(Connection conn) throws SQLException {
-        String dbType = conn.getMetaData().getDatabaseProductName();
-        return Optional.ofNullable(Database.fromType(dbType))
-                .orElseThrow(() -> new RuntimeException("Unsupported database type: " + dbType))
-                .getDialect();
+        String productName = conn.getMetaData().getDatabaseProductName();
+        Database database = Optional.ofNullable(Database.fromType(productName))
+                .orElseThrow(() -> new RuntimeException("Unsupported database type: " + productName));
+        return database.getDialect();
     }
 
     private static class DialectCountHolder {
