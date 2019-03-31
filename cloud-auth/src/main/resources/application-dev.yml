@@ -29,7 +29,7 @@ ribbon:
 # 解决办法:
 # (1)禁用Hystrix的超时时间(hystrix.command.default.execution.timeout.enabled=false)
 # (2)延长Hystrix的超时时间(hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=10000)
-# (3)禁用Feign的Hystrix(不推荐使用)
+# (3)禁用Feign的Hystrix(feign.hystrix.enabled=false)
 hystrix:
   command:
     default:

@@ -1,6 +1,7 @@
 package com.gavin.cloud;
 
 import com.gavin.cloud.client.GitHubClient;
+import com.gavin.cloud.client.RemoteService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,14 +20,31 @@ import java.util.stream.IntStream;
 public class ApplicationTest {
 
     @Autowired
-    private LoadBalancerClient loadBalancer;
+    private GitHubClient client;
 
     @Autowired
-    private GitHubClient client;
+    private RemoteService remoteService;
+
+    @Autowired
+    private LoadBalancerClient loadBalancer;
 
     @Before
     public void setUp() {
         Assert.assertNotNull(client);
+        Assert.assertNotNull(remoteService);
+        Assert.assertNotNull(loadBalancer);
+    }
+
+    @Test
+    public void testRestTemplate() {
+        Optional.ofNullable(remoteService.getUser("lugavin"))
+                .ifPresent(System.err::println);
+    }
+
+    @Test
+    public void testFeignClient() {
+        Optional.ofNullable(client.getUser("lugavin"))
+                .ifPresent(System.err::println);
     }
 
     @Test
@@ -35,12 +53,6 @@ public class ApplicationTest {
             ServiceInstance serviceInstance = loadBalancer.choose("stores");
             System.err.println(String.format("[%d] %s:%s", i, serviceInstance.getHost(), serviceInstance.getPort()));
         });
-    }
-
-    @Test
-    public void testFeignClient() {
-        Optional.ofNullable(client.getUser("lugavin"))
-                .ifPresent(System.err::println);
     }
 
 }
