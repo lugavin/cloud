@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: sys-api
+  output:
+    ansi:
+      enabled: ALWAYS
+
+stores:
+  ribbon:
+    listOfServers: google.com, apple.com
+
+feign:
+  hystrix:
+    enabled: true
+
+api:
+  github:
+    name: github
+    url: https://api.github.com
+
+logging:
+  level:
+    com.netflix.config.sources.URLConfigurationSource: ERROR
