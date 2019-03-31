@@ -1,10 +1,8 @@
+# ===================================================================
 # http://127.0.0.1:8000/application-default.yml
+#
 # config服务端修改配置信息后, config客户端需要手动refresh(http://ip:port/refresh)才能生效
-zuul:
-  prefix: /rest
-  routes:
-    cloud-sys: /sys/**
-    cloud-auth: /auth/**
+# ===================================================================
 
 app:
   jwt:

@@ -1,0 +1,13 @@
+# https://projects.spring.io/spring-cloud/spring-cloud.html
+zuul:
+  #host:
+  #  max-total-connections: 1000
+  #  max-per-route-connections: 100
+  #semaphore:
+  #  max-semaphores: 500
+  add-host-header: true
+  sensitiveHeaders: #Cookie, Set-Cookie, Authorization
+  prefix: /rest
+  routes:
+    cloud-sys: /sys/**
+    cloud-auth: /auth/**

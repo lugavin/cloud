@@ -18,8 +18,6 @@
 # Retries=MaxAutoRetries+MaxAutoRetriesNextServer+(MaxAutoRetries*MaxAutoRetriesNextServer)
 # RibbonTimeout=(ReadTimeout+ConnectTimeout)*(MaxAutoRetries+1)*(MaxAutoRetriesNextServer+1)
 ribbon:
-  #eureka:
-  #  enabled: true             # 是否在Ribbon中使用Eureka
   ReadTimeout: 6000           # 请求处理超时时间
   ConnectTimeout: 6000        # 请求连接超时时间
   MaxAutoRetries: 1           # 对当前服务实例的重试次数(不包括首次调用)
