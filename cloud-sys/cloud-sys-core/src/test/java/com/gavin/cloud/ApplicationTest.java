@@ -1,10 +1,12 @@
 package com.gavin.cloud;
 
 import com.gavin.cloud.common.base.page.Page;
+import com.gavin.cloud.common.base.page.PageRequest;
 import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.base.util.JsonUtils;
 import com.gavin.cloud.sys.core.mapper.ext.PermissionExtMapper;
 import com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper;
+import com.gavin.cloud.sys.pojo.Role;
 import com.gavin.cloud.sys.pojo.User;
 import com.gavin.cloud.sys.pojo.UserExample;
 import com.gavin.cloud.sys.core.mapper.UserMapper;
@@ -58,7 +60,7 @@ public class ApplicationTest {
     private UserService userService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         Assert.assertNotNull(sqlSessionFactory);
     }
 
@@ -108,14 +110,14 @@ public class ApplicationTest {
     }
 
     @Test
-    public void testGetUsers() throws Exception {
+    public void testGetUsers() {
         Page<User> users = userService.getUsers(Collections.singletonMap("username", "admin"), 1, 10);
         log.debug(JsonUtils.toJson(users));
     }
 
     @Test
     @Transactional(readOnly = true)
-    public void testSelectByExample() throws Exception {
+    public void testSelectByExample() {
         Date sysTime = Calendar.getInstance().getTime();
         UserExample example = new UserExample();
         UserExample.Criteria criteria = example.createCriteria();
@@ -127,14 +129,21 @@ public class ApplicationTest {
 
     @Test
     @Transactional(readOnly = true)
-    public void testGetRoles() throws Exception {
+    public void testGetRoles() {
         roleExtMapper.getList(Collections.emptyMap())
                 .forEach(r -> log.info("====== {} ======", JsonUtils.toJson(r)));
     }
 
     @Test
     @Transactional(readOnly = true)
-    public void testGetPermission() throws Exception {
+    public void testGetPage() {
+        Page<Role> page = roleExtMapper.getPage(new PageRequest<>(Collections.emptyMap(), 1, 10));
+        log.info("====== {} ======", JsonUtils.toJson(page));
+    }
+
+    @Test
+    @Transactional(readOnly = true)
+    public void testGetPermission() {
         Optional.ofNullable(permissionExtMapper.getById("11"))
                 .ifPresent(r -> log.info("====== {} ======", JsonUtils.toJson(r)));
     }

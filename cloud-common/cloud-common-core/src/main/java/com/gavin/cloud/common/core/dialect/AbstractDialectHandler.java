@@ -3,38 +3,40 @@ package com.gavin.cloud.common.core.dialect;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public interface Dialect {
+public abstract class AbstractDialectHandler implements DialectHandler {
 
-    String COUNT_REPLACEMENT_TEMPLATE = "SELECT COUNT(1) %s";
-    Pattern ORDER_BY_PATTERN = Pattern.compile("\\s+ORDER\\s+BY\\s+.*", Pattern.CASE_INSENSITIVE);
+    private static final String COUNT_REPLACEMENT_TEMPLATE = "SELECT COUNT(1) %s";
+    private static final Pattern ORDER_BY_PATTERN = Pattern.compile("\\s+ORDER\\s+BY\\s+.*", Pattern.CASE_INSENSITIVE);
 
-    String getLimitQueryString(String sql, int offset, int pageSize);
-
-    default String getLimitString(String sql, int offset, int pageSize) {
+    @Override
+    public String getLimitString(String sql, int offset, int pageSize) {
         if (sql == null || sql.length() == 0) {
             throw new IllegalArgumentException("The argument [sql] is required and it must not be null.");
         }
         return getLimitQueryString(sql, offset, pageSize);
     }
 
-    default String getCountString(String sql) {
+    @Override
+    public String getCountString(String sql) {
         if (sql == null || sql.length() == 0) {
             throw new IllegalArgumentException("The argument [sql] is required and it must not be null.");
         }
         return String.format(COUNT_REPLACEMENT_TEMPLATE, removeSelect(removeOrderBy(sql)));
     }
 
+    abstract String getLimitQueryString(String sql, int offset, int pageSize);
+
     /**
      * Remove select clause
      */
-    static String removeSelect(String sql) {
+    private String removeSelect(String sql) {
         return sql.substring(sql.toUpperCase().indexOf("FROM"));
     }
 
     /**
      * Remove Order By clause
      */
-    static String removeOrderBy(String sql) {
+    private String removeOrderBy(String sql) {
         Matcher matcher = ORDER_BY_PATTERN.matcher(sql);
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {

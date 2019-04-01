@@ -11,23 +11,24 @@ import java.util.stream.Collectors;
  */
 public enum Database {
 
-    MYSQL("MySQL", new MySQLDialect()),
-    ORACLE("Oracle", new OracleDialect()),
-    //SQLSERVER("SQL Server", "sqlserver", new SQLServerDialect())
-    ;
+    H2("H2"),
+    DB2("DB2"),
+    DERBY("Derby"),
+    MYSQL("MySQL"),
+    ORACLE("Oracle"),
+    POSTGRESQL("PostgreSQL"),
+    SQLSERVER("SQL Server", "sqlserver");
 
     private final String type;
     private final String alias;
-    private final Dialect dialect;
 
-    Database(String type, Dialect dialect) {
-        this(type, type.toLowerCase(), dialect);
+    Database(String type) {
+        this(type, type.toLowerCase());
     }
 
-    Database(String type, String alias, Dialect dialect) {
+    Database(String type, String alias) {
         this.type = type;
         this.alias = alias;
-        this.dialect = dialect;
     }
 
     public String getType() {
@@ -36,10 +37,6 @@ public enum Database {
 
     public String getAlias() {
         return alias;
-    }
-
-    public Dialect getDialect() {
-        return dialect;
     }
 
     private static final Map<String, Database> MAP = Arrays.stream(Database.values())

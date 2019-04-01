@@ -29,9 +29,9 @@ public class MybatisConfig {
     public DatabaseIdProvider databaseIdProvider() {
         Map<String, String> productNames = Arrays.stream(Database.values())
                 .collect(Collectors.toMap(Database::getType, Database::getAlias));
-        DatabaseIdProvider databaseIdProvider = new VendorDatabaseIdProvider();
         Properties p = new Properties();
         p.putAll(productNames);
+        DatabaseIdProvider databaseIdProvider = new VendorDatabaseIdProvider();
         databaseIdProvider.setProperties(p);
         return databaseIdProvider;
     }

@@ -4,7 +4,8 @@ import com.gavin.cloud.common.base.page.PageImpl;
 import com.gavin.cloud.common.base.page.Pageable;
 import com.gavin.cloud.common.base.util.JsonUtils;
 import com.gavin.cloud.common.core.dialect.Database;
-import com.gavin.cloud.common.core.dialect.Dialect;
+import com.gavin.cloud.common.core.dialect.DialectHandler;
+import com.gavin.cloud.common.core.dialect.DialectHandlerFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
@@ -60,10 +61,10 @@ public class PageInterceptor implements Interceptor {
             int pageSize = pageable.getPageSize();
 
             DialectCountHolder holder = getCount(ms, boundSql);
-            Dialect dialect = holder.getDialect();
+            DialectHandler dialectHandler = holder.getDialectHandler();
             int totalItems = holder.getCount();
 
-            String limitSql = dialect.getLimitString(boundSql.getSql(), (page - 1) * pageSize, pageSize);
+            String limitSql = dialectHandler.getLimitString(boundSql.getSql(), (page - 1) * pageSize, pageSize);
             args[ROW_BOUNDS_INDEX] = new RowBounds(RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
             args[MAPPED_STATEMENT_INDEX] = newMappedStatement(ms, boundSql, limitSql);
             List<?> items = (List<?>) invocation.proceed();
@@ -95,8 +96,8 @@ public class PageInterceptor implements Interceptor {
         try {
             // 首先尝试从事务上下文中获取连接, 失败后再从数据源获取连接
             conn = DataSourceUtils.getConnection(dataSource);
-            Dialect dialect = getDatabaseDialect(conn);
-            String countSql = dialect.getCountString(boundSql.getSql());
+            DialectHandler dialectHandler = getDatabaseDialect(conn);
+            String countSql = dialectHandler.getCountString(boundSql.getSql());
             stmt = conn.prepareStatement(countSql);
             log.debug("==>  Preparing: {}", countSql.replaceAll(NEWLINE_PATTERN, SPACE).replaceAll(MULTI_SPACE_PATTERN, SPACE));
             BoundSql countBoundSql = newBoundSql(ms, boundSql, countSql);
@@ -109,7 +110,7 @@ public class PageInterceptor implements Interceptor {
                 count = rs.getInt(1);
             }
             log.debug("<==      Total: {}", count);
-            return new DialectCountHolder(dialect, count);
+            return new DialectCountHolder(dialectHandler, count);
         } finally {
             JdbcUtils.closeResultSet(rs);
             JdbcUtils.closeStatement(stmt);
@@ -163,28 +164,29 @@ public class PageInterceptor implements Interceptor {
     /**
      * @see org.apache.ibatis.mapping.VendorDatabaseIdProvider#getDatabaseProductName
      */
-    private Dialect getDatabaseDialect(Connection conn) throws SQLException {
+    private DialectHandler getDatabaseDialect(Connection conn) throws SQLException {
         String productName = conn.getMetaData().getDatabaseProductName();
-        Database database = Optional.ofNullable(Database.fromType(productName))
+        return DialectHandlerFactory.getDialectHandler().stream()
+                .filter(h -> h.supportsType(Database.fromType(productName)))
+                .findFirst()
                 .orElseThrow(() -> new RuntimeException("Unsupported database type: " + productName));
-        return database.getDialect();
     }
 
     private static class DialectCountHolder {
 
-        private final Dialect dialect;
+        private final DialectHandler dialectHandler;
         private final int count;
 
-        public DialectCountHolder(Dialect dialect, int count) {
-            this.dialect = dialect;
+        DialectCountHolder(DialectHandler dialectHandler, int count) {
+            this.dialectHandler = dialectHandler;
             this.count = count;
         }
 
-        public Dialect getDialect() {
-            return dialect;
+        DialectHandler getDialectHandler() {
+            return dialectHandler;
         }
 
-        public int getCount() {
+        int getCount() {
             return count;
         }
 
