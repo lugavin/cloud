@@ -34,11 +34,11 @@ public class User implements Serializable {
 
     private String createdBy;
 
-    private Date createdDate;
+    private Date createdAt;
 
-    private String lastModifiedBy;
+    private String updatedBy;
 
-    private Date lastModifiedDate;
+    private Date updatedAt;
 
     private static final long serialVersionUID = 1L;
 }

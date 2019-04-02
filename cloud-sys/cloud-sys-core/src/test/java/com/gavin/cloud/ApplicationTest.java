@@ -122,7 +122,7 @@ public class ApplicationTest {
         UserExample example = new UserExample();
         UserExample.Criteria criteria = example.createCriteria();
         criteria.andActivatedNotEqualTo(Boolean.TRUE);
-        criteria.andCreatedDateNotBetween(DateUtils.addDays(sysTime, -3), sysTime);
+        criteria.andCreatedAtBetween(DateUtils.addDays(sysTime, -3), sysTime);
         List<User> users = userMapper.selectByExample(example);
         log.info(JsonUtils.toJson(users));
     }

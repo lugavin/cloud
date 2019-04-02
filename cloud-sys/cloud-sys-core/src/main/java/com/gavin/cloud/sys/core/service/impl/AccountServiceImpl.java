@@ -90,8 +90,8 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(UserNotFoundException::new);
         user.setSalt(RandomUtils.randomAlphanumeric());
         user.setPassword(Md5Hash.hash(user.getPassword(), user.getSalt()));
-        user.setLastModifiedBy(user.getUsername());
-        user.setLastModifiedDate(Calendar.getInstance().getTime());
+        user.setUpdatedBy(user.getUsername());
+        user.setUpdatedAt(Calendar.getInstance().getTime());
         userMapper.updateByPrimaryKey(user);
     }
 

@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
         user.setActivated(Boolean.FALSE);
         user.setActivationKey(RandomUtils.randomNumeric());
         user.setCreatedBy(Constants.ACCOUNT_SYSTEM);
-        user.setCreatedDate(Calendar.getInstance().getTime());
+        user.setCreatedAt(Calendar.getInstance().getTime());
         userMapper.insert(user);
         return user;
     }
@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
         UserExample example = new UserExample();
         UserExample.Criteria criteria = example.createCriteria();
         criteria.andActivatedNotEqualTo(Boolean.TRUE);
-        criteria.andCreatedDateNotBetween(DateUtils.addDays(sysTime, -3), sysTime);
+        criteria.andCreatedAtNotBetween(DateUtils.addDays(sysTime, -3), sysTime);
         userMapper.deleteByExample(example);
     }
 

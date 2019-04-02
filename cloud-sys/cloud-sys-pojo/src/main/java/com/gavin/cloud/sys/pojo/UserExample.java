@@ -1065,193 +1065,193 @@ public class UserExample {
             return (Criteria) this;
         }
 
-        public Criteria andCreatedDateIsNull() {
-            addCriterion("created_date is null");
+        public Criteria andCreatedAtIsNull() {
+            addCriterion("created_at is null");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedDateIsNotNull() {
-            addCriterion("created_date is not null");
+        public Criteria andCreatedAtIsNotNull() {
+            addCriterion("created_at is not null");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedDateEqualTo(Date value) {
-            addCriterion("created_date =", value, "createdDate");
+        public Criteria andCreatedAtEqualTo(Date value) {
+            addCriterion("created_at =", value, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedDateNotEqualTo(Date value) {
-            addCriterion("created_date <>", value, "createdDate");
+        public Criteria andCreatedAtNotEqualTo(Date value) {
+            addCriterion("created_at <>", value, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedDateGreaterThan(Date value) {
-            addCriterion("created_date >", value, "createdDate");
+        public Criteria andCreatedAtGreaterThan(Date value) {
+            addCriterion("created_at >", value, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedDateGreaterThanOrEqualTo(Date value) {
-            addCriterion("created_date >=", value, "createdDate");
+        public Criteria andCreatedAtGreaterThanOrEqualTo(Date value) {
+            addCriterion("created_at >=", value, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedDateLessThan(Date value) {
-            addCriterion("created_date <", value, "createdDate");
+        public Criteria andCreatedAtLessThan(Date value) {
+            addCriterion("created_at <", value, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedDateLessThanOrEqualTo(Date value) {
-            addCriterion("created_date <=", value, "createdDate");
+        public Criteria andCreatedAtLessThanOrEqualTo(Date value) {
+            addCriterion("created_at <=", value, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedDateIn(List<Date> values) {
-            addCriterion("created_date in", values, "createdDate");
+        public Criteria andCreatedAtIn(List<Date> values) {
+            addCriterion("created_at in", values, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedDateNotIn(List<Date> values) {
-            addCriterion("created_date not in", values, "createdDate");
+        public Criteria andCreatedAtNotIn(List<Date> values) {
+            addCriterion("created_at not in", values, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedDateBetween(Date value1, Date value2) {
-            addCriterion("created_date between", value1, value2, "createdDate");
+        public Criteria andCreatedAtBetween(Date value1, Date value2) {
+            addCriterion("created_at between", value1, value2, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedDateNotBetween(Date value1, Date value2) {
-            addCriterion("created_date not between", value1, value2, "createdDate");
+        public Criteria andCreatedAtNotBetween(Date value1, Date value2) {
+            addCriterion("created_at not between", value1, value2, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedByIsNull() {
-            addCriterion("last_modified_by is null");
+        public Criteria andUpdatedByIsNull() {
+            addCriterion("updated_by is null");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedByIsNotNull() {
-            addCriterion("last_modified_by is not null");
+        public Criteria andUpdatedByIsNotNull() {
+            addCriterion("updated_by is not null");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedByEqualTo(String value) {
-            addCriterion("last_modified_by =", value, "lastModifiedBy");
+        public Criteria andUpdatedByEqualTo(String value) {
+            addCriterion("updated_by =", value, "updatedBy");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedByNotEqualTo(String value) {
-            addCriterion("last_modified_by <>", value, "lastModifiedBy");
+        public Criteria andUpdatedByNotEqualTo(String value) {
+            addCriterion("updated_by <>", value, "updatedBy");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedByGreaterThan(String value) {
-            addCriterion("last_modified_by >", value, "lastModifiedBy");
+        public Criteria andUpdatedByGreaterThan(String value) {
+            addCriterion("updated_by >", value, "updatedBy");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedByGreaterThanOrEqualTo(String value) {
-            addCriterion("last_modified_by >=", value, "lastModifiedBy");
+        public Criteria andUpdatedByGreaterThanOrEqualTo(String value) {
+            addCriterion("updated_by >=", value, "updatedBy");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedByLessThan(String value) {
-            addCriterion("last_modified_by <", value, "lastModifiedBy");
+        public Criteria andUpdatedByLessThan(String value) {
+            addCriterion("updated_by <", value, "updatedBy");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedByLessThanOrEqualTo(String value) {
-            addCriterion("last_modified_by <=", value, "lastModifiedBy");
+        public Criteria andUpdatedByLessThanOrEqualTo(String value) {
+            addCriterion("updated_by <=", value, "updatedBy");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedByLike(String value) {
-            addCriterion("last_modified_by like", value, "lastModifiedBy");
+        public Criteria andUpdatedByLike(String value) {
+            addCriterion("updated_by like", value, "updatedBy");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedByNotLike(String value) {
-            addCriterion("last_modified_by not like", value, "lastModifiedBy");
+        public Criteria andUpdatedByNotLike(String value) {
+            addCriterion("updated_by not like", value, "updatedBy");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedByIn(List<String> values) {
-            addCriterion("last_modified_by in", values, "lastModifiedBy");
+        public Criteria andUpdatedByIn(List<String> values) {
+            addCriterion("updated_by in", values, "updatedBy");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedByNotIn(List<String> values) {
-            addCriterion("last_modified_by not in", values, "lastModifiedBy");
+        public Criteria andUpdatedByNotIn(List<String> values) {
+            addCriterion("updated_by not in", values, "updatedBy");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedByBetween(String value1, String value2) {
-            addCriterion("last_modified_by between", value1, value2, "lastModifiedBy");
+        public Criteria andUpdatedByBetween(String value1, String value2) {
+            addCriterion("updated_by between", value1, value2, "updatedBy");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedByNotBetween(String value1, String value2) {
-            addCriterion("last_modified_by not between", value1, value2, "lastModifiedBy");
+        public Criteria andUpdatedByNotBetween(String value1, String value2) {
+            addCriterion("updated_by not between", value1, value2, "updatedBy");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedDateIsNull() {
-            addCriterion("last_modified_date is null");
+        public Criteria andUpdatedAtIsNull() {
+            addCriterion("updated_at is null");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedDateIsNotNull() {
-            addCriterion("last_modified_date is not null");
+        public Criteria andUpdatedAtIsNotNull() {
+            addCriterion("updated_at is not null");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedDateEqualTo(Date value) {
-            addCriterion("last_modified_date =", value, "lastModifiedDate");
+        public Criteria andUpdatedAtEqualTo(Date value) {
+            addCriterion("updated_at =", value, "updatedAt");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedDateNotEqualTo(Date value) {
-            addCriterion("last_modified_date <>", value, "lastModifiedDate");
+        public Criteria andUpdatedAtNotEqualTo(Date value) {
+            addCriterion("updated_at <>", value, "updatedAt");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedDateGreaterThan(Date value) {
-            addCriterion("last_modified_date >", value, "lastModifiedDate");
+        public Criteria andUpdatedAtGreaterThan(Date value) {
+            addCriterion("updated_at >", value, "updatedAt");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedDateGreaterThanOrEqualTo(Date value) {
-            addCriterion("last_modified_date >=", value, "lastModifiedDate");
+        public Criteria andUpdatedAtGreaterThanOrEqualTo(Date value) {
+            addCriterion("updated_at >=", value, "updatedAt");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedDateLessThan(Date value) {
-            addCriterion("last_modified_date <", value, "lastModifiedDate");
+        public Criteria andUpdatedAtLessThan(Date value) {
+            addCriterion("updated_at <", value, "updatedAt");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedDateLessThanOrEqualTo(Date value) {
-            addCriterion("last_modified_date <=", value, "lastModifiedDate");
+        public Criteria andUpdatedAtLessThanOrEqualTo(Date value) {
+            addCriterion("updated_at <=", value, "updatedAt");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedDateIn(List<Date> values) {
-            addCriterion("last_modified_date in", values, "lastModifiedDate");
+        public Criteria andUpdatedAtIn(List<Date> values) {
+            addCriterion("updated_at in", values, "updatedAt");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedDateNotIn(List<Date> values) {
-            addCriterion("last_modified_date not in", values, "lastModifiedDate");
+        public Criteria andUpdatedAtNotIn(List<Date> values) {
+            addCriterion("updated_at not in", values, "updatedAt");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedDateBetween(Date value1, Date value2) {
-            addCriterion("last_modified_date between", value1, value2, "lastModifiedDate");
+        public Criteria andUpdatedAtBetween(Date value1, Date value2) {
+            addCriterion("updated_at between", value1, value2, "updatedAt");
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedDateNotBetween(Date value1, Date value2) {
-            addCriterion("last_modified_date not between", value1, value2, "lastModifiedDate");
+        public Criteria andUpdatedAtNotBetween(Date value1, Date value2) {
+            addCriterion("updated_at not between", value1, value2, "updatedAt");
             return (Criteria) this;
         }
 
@@ -1315,8 +1315,8 @@ public class UserExample {
             return (Criteria) this;
         }
 
-        public Criteria andLastModifiedByLikeInsensitive(String value) {
-            addCriterion("upper(last_modified_by) like", value.toUpperCase(), "lastModifiedBy");
+        public Criteria andUpdatedByLikeInsensitive(String value) {
+            addCriterion("upper(updated_by) like", value.toUpperCase(), "updatedBy");
             return (Criteria) this;
         }
     }

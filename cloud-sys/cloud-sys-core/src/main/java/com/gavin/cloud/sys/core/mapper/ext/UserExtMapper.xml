@@ -5,29 +5,28 @@
 <mapper namespace="com.gavin.cloud.sys.core.mapper.ext.UserExtMapper">
 
     <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.pojo.User">
-        <id column="id" property="id" jdbcType="VARCHAR"/>
-        <result column="username" property="username" jdbcType="VARCHAR"/>
-        <result column="password" property="password" jdbcType="VARCHAR"/>
-        <result column="nickname" property="nickname" jdbcType="VARCHAR"/>
-        <result column="salt" property="salt" jdbcType="VARCHAR"/>
-        <result column="phone" property="phone" jdbcType="VARCHAR"/>
-        <result column="email" property="email" jdbcType="VARCHAR"/>
-        <result column="avatar" property="avatar" jdbcType="VARCHAR"/>
-        <result column="lang_key" property="langKey" jdbcType="VARCHAR"/>
-        <result column="activated" property="activated" jdbcType="BIT"/>
-        <result column="activation_key" property="activationKey" jdbcType="VARCHAR"/>
-        <result column="reset_key" property="resetKey" jdbcType="VARCHAR"/>
-        <result column="reset_date" property="resetDate" jdbcType="TIMESTAMP"/>
-        <result column="created_by" property="createdBy" jdbcType="VARCHAR"/>
-        <result column="created_date" property="createdDate" jdbcType="TIMESTAMP"/>
-        <result column="last_modified_by" property="lastModifiedBy" jdbcType="VARCHAR"/>
-        <result column="last_modified_date" property="lastModifiedDate" jdbcType="TIMESTAMP"/>
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="nickname" jdbcType="VARCHAR" property="nickname"/>
+        <result column="salt" jdbcType="VARCHAR" property="salt"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
+        <result column="lang_key" jdbcType="VARCHAR" property="langKey"/>
+        <result column="activated" jdbcType="BIT" property="activated"/>
+        <result column="activation_key" jdbcType="VARCHAR" property="activationKey"/>
+        <result column="reset_key" jdbcType="VARCHAR" property="resetKey"/>
+        <result column="reset_date" jdbcType="TIMESTAMP" property="resetDate"/>
+        <result column="created_by" jdbcType="VARCHAR" property="createdBy"/>
+        <result column="created_at" jdbcType="TIMESTAMP" property="createdAt"/>
+        <result column="updated_by" jdbcType="VARCHAR" property="updatedBy"/>
+        <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id, username, `password`, nickname, salt, phone, email, avatar, lang_key, activated,
-        activation_key, reset_key, reset_date, created_by, created_date, last_modified_by,
-        last_modified_date
+        activation_key, reset_key, reset_date, created_by, created_at, updated_by, updated_at
     </sql>
 
     <select id="getList" parameterType="map" resultMap="BaseResultMap" databaseId="mysql">

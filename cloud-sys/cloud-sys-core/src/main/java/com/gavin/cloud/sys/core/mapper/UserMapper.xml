@@ -16,9 +16,9 @@
     <result column="reset_key" jdbcType="VARCHAR" property="resetKey" />
     <result column="reset_date" jdbcType="TIMESTAMP" property="resetDate" />
     <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
-    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
-    <result column="last_modified_by" jdbcType="VARCHAR" property="lastModifiedBy" />
-    <result column="last_modified_date" jdbcType="TIMESTAMP" property="lastModifiedDate" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -80,8 +80,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, username, `password`, nickname, salt, phone, email, avatar, lang_key, activated, 
-    activation_key, reset_key, reset_date, created_by, created_date, last_modified_by, 
-    last_modified_date
+    activation_key, reset_key, reset_date, created_by, created_at, updated_by, updated_at
   </sql>
   <select id="selectByExample" parameterType="com.gavin.cloud.sys.pojo.UserExample" resultMap="BaseResultMap">
     select
@@ -118,14 +117,14 @@
       nickname, salt, phone, 
       email, avatar, lang_key, 
       activated, activation_key, reset_key, 
-      reset_date, created_by, created_date, 
-      last_modified_by, last_modified_date)
+      reset_date, created_by, created_at, 
+      updated_by, updated_at)
     values (#{id,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{nickname,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
       #{email,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, #{langKey,jdbcType=VARCHAR}, 
       #{activated,jdbcType=BIT}, #{activationKey,jdbcType=VARCHAR}, #{resetKey,jdbcType=VARCHAR}, 
-      #{resetDate,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, 
-      #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedDate,jdbcType=TIMESTAMP})
+      #{resetDate,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=VARCHAR}, #{updatedAt,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.gavin.cloud.sys.pojo.User">
     insert into sys_user
@@ -172,14 +171,14 @@
       <if test="createdBy != null">
         created_by,
       </if>
-      <if test="createdDate != null">
-        created_date,
+      <if test="createdAt != null">
+        created_at,
       </if>
-      <if test="lastModifiedBy != null">
-        last_modified_by,
+      <if test="updatedBy != null">
+        updated_by,
       </if>
-      <if test="lastModifiedDate != null">
-        last_modified_date,
+      <if test="updatedAt != null">
+        updated_at,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -225,14 +224,14 @@
       <if test="createdBy != null">
         #{createdBy,jdbcType=VARCHAR},
       </if>
-      <if test="createdDate != null">
-        #{createdDate,jdbcType=TIMESTAMP},
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
       </if>
-      <if test="lastModifiedBy != null">
-        #{lastModifiedBy,jdbcType=VARCHAR},
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=VARCHAR},
       </if>
-      <if test="lastModifiedDate != null">
-        #{lastModifiedDate,jdbcType=TIMESTAMP},
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -287,14 +286,14 @@
       <if test="record.createdBy != null">
         created_by = #{record.createdBy,jdbcType=VARCHAR},
       </if>
-      <if test="record.createdDate != null">
-        created_date = #{record.createdDate,jdbcType=TIMESTAMP},
+      <if test="record.createdAt != null">
+        created_at = #{record.createdAt,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.lastModifiedBy != null">
-        last_modified_by = #{record.lastModifiedBy,jdbcType=VARCHAR},
+      <if test="record.updatedBy != null">
+        updated_by = #{record.updatedBy,jdbcType=VARCHAR},
       </if>
-      <if test="record.lastModifiedDate != null">
-        last_modified_date = #{record.lastModifiedDate,jdbcType=TIMESTAMP},
+      <if test="record.updatedAt != null">
+        updated_at = #{record.updatedAt,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null">
@@ -317,9 +316,9 @@
       reset_key = #{record.resetKey,jdbcType=VARCHAR},
       reset_date = #{record.resetDate,jdbcType=TIMESTAMP},
       created_by = #{record.createdBy,jdbcType=VARCHAR},
-      created_date = #{record.createdDate,jdbcType=TIMESTAMP},
-      last_modified_by = #{record.lastModifiedBy,jdbcType=VARCHAR},
-      last_modified_date = #{record.lastModifiedDate,jdbcType=TIMESTAMP}
+      created_at = #{record.createdAt,jdbcType=TIMESTAMP},
+      updated_by = #{record.updatedBy,jdbcType=VARCHAR},
+      updated_at = #{record.updatedAt,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -366,14 +365,14 @@
       <if test="createdBy != null">
         created_by = #{createdBy,jdbcType=VARCHAR},
       </if>
-      <if test="createdDate != null">
-        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
       </if>
-      <if test="lastModifiedBy != null">
-        last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR},
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=VARCHAR},
       </if>
-      <if test="lastModifiedDate != null">
-        last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP},
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
@@ -393,9 +392,9 @@
       reset_key = #{resetKey,jdbcType=VARCHAR},
       reset_date = #{resetDate,jdbcType=TIMESTAMP},
       created_by = #{createdBy,jdbcType=VARCHAR},
-      created_date = #{createdDate,jdbcType=TIMESTAMP},
-      last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR},
-      last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP}
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=VARCHAR},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>
