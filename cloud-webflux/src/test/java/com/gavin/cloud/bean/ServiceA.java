@@ -1,4 +1,4 @@
-package com.gavin.cloud.test;
+package com.gavin.cloud.bean;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,19 +7,18 @@ import org.springframework.util.Assert;
 import javax.annotation.PostConstruct;
 
 @Service
-public class ServiceB {
+public class ServiceA {
 
     @Autowired
-    private ServiceA serviceA;
+    private ServiceB serviceB;
 
-    public ServiceB() {
-        Assert.isNull(serviceA, "serviceA must be null");
+    public ServiceA() {
+        Assert.isNull(serviceB, "serviceB must be null");
     }
 
     @PostConstruct
     public void afterPropertiesSet() {
-        Assert.notNull(serviceA, "serviceA must not be null");
-
+        Assert.notNull(serviceB, "serviceB must not be null");
     }
 
 }
