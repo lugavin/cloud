@@ -1,16 +1,16 @@
 package com.gavin.cloud.core.repository;
 
 import com.gavin.cloud.pojo.User;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
+import reactor.core.publisher.Mono;
 
 /**
  * Spring Data JPA repository for the User entity.
  */
 @Repository
-public interface UserRepository /*extends JpaRepository<User, Long> */ {
+public interface UserRepository extends ReactiveMongoRepository<User, String> {
 
-    Optional<User> findOneByLogin(String login);
+    Mono<User> findOneByLogin(String login);
 
 }

@@ -17,4 +17,7 @@ server:
 
 spring:
   application:
-    name: cloud-test
+    name: cloud-webflux
+  data:
+    mongodb:
+      uri: mongodb://127.0.0.1:27017/webflux
