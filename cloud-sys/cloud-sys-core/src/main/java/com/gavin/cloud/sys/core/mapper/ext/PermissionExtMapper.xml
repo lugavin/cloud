@@ -21,7 +21,18 @@
         a.id, a.code, a.`name`, a.`type`, a.icon, a.url, a.seq, a.is_parent, a.parent_id
     </sql>
 
-    <select id="getPerms" parameterType="map" resultMap="BaseResultMap">
+    <select id="getPermsByRole" parameterType="string" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+          FROM sys_permission a
+     LEFT JOIN sys_role_permission b ON a.id = b.permission_id
+     LEFT JOIN sys_role c ON b.role_id = c.id
+         WHERE c.code IN
+        <foreach collection="array" item="code" open="(" separator="," close=")">
+            #{code}
+        </foreach>
+    </select>
+
+    <select id="getPermsByUid" parameterType="map" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List"/>
           FROM sys_permission a
      LEFT JOIN sys_role_permission b ON a.id = b.permission_id

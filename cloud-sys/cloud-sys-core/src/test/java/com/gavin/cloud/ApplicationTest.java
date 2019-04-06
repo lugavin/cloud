@@ -1,11 +1,11 @@
 package com.gavin.cloud;
 
-import com.gavin.cloud.sys.core.enums.ResourceType;
 import com.gavin.cloud.common.base.page.Page;
 import com.gavin.cloud.common.base.page.PageRequest;
 import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.base.util.JsonUtils;
 import com.gavin.cloud.sys.core.mapper.UserMapper;
+import com.gavin.cloud.sys.core.mapper.ext.PermissionExtMapper;
 import com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper;
 import com.gavin.cloud.sys.core.service.PermissionService;
 import com.gavin.cloud.sys.core.service.UserService;
@@ -54,6 +54,9 @@ public class ApplicationTest {
 
     @Autowired
     private RoleExtMapper roleExtMapper;
+
+    @Autowired
+    private PermissionExtMapper permissionExtMapper;
 
     @Autowired
     private UserService userService;
@@ -141,9 +144,9 @@ public class ApplicationTest {
     }
 
     @Test
-    public void testGetPermission() throws Exception {
+    public void testGetPermissions() throws Exception {
         IntStream.rangeClosed(1, 10).forEach(i -> new Thread(() -> {
-            List<Permission> list = permissionService.getPermissions(101L, ResourceType.FUNC);
+            List<Permission> list = permissionService.getPermissions("admin");
             log.info("====== {} ======", list);
         }).start());
         Thread.currentThread().join();

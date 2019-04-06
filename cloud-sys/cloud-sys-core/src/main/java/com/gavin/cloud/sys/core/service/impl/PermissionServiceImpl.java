@@ -1,9 +1,10 @@
 package com.gavin.cloud.sys.core.service.impl;
 
-import com.gavin.cloud.sys.core.enums.ResourceType;
 import com.gavin.cloud.common.base.util.JsonUtils;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
+import com.gavin.cloud.sys.core.enums.ResourceType;
 import com.gavin.cloud.sys.core.mapper.PermissionMapper;
+import com.gavin.cloud.sys.core.mapper.RoleMapper;
 import com.gavin.cloud.sys.core.mapper.RolePermissionMapper;
 import com.gavin.cloud.sys.core.mapper.ext.PermissionExtMapper;
 import com.gavin.cloud.sys.core.mapper.ext.RolePermissionExtMapper;
@@ -24,28 +25,33 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class PermissionServiceImpl implements PermissionService {
 
     private static final int DEFAULT_TIMEOUT = 3 * 60;
-    private static final String REDIS_KEY_PERM = "perm";
-    private static final String MUTEX_KEY_PREFIX = "mutex:perm:";
+    private static final String REDIS_KEY_PERM = "role";
+    private static final String MUTEX_KEY_PREFIX = "mutex:role:";
 
     private final StringRedisTemplate redisTemplate;
+    private final RoleMapper roleMapper;
     private final PermissionMapper permissionMapper;
     private final PermissionExtMapper permissionExtMapper;
     private final RolePermissionMapper rolePermissionMapper;
     private final RolePermissionExtMapper rolePermissionExtMapper;
 
     public PermissionServiceImpl(ObjectProvider<StringRedisTemplate> redisTemplateProvider,
+                                 RoleMapper roleMapper,
                                  PermissionMapper permissionMapper,
                                  PermissionExtMapper permissionExtMapper,
                                  RolePermissionMapper rolePermissionMapper,
                                  RolePermissionExtMapper rolePermissionExtMapper) {
         this.redisTemplate = redisTemplateProvider.getIfAvailable();
+        this.roleMapper = roleMapper;
         this.permissionMapper = permissionMapper;
         this.permissionExtMapper = permissionExtMapper;
         this.rolePermissionMapper = rolePermissionMapper;
@@ -75,7 +81,6 @@ public class PermissionServiceImpl implements PermissionService {
         example.createCriteria().andPermissionIdEqualTo(id);
         rolePermissionMapper.deleteByExample(example);
         permissionMapper.deleteByPrimaryKey(id);
-        syncCache(REDIS_KEY_PERM); // 缓存同步
     }
 
     @Override
@@ -87,27 +92,28 @@ public class PermissionServiceImpl implements PermissionService {
         PermissionExample example = new PermissionExample();
         example.createCriteria().andIdIn(Arrays.asList(ids));
         permissionMapper.deleteByExample(example);
-        syncCache(REDIS_KEY_PERM); // 缓存同步
     }
 
     @Override
     @Transactional
     public void assignPermissions(Long roleId, Long[] permIds) {
-        RolePermissionExample example = new RolePermissionExample();
-        example.createCriteria().andRoleIdEqualTo(roleId);
-        rolePermissionMapper.deleteByExample(example);
-        if (ArrayUtils.isNotEmpty(permIds)) {
-            List<RolePermission> list = new ArrayList<>();
-            for (Long permId : permIds) {
-                RolePermission rolePermission = new RolePermission();
-                rolePermission.setId(SnowflakeIdWorker.getInstance().nextId());
-                rolePermission.setRoleId(roleId);
-                rolePermission.setPermissionId(permId);
-                list.add(rolePermission);
-            }
-            rolePermissionExtMapper.insertBatch(list);
-        }
-        syncCache(REDIS_KEY_PERM); // 缓存同步
+        Optional.ofNullable(roleMapper.selectByPrimaryKey(roleId))
+                .ifPresent(role -> {
+                    RolePermissionExample example = new RolePermissionExample();
+                    example.createCriteria().andRoleIdEqualTo(roleId);
+                    rolePermissionMapper.deleteByExample(example);
+                    if (ArrayUtils.isNotEmpty(permIds)) {
+                        List<RolePermission> list = Arrays.stream(permIds).map(permId -> {
+                            RolePermission rolePermission = new RolePermission();
+                            rolePermission.setId(SnowflakeIdWorker.getInstance().nextId());
+                            rolePermission.setRoleId(roleId);
+                            rolePermission.setPermissionId(permId);
+                            return rolePermission;
+                        }).collect(Collectors.toList());
+                        rolePermissionExtMapper.insertBatch(list);
+                    }
+                    syncCache(REDIS_KEY_PERM, role.getCode()); // 缓存同步
+                });
     }
 
     @Override
@@ -121,31 +127,27 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public List<Permission> getPermissions(Long userId, ResourceType type) {
-        String hashKey = type.name() + "_" + userId;
+    public List<Permission> getPermissions(String role) {
         // 从缓存中获取数据
-        List<Permission> perms = getPermsFromCache(REDIS_KEY_PERM, hashKey);
+        List<Permission> perms = getPermsFromCache(REDIS_KEY_PERM, role);
         if (perms != null) {
             return perms;
         }
-        if (getMutexLock(hashKey)) {
+        if (getMutexLock(role)) {
             // 从DB中查询数据
-            perms = permissionExtMapper.getPerms(userId, type);
+            perms = permissionExtMapper.getPermsByRole(role);
             // 将数据回设到缓存中
-            setPermsToCache(REDIS_KEY_PERM, hashKey, perms);
+            setPermsToCache(REDIS_KEY_PERM, role, perms);
             return perms;
         }
         // 休眠500毫秒再重试
         sleep(500L);
-        return getPermissions(userId, type);
+        return getPermissions(role);
     }
 
-    private void syncCache(String key) {
-        try {
-            redisTemplate.delete(key);
-        } catch (Exception e) {
-            log.warn("缓存同步失败", e);
-        }
+    @Override
+    public List<Permission> getPermissions(Long userId, ResourceType type) {
+        return permissionExtMapper.getPermsByUid(userId, type);
     }
 
     private void syncCache(String key, String hashKey) {
