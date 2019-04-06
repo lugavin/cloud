@@ -31,10 +31,6 @@ management:
 #  env:
 #    sensitive: false #细粒度的开放Actuator Endpoints
 
-logging:
-  level:
-    com.netflix.config.sources.URLConfigurationSource: ERROR
-
 app:
   swagger:
     title: Cloud App RESTful API

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.gavin.cloud.sys.core.mapper.RoleMapper">
   <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.pojo.Role">
-    <id column="id" jdbcType="VARCHAR" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
@@ -82,15 +82,15 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from sys_role
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from sys_role
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.gavin.cloud.sys.pojo.RoleExample">
     delete from sys_role
@@ -101,7 +101,7 @@
   <insert id="insert" parameterType="com.gavin.cloud.sys.pojo.Role">
     insert into sys_role (id, code, `name`, 
       remark)
-    values (#{id,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{remark,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.gavin.cloud.sys.pojo.Role">
@@ -122,7 +122,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=VARCHAR},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="code != null">
         #{code,jdbcType=VARCHAR},
@@ -145,7 +145,7 @@
     update sys_role
     <set>
       <if test="record.id != null">
-        id = #{record.id,jdbcType=VARCHAR},
+        id = #{record.id,jdbcType=BIGINT},
       </if>
       <if test="record.code != null">
         code = #{record.code,jdbcType=VARCHAR},
@@ -163,7 +163,7 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update sys_role
-    set id = #{record.id,jdbcType=VARCHAR},
+    set id = #{record.id,jdbcType=BIGINT},
       code = #{record.code,jdbcType=VARCHAR},
       `name` = #{record.name,jdbcType=VARCHAR},
       remark = #{record.remark,jdbcType=VARCHAR}
@@ -184,13 +184,13 @@
         remark = #{remark,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.gavin.cloud.sys.pojo.Role">
     update sys_role
     set code = #{code,jdbcType=VARCHAR},
       `name` = #{name,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

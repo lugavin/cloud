@@ -16,7 +16,7 @@ public interface UserApi extends SysApi {
     User createUser(@RequestBody User user);
 
     @GetMapping("/users/{id}")
-    User getUser(@PathVariable("id") String id);
+    User getUser(@PathVariable("id") Long id);
 
     @GetMapping("/users/{account}/{type}")
     User getUser(@PathVariable("account") String account, @PathVariable("type") int type);

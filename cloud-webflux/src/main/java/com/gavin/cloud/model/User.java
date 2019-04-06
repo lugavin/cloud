@@ -1,4 +1,4 @@
-package com.gavin.cloud.pojo;
+package com.gavin.cloud.model;
 
 import lombok.Data;
 

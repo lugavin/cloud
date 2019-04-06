@@ -37,7 +37,7 @@ public class RoleResource {
     }
 
     @GetMapping("/{userId}/codes")
-    public ResponseEntity<List<String>> getRoles(@PathVariable String userId) {
+    public ResponseEntity<List<String>> getRoles(@PathVariable Long userId) {
         return ResponseEntity.ok(roleService.getRoles(userId).stream()
                 .map(Role::getCode).collect(Collectors.toList()));
     }

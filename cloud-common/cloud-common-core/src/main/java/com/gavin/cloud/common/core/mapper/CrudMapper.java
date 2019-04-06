@@ -1,11 +1,11 @@
 package com.gavin.cloud.common.core.mapper;
 
-import com.gavin.cloud.common.base.model.Model;
+import com.gavin.cloud.common.base.model.AbstractModel;
 
 import java.io.Serializable;
 import java.util.List;
 
-public interface CrudMapper<T extends Model> {
+public interface CrudMapper<T extends AbstractModel> {
 
     int insert(T model);
 

@@ -13,9 +13,9 @@ import static com.gavin.cloud.sys.api.SysApi.SERVICE_NAME;
 public interface PermissionApi extends SysApi {
 
     @GetMapping(value = "/permissions/{userId}/menus")
-    List<Permission> getMenus(@PathVariable("userId") String userId);
+    List<Permission> getMenus(@PathVariable("userId") Long userId);
 
     @GetMapping(value = "/permissions/{userId}/funcs")
-    List<Permission> getFuncs(@PathVariable("userId") String userId);
+    List<Permission> getFuncs(@PathVariable("userId") Long userId);
 
 }

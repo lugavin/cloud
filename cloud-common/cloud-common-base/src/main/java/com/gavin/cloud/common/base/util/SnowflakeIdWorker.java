@@ -9,7 +9,6 @@ import java.net.NetworkInterface;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoField;
 
 /**
  * Twitter的Snowflake算法(用于分布式自增长ID), 其原理结构如下(每部分用-分开):
@@ -18,7 +17,9 @@ import java.time.temporal.ChronoField;
  * (2)41位时间戳(毫秒级), 注意, 41位时间戳不是存储当前时间的时间戳, 而是存储当前时间戳与开始时间戳的差值, 这里的的开始时间戳, 一般是我们的id生成器开始使用的时间, 由我们程序来指定的(41位的时间戳可以使用2^41/1000*3600*24*365=69年);
  * (3)10位的数据机器位, 可以部署在1024个节点, 包括5位datacenterId和5位workerId;
  * (4)12位序列, 毫秒内的计数, 12位的计数顺序号支持每个节点每毫秒(同一机器同一时间戳)产生4096个ID序号;
- * SnowFlake的优点是: 整体上按照时间自增排序, 并且整个分布式系统内不会产生ID碰撞(由数据中心ID和机器ID作区分), 并且效率较高, 经测试, SnowFlake每秒能够产生26万ID左右.
+ * Snowflake的优点是: 整体上按照时间自增排序, 并且整个分布式系统内不会产生ID碰撞(由数据中心ID和机器ID作区分), 并且效率较高, 经测试, SnowFlake每秒能够产生26万ID左右.
+ *
+ * @see <a href="https://github.com/twitter/snowflake">Snowflake</a>
  */
 @Slf4j
 public class SnowflakeIdWorker {
@@ -66,7 +67,7 @@ public class SnowflakeIdWorker {
     // 数据中心id(0~31)
     private final long datacenterId;
 
-    public SnowflakeIdWorker() {
+    private SnowflakeIdWorker() {
         this.datacenterId = getDatacenterId(maxDatacenterId);
         this.workerId = getMaxWorkerId(datacenterId, maxWorkerId);
     }
@@ -75,7 +76,7 @@ public class SnowflakeIdWorker {
      * @param workerId     工作ID (0~31)
      * @param datacenterId 数据中心ID (0~31)
      */
-    public SnowflakeIdWorker(long workerId, long datacenterId) {
+    private SnowflakeIdWorker(long workerId, long datacenterId) {
         if (workerId > maxWorkerId || workerId < 0) {
             throw new IllegalArgumentException(String.format("Worker Id can't be greater than %d or less than 0", maxWorkerId));
         }
@@ -142,7 +143,7 @@ public class SnowflakeIdWorker {
         return System.currentTimeMillis();
     }
 
-    protected static long getDatacenterId(long maxDatacenterId) {
+    private static long getDatacenterId(long maxDatacenterId) {
         long id = 0L;
         try {
             InetAddress ip = InetAddress.getLocalHost();
@@ -161,7 +162,7 @@ public class SnowflakeIdWorker {
         return id;
     }
 
-    protected static long getMaxWorkerId(long datacenterId, long maxWorkerId) {
+    private static long getMaxWorkerId(long datacenterId, long maxWorkerId) {
         StringBuilder mpid = new StringBuilder();
         mpid.append(datacenterId);
         String name = ManagementFactory.getRuntimeMXBean().getName();
@@ -171,13 +172,26 @@ public class SnowflakeIdWorker {
         return (mpid.toString().hashCode() & 0xffff) % (maxWorkerId + 1);
     }
 
-    // public static void main(String[] args) {
-    //     SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
-    //     for (int i = 0; i < 1000; i++) {
-    //         long id = idWorker.nextId();
-    //         System.out.println(Long.toBinaryString(id));
-    //         System.out.println(id);
-    //     }
-    // }
+    public static SnowflakeIdWorker getInstance() {
+        return SingletonHolder.INSTANCE;
+    }
+
+    private static class SingletonHolder {
+        static final SnowflakeIdWorker INSTANCE = new SnowflakeIdWorker();
+    }
+
+    //public static void main(String[] args) {
+    //    Set<Long> ids = new HashSet<>();
+    //    // 多个线程使用同一个对象(单例)
+    //    //SnowflakeIdWorker idWorker = new SnowflakeIdWorker();
+    //    IntStream.range(0, 1000).forEach(i -> new Thread(() -> {
+    //        // 每个线程都新建一个对象, 那么每个线程的取时间戳可以同时进行, 序列自增也是, 所以才会产生相同的id
+    //        SnowflakeIdWorker idWorker = new SnowflakeIdWorker();
+    //        Long id = idWorker.nextId();
+    //        if (!ids.add(id)) {
+    //            System.err.println("存在重复ID >> " + id);
+    //        }
+    //    }).start());
+    //}
 
 }

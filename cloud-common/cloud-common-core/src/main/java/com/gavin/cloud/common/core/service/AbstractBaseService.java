@@ -1,6 +1,6 @@
 package com.gavin.cloud.common.core.service;
 
-import com.gavin.cloud.common.base.model.Model;
+import com.gavin.cloud.common.base.model.AbstractModel;
 import com.gavin.cloud.common.core.mapper.CrudMapper;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.Serializable;
 import java.util.List;
 
-public abstract class AbstractBaseService<T extends Model> implements BaseService<T> {
+public abstract class AbstractBaseService<T extends AbstractModel> implements BaseService<T> {
 
     @Autowired
     private CrudMapper<T> crudMapper;
@@ -28,7 +28,8 @@ public abstract class AbstractBaseService<T extends Model> implements BaseServic
 
     @Override
     @Transactional
-    public int update(@NonNull T model) {
+    public int update(@NonNull Serializable id, @NonNull T model) {
+        model.setId(id);
         return crudMapper.updateByPrimaryKeySelective(model);
     }
 

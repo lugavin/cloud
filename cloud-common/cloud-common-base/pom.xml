@@ -57,6 +57,11 @@
             <artifactId>commons-net</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+        </dependency>
+
         <!-- JWT -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>

@@ -5,18 +5,18 @@
 <mapper namespace="com.gavin.cloud.sys.core.mapper.ext.UserRoleExtMapper">
 
     <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.pojo.UserRole">
-        <id column="id" property="id" jdbcType="VARCHAR"/>
-        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
-        <result column="role_id" property="roleId" jdbcType="VARCHAR"/>
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="role_id" jdbcType="BIGINT" property="roleId"/>
     </resultMap>
 
     <insert id="insertBatch" parameterType="com.gavin.cloud.sys.pojo.UserRole" databaseId="mysql">
         INSERT INTO sys_user_role (id, user_id, role_id) VALUES
         <foreach collection="list" item="item" separator=",">
             (
-            #{item.id,jdbcType=VARCHAR},
-            #{item.userId,jdbcType=VARCHAR},
-            #{item.roleId,jdbcType=VARCHAR}
+            #{item.id,jdbcType=BIGINT},
+            #{item.userId,jdbcType=BIGINT},
+            #{item.roleId,jdbcType=BIGINT}
             )
         </foreach>
     </insert>

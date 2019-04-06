@@ -12,3 +12,6 @@ spring:
         prepStmtCacheSqlLimit: 2048
         useServerPrepStmts: true
 
+logging:
+  level:
+    com.gavin.cloud: DEBUG

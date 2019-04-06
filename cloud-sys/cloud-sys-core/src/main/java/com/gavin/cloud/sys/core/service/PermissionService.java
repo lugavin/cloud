@@ -1,5 +1,6 @@
 package com.gavin.cloud.sys.core.service;
 
+import com.gavin.cloud.sys.core.enums.ResourceType;
 import com.gavin.cloud.sys.pojo.Permission;
 
 import java.util.List;
@@ -10,18 +11,22 @@ public interface PermissionService {
 
     Permission updatePermission(Permission permission);
 
-    void deletePermission(String id);
+    void deletePermission(Long id);
 
-    void deletePermissions(String[] ids);
+    void deletePermissions(Long[] ids);
 
-    Permission getPermission(String id);
+    /**
+     * 给角色授权
+     *
+     * @param roleId  角色ID
+     * @param permIds 权限集合
+     */
+    void assignPermissions(Long roleId, Long[] permIds);
+
+    Permission getPermission(Long id);
 
     List<Permission> getPermissions();
 
-    List<Permission> getMenuPermissions(String userId);
-
-    List<Permission> getFuncPermissions(String userId);
-
-    void addPermissions(String roleId, String[] permIds);
+    List<Permission> getPermissions(Long userId, ResourceType type);
 
 }

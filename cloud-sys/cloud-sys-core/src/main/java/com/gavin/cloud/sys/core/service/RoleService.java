@@ -10,14 +10,14 @@ public interface RoleService {
 
     Role createRole(Role role);
 
-    Role getRole(String id);
+    Role getRole(Long id);
 
-    List<Role> getRoles(String userId);
+    List<Role> getRoles(Long userId);
 
     List<Role> getRoles(Map<String, Object> param);
 
     Page<Role> getRoles(Map<String, Object> param, int page, int pageSize);
 
-    void addRoles(String uid, String[] roleIds);
+    void addRoles(Long uid, Long[] roleIds);
 
 }

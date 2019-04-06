@@ -43,7 +43,7 @@ public class AccountResource {
     }
 
     @PostMapping("/change-password/{id}")
-    public void changePassword(@PathVariable String id, @RequestBody String password) {
+    public void changePassword(@PathVariable Long id, @RequestBody String password) {
         accountService.changePassword(id, password);
     }
 

@@ -38,25 +38,25 @@ public class UserResource {
                 .body(userService.createUser(user));
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @RequiresPermissions("user:update")
-    public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User user) {
         return ResponseEntity.ok()
                 .headers(HeaderUtils.createAlert("userManagement.updated", user.getUsername()))
-                .body(userService.updateUser(user));
+                .body(userService.updateUser(id, user));
     }
 
     @DeleteMapping("/{id}")
     @RequiresPermissions("user:delete")
-    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok()
-                .headers(HeaderUtils.createAlert("userManagement.deleted", id))
+                .headers(HeaderUtils.createAlert("userManagement.deleted", Long.toString(id)))
                 .build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable String id) {
+    public ResponseEntity<User> getUser(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUser(id));
     }
 

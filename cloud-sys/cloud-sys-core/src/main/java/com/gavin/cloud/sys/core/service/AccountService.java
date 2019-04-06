@@ -13,6 +13,6 @@ public interface AccountService {
 
     User finishPasswordReset(String key, String newPassword);
 
-    void changePassword(String id, String password);
+    void changePassword(Long id, String password);
 
 }

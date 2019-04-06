@@ -1,6 +1,6 @@
 package com.gavin.cloud.common.web;
 
-import com.gavin.cloud.common.base.util.RandomUtils;
+import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,14 +39,14 @@ public class ApplicationTest {
         HashOperations<String, String, String> opsForHash = redisTemplate.opsForHash();
 
         Map<String, String> hash = new HashMap<>();
-        hash.put("id", RandomUtils.randomUUID());
+        hash.put("id", Long.toString(SnowflakeIdWorker.getInstance().nextId()));
         hash.put("name", "gavin");
 
         opsForHash.putAll(USER_HKEY, hash);
         redisTemplate.expire(USER_HKEY, 30, TimeUnit.SECONDS);
 
         String name = opsForHash.get(USER_HKEY, "name");
-        Assert.assertTrue("gavin".equals(name));
+        Assert.assertEquals("gavin", name);
     }
 
 }

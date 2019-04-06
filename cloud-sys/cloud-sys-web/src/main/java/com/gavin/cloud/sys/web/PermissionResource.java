@@ -1,9 +1,9 @@
 package com.gavin.cloud.sys.web;
 
 import com.gavin.cloud.common.web.annotation.RequiresPermissions;
+import com.gavin.cloud.sys.core.enums.ResourceType;
 import com.gavin.cloud.sys.core.service.PermissionService;
 import com.gavin.cloud.sys.pojo.Permission;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,17 +16,20 @@ import java.util.List;
 @RequestMapping("/permissions")
 public class PermissionResource {
 
-    @Autowired
-    private PermissionService permissionService;
+    private final PermissionService permissionService;
+
+    public PermissionResource(PermissionService permissionService) {
+        this.permissionService = permissionService;
+    }
 
     @GetMapping("/{userId}/menus")
-    public ResponseEntity<List<Permission>> getMenuPermissions(@PathVariable String userId) {
-        return ResponseEntity.ok(permissionService.getMenuPermissions(userId));
+    public ResponseEntity<List<Permission>> getMenuPerms(@PathVariable Long userId) {
+        return ResponseEntity.ok(permissionService.getPermissions(userId, ResourceType.MENU));
     }
 
     @GetMapping("/{userId}/funcs")
-    public ResponseEntity<List<Permission>> getFuncPermissions(@PathVariable String userId) {
-        return ResponseEntity.ok(permissionService.getFuncPermissions(userId));
+    public ResponseEntity<List<Permission>> getFuncPerms(@PathVariable Long userId) {
+        return ResponseEntity.ok(permissionService.getPermissions(userId, ResourceType.FUNC));
     }
 
     @GetMapping

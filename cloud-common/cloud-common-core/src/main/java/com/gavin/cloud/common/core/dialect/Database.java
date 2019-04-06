@@ -17,7 +17,7 @@ public enum Database {
     MYSQL("MySQL"),
     ORACLE("Oracle"),
     POSTGRESQL("PostgreSQL"),
-    SQLSERVER("SQL Server", "sqlserver");
+    SQLSERVER("MS-SQL", "sqlserver");
 
     private final String type;
     private final String alias;

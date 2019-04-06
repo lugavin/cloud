@@ -1,48 +1,63 @@
 package com.gavin.cloud.sys.core.service.impl;
 
 import com.gavin.cloud.common.base.problem.InternalServerErrorException;
+import com.gavin.cloud.common.base.util.SftpUtils;
+import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
+import com.gavin.cloud.sys.core.config.properties.OssProperties;
+import com.gavin.cloud.sys.core.config.properties.SftpProperties;
 import com.gavin.cloud.sys.core.service.PictureService;
-import com.gavin.cloud.common.base.util.FtpUtils;
-import org.apache.commons.net.ftp.FTPClient;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Service
 public class PictureServiceImpl implements PictureService {
 
-    @Value("${ftp.host}")
-    private String host;
+    private final SftpProperties sftpProperties;
+    private final OssProperties ossProperties;
 
-    @Value("${ftp.port}")
-    private Integer port;
+    public PictureServiceImpl(SftpProperties sftpProperties, OssProperties ossProperties) {
+        this.sftpProperties = sftpProperties;
+        this.ossProperties = ossProperties;
+    }
 
-    @Value("${ftp.username}")
-    private String username;
-
-    @Value("${ftp.password}")
-    private String password;
-
-    @Value("${ftp.basePath}")
-    private String basePath;
-
-    @Value("${oss.baseURL}")
-    private String baseURL;
+    //@Override
+    //public String upload(InputStream local) {
+    //    FTPClient ftpClient = FtpUtils.connect(sftpProperties.getHost(), sftpProperties.getPort());
+    //    if (!FtpUtils.login(ftpClient, sftpProperties.getUsername(), sftpProperties.getPassword())) {
+    //        throw new InternalServerErrorException("Ftp service is not available.");
+    //    }
+    //    String filePath = LocalDate.now().format(DateTimeFormatter.ofPattern("/yyyy/MM/dd/"));
+    //    String filename = Long.toString(new SnowflakeIdWorker().nextId());
+    //    FtpUtils.uploadFile(ftpClient, sftpProperties.getBasePath() + filePath, filename, local);
+    //    return ossProperties.getBaseURL() + filePath + filename;
+    //}
 
     @Override
     public String upload(InputStream local) {
-        FTPClient ftpClient = FtpUtils.connect(host, port);
-        if (!FtpUtils.login(ftpClient, username, password)) {
-            throw new InternalServerErrorException("Ftp service is not available.");
+        SftpUtils sftpUtils = null;
+        try {
+            sftpUtils = new SftpUtils(
+                    sftpProperties.getUsername(),
+                    sftpProperties.getPassword(),
+                    sftpProperties.getHost(),
+                    sftpProperties.getPort(),
+                    sftpProperties.getTimeout()
+            );
+            if (!sftpUtils.login()) {
+                throw new InternalServerErrorException("Ftp service is not available.");
+            }
+            String filePath = LocalDate.now().format(DateTimeFormatter.ofPattern("/yyyy/MM/dd/"));
+            String filename = Long.toString(SnowflakeIdWorker.getInstance().nextId());
+            sftpUtils.upload(sftpProperties.getBasePath() + filePath, filename, local);
+            return ossProperties.getBaseURL() + filePath + filename;
+        } finally {
+            Optional.ofNullable(sftpUtils)
+                    .ifPresent(SftpUtils::logout);
         }
-        String filePath = new SimpleDateFormat("/yyyy/MM/dd/").format(new Date());
-        String filename = UUID.randomUUID().toString();
-        FtpUtils.uploadFile(ftpClient, basePath + filePath, filename, local);
-        return baseURL + filePath + filename;
     }
 
 }

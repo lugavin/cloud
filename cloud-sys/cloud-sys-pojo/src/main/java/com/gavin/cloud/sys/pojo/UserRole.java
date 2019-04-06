@@ -5,11 +5,11 @@ import lombok.Data;
 
 @Data
 public class UserRole implements Serializable {
-    private String id;
+    private Long id;
 
-    private String userId;
+    private Long userId;
 
-    private String roleId;
+    private Long roleId;
 
     private static final long serialVersionUID = 1L;
 }

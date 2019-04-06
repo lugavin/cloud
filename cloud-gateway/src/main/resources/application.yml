@@ -24,7 +24,3 @@ management:
 #endpoints:
 #  env:
 #    sensitive: false #细粒度的开放Actuator Endpoints
-
-logging:
-  level:
-    com.netflix.config.sources.URLConfigurationSource: ERROR

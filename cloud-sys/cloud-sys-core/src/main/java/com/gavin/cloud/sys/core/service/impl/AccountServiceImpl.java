@@ -85,7 +85,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void changePassword(String id, String password) {
+    public void changePassword(Long id, String password) {
         User user = Optional.ofNullable(userMapper.selectByPrimaryKey(id))
                 .orElseThrow(UserNotFoundException::new);
         user.setSalt(RandomUtils.randomAlphanumeric());

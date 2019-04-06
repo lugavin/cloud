@@ -11,19 +11,19 @@ public class ActiveUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final String uid;
+    private final Long uid;
     private final String username;
     private final String clientIP;
     private final List<String> roles;
 
-    public ActiveUser(String uid, String username, String clientIP, List<String> roles) {
+    public ActiveUser(Long uid, String username, String clientIP, List<String> roles) {
         this.uid = uid;
         this.username = username;
         this.clientIP = clientIP;
         this.roles = Optional.ofNullable(roles).orElseGet(ArrayList::new);
     }
 
-    public String getUid() {
+    public Long getUid() {
         return uid;
     }
 

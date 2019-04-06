@@ -11,7 +11,7 @@ import java.util.Map;
 @Mapper
 public interface RoleExtMapper {
 
-    List<Role> getByUserId(String userId);
+    List<Role> getByUserId(Long userId);
 
     List<Role> getList(Map<String, Object> param);
 

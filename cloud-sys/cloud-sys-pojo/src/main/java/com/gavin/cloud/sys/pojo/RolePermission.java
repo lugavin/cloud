@@ -5,11 +5,11 @@ import lombok.Data;
 
 @Data
 public class RolePermission implements Serializable {
-    private String id;
+    private Long id;
 
-    private String roleId;
+    private Long roleId;
 
-    private String permissionId;
+    private Long permissionId;
 
     private static final long serialVersionUID = 1L;
 }

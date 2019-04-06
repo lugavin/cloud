@@ -64,7 +64,7 @@ public class ValidationAspect {
     }
 
     @Before("validationPointcut()")
-    public void validate(JoinPoint joinPoint) throws Throwable {
+    public void validate(JoinPoint joinPoint) {
 
         LOGGER.debug("Starting Validation");
         StopWatch watch = new StopWatch();

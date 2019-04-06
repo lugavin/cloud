@@ -1,4 +1,4 @@
-package com.gavin.cloud.distributed.redisson;
+package com.gavin.cloud.distributed;
 
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.Redisson;
@@ -13,10 +13,11 @@ import java.util.concurrent.TimeUnit;
 public class RedissonTest {
 
     public static void main(String[] args) throws Exception {
+        String lockName = "METHOD_LOCK";
         URL url = Thread.currentThread().getContextClassLoader().getResource("redisson.yml");
         Config config = Config.fromYAML(url);
         RedissonClient redisson = Redisson.create(config);
-        RLock lock = redisson.getLock("LOCK");
+        RLock lock = redisson.getLock(lockName);
         if (lock.tryLock()) {
             try {
                 log.debug("====== 获取到锁, 执行业务操作 ======");

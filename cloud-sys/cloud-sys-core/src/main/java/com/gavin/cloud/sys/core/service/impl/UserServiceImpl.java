@@ -5,6 +5,7 @@ import com.gavin.cloud.common.base.page.PageRequest;
 import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.base.util.Md5Hash;
 import com.gavin.cloud.common.base.util.RandomUtils;
+import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import com.gavin.cloud.sys.pojo.User;
 import com.gavin.cloud.sys.pojo.UserExample;
 import com.gavin.cloud.sys.core.enums.LoginType;
@@ -14,6 +15,7 @@ import com.gavin.cloud.sys.core.problem.EmailAlreadyUsedException;
 import com.gavin.cloud.sys.core.problem.LoginAlreadyUsedException;
 import com.gavin.cloud.sys.core.problem.PhoneAlreadyUsedException;
 import com.gavin.cloud.sys.core.service.UserService;
+import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +53,7 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isBlank(user.getLangKey())) {
             user.setLangKey(Constants.DEFAULT_LANGUAGE);
         }
-        user.setId(RandomUtils.randomUUID());
+        user.setId(SnowflakeIdWorker.getInstance().nextId());
         user.setSalt(RandomUtils.randomAlphanumeric());
         user.setPassword(Md5Hash.hash(user.getPassword(), user.getSalt()));
         user.setActivated(Boolean.FALSE);
@@ -63,18 +65,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(User user) {
+    public User updateUser(Long id, User user) {
+        user.setId(id);
         userMapper.updateByPrimaryKeySelective(user);
         return user;
     }
 
     @Override
-    public void deleteUser(String id) {
+    public void deleteUser(Long id) {
         userMapper.deleteByPrimaryKey(id);
     }
 
     @Override
-    public void deleteUsers(String[] ids) {
+    public void deleteUsers(Long[] ids) {
         UserExample example = new UserExample();
         UserExample.Criteria criteria = example.createCriteria();
         criteria.andIdIn(Arrays.asList(ids));
@@ -98,7 +101,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public User getUser(String id) {
+    public User getUser(Long id) {
         return userMapper.selectByPrimaryKey(id);
     }
 

@@ -1,4 +1,4 @@
-package com.gavin.cloud.distributed.retry;
+package com.gavin.cloud.distributed;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.remoting.RemoteAccessException;

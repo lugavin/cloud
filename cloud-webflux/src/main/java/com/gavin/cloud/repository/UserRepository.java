@@ -1,6 +1,6 @@
-package com.gavin.cloud.core.repository;
+package com.gavin.cloud.repository;
 
-import com.gavin.cloud.pojo.User;
+import com.gavin.cloud.model.User;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;

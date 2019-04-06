@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class Role implements Serializable {
-    private String id;
+    private Long id;
 
     private String code;
 

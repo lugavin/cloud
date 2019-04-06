@@ -12,6 +12,6 @@ import static com.gavin.cloud.sys.api.SysApi.SERVICE_NAME;
 public interface RoleApi extends SysApi {
 
     @GetMapping("/roles/{uid}/codes")
-    List<String> getRoles(@PathVariable("uid") String uid);
+    List<String> getRoles(@PathVariable("uid") Long uid);
 
 }

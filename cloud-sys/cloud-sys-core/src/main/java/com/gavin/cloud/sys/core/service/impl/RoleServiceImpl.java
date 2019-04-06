@@ -2,17 +2,17 @@ package com.gavin.cloud.sys.core.service.impl;
 
 import com.gavin.cloud.common.base.page.Page;
 import com.gavin.cloud.common.base.page.PageRequest;
-import com.gavin.cloud.common.base.util.RandomUtils;
-import com.gavin.cloud.sys.pojo.Role;
-import com.gavin.cloud.sys.pojo.RoleExample;
-import com.gavin.cloud.sys.pojo.UserRole;
-import com.gavin.cloud.sys.pojo.UserRoleExample;
+import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import com.gavin.cloud.sys.core.mapper.RoleMapper;
 import com.gavin.cloud.sys.core.mapper.UserRoleMapper;
 import com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper;
 import com.gavin.cloud.sys.core.mapper.ext.UserRoleExtMapper;
 import com.gavin.cloud.sys.core.problem.RoleAlreadyUsedException;
 import com.gavin.cloud.sys.core.service.RoleService;
+import com.gavin.cloud.sys.pojo.Role;
+import com.gavin.cloud.sys.pojo.RoleExample;
+import com.gavin.cloud.sys.pojo.UserRole;
+import com.gavin.cloud.sys.pojo.UserRoleExample;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,20 +50,20 @@ public class RoleServiceImpl implements RoleService {
         if (rows > 0) {
             throw new RoleAlreadyUsedException();
         }
-        role.setId(RandomUtils.randomUUID());
+        role.setId(SnowflakeIdWorker.getInstance().nextId());
         roleMapper.insert(role);
         return role;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Role getRole(String id) {
+    public Role getRole(Long id) {
         return roleMapper.selectByPrimaryKey(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Role> getRoles(String userId) {
+    public List<Role> getRoles(Long userId) {
         return roleExtMapper.getByUserId(userId);
     }
 
@@ -80,7 +80,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void addRoles(String uid, String[] roleIds) {
+    public void addRoles(Long uid, Long[] roleIds) {
         if (ArrayUtils.isEmpty(roleIds)) {
             UserRoleExample example = new UserRoleExample();
             example.createCriteria().andUserIdEqualTo(uid);
@@ -88,13 +88,13 @@ public class RoleServiceImpl implements RoleService {
             return;
         }
 
-        List<String> newRoles = Arrays.asList(roleIds);
-        List<String> oldRoles = getRoleIds(uid);
+        List<Long> newRoles = Arrays.asList(roleIds);
+        List<Long> oldRoles = getRoleIds(uid);
 
-        List<String> deleteRoles = new ArrayList<>(oldRoles);
+        List<Long> deleteRoles = new ArrayList<>(oldRoles);
         deleteRoles.removeAll(newRoles);
 
-        List<String> insertRoles = new ArrayList<>(newRoles);
+        List<Long> insertRoles = new ArrayList<>(newRoles);
         insertRoles.removeAll(oldRoles);
 
         if (!CollectionUtils.isEmpty(deleteRoles)) {
@@ -105,9 +105,9 @@ public class RoleServiceImpl implements RoleService {
 
         if (!CollectionUtils.isEmpty(insertRoles)) {
             List<UserRole> list = new ArrayList<>();
-            for (String roleId : insertRoles) {
+            for (Long roleId : insertRoles) {
                 UserRole userRole = new UserRole();
-                userRole.setId(RandomUtils.randomUUID());
+                userRole.setId(SnowflakeIdWorker.getInstance().nextId());
                 userRole.setUserId(uid);
                 userRole.setRoleId(roleId);
                 list.add(userRole);
@@ -116,7 +116,7 @@ public class RoleServiceImpl implements RoleService {
         }
     }
 
-    private List<String> getRoleIds(String uid) {
+    private List<Long> getRoleIds(Long uid) {
         UserRoleExample example = new UserRoleExample();
         example.createCriteria().andUserIdEqualTo(uid);
         List<UserRole> userRoles = userRoleMapper.selectByExample(example);

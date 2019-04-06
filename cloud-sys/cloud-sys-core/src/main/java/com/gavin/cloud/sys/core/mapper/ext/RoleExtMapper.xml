@@ -5,10 +5,10 @@
 <mapper namespace="com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper">
 
     <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.pojo.Role">
-        <id column="id" property="id" jdbcType="VARCHAR"/>
-        <result column="code" property="code" jdbcType="VARCHAR"/>
-        <result column="name" property="name" jdbcType="VARCHAR"/>
-        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -50,7 +50,8 @@
 
     <select id="getByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
         SELECT a.id, a.code, a.`name`, a.remark
-          FROM sys_role a JOIN sys_user_role b ON a.id = b.role_id
+          FROM sys_role a
+          JOIN sys_user_role b ON a.id = b.role_id
          WHERE b.user_id = #{userId}
     </select>
 

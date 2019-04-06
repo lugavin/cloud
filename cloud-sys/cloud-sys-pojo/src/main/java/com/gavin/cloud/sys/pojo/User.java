@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class User implements Serializable {
-    private String id;
+    private Long id;
 
     private String username;
 

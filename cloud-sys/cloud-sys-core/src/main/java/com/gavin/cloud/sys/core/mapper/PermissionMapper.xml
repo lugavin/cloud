@@ -2,15 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.gavin.cloud.sys.core.mapper.PermissionMapper">
   <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.pojo.Permission">
-    <id column="id" jdbcType="VARCHAR" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="icon" jdbcType="VARCHAR" property="icon" />
     <result column="url" jdbcType="VARCHAR" property="url" />
-    <result column="seq" jdbcType="INTEGER" property="seq" />
+    <result column="seq" jdbcType="SMALLINT" property="seq" />
     <result column="is_parent" jdbcType="BIT" property="isParent" />
-    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -87,15 +87,15 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from sys_permission
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from sys_permission
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.gavin.cloud.sys.pojo.PermissionExample">
     delete from sys_permission
@@ -107,9 +107,9 @@
     insert into sys_permission (id, code, `name`, 
       `type`, icon, url, seq, 
       is_parent, parent_id)
-    values (#{id,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{type,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{seq,jdbcType=INTEGER}, 
-      #{isParent,jdbcType=BIT}, #{parentId,jdbcType=VARCHAR})
+    values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{type,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{seq,jdbcType=SMALLINT}, 
+      #{isParent,jdbcType=BIT}, #{parentId,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.gavin.cloud.sys.pojo.Permission">
     insert into sys_permission
@@ -144,7 +144,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=VARCHAR},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="code != null">
         #{code,jdbcType=VARCHAR},
@@ -162,13 +162,13 @@
         #{url,jdbcType=VARCHAR},
       </if>
       <if test="seq != null">
-        #{seq,jdbcType=INTEGER},
+        #{seq,jdbcType=SMALLINT},
       </if>
       <if test="isParent != null">
         #{isParent,jdbcType=BIT},
       </if>
       <if test="parentId != null">
-        #{parentId,jdbcType=VARCHAR},
+        #{parentId,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -182,7 +182,7 @@
     update sys_permission
     <set>
       <if test="record.id != null">
-        id = #{record.id,jdbcType=VARCHAR},
+        id = #{record.id,jdbcType=BIGINT},
       </if>
       <if test="record.code != null">
         code = #{record.code,jdbcType=VARCHAR},
@@ -200,13 +200,13 @@
         url = #{record.url,jdbcType=VARCHAR},
       </if>
       <if test="record.seq != null">
-        seq = #{record.seq,jdbcType=INTEGER},
+        seq = #{record.seq,jdbcType=SMALLINT},
       </if>
       <if test="record.isParent != null">
         is_parent = #{record.isParent,jdbcType=BIT},
       </if>
       <if test="record.parentId != null">
-        parent_id = #{record.parentId,jdbcType=VARCHAR},
+        parent_id = #{record.parentId,jdbcType=BIGINT},
       </if>
     </set>
     <if test="_parameter != null">
@@ -215,15 +215,15 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update sys_permission
-    set id = #{record.id,jdbcType=VARCHAR},
+    set id = #{record.id,jdbcType=BIGINT},
       code = #{record.code,jdbcType=VARCHAR},
       `name` = #{record.name,jdbcType=VARCHAR},
       `type` = #{record.type,jdbcType=VARCHAR},
       icon = #{record.icon,jdbcType=VARCHAR},
       url = #{record.url,jdbcType=VARCHAR},
-      seq = #{record.seq,jdbcType=INTEGER},
+      seq = #{record.seq,jdbcType=SMALLINT},
       is_parent = #{record.isParent,jdbcType=BIT},
-      parent_id = #{record.parentId,jdbcType=VARCHAR}
+      parent_id = #{record.parentId,jdbcType=BIGINT}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -247,16 +247,16 @@
         url = #{url,jdbcType=VARCHAR},
       </if>
       <if test="seq != null">
-        seq = #{seq,jdbcType=INTEGER},
+        seq = #{seq,jdbcType=SMALLINT},
       </if>
       <if test="isParent != null">
         is_parent = #{isParent,jdbcType=BIT},
       </if>
       <if test="parentId != null">
-        parent_id = #{parentId,jdbcType=VARCHAR},
+        parent_id = #{parentId,jdbcType=BIGINT},
       </if>
     </set>
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.gavin.cloud.sys.pojo.Permission">
     update sys_permission
@@ -265,9 +265,9 @@
       `type` = #{type,jdbcType=VARCHAR},
       icon = #{icon,jdbcType=VARCHAR},
       url = #{url,jdbcType=VARCHAR},
-      seq = #{seq,jdbcType=INTEGER},
+      seq = #{seq,jdbcType=SMALLINT},
       is_parent = #{isParent,jdbcType=BIT},
-      parent_id = #{parentId,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=VARCHAR}
+      parent_id = #{parentId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

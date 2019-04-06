@@ -31,7 +31,7 @@ public abstract class JwtHelper {
         return Jwts.builder()
                 .setIssuedAt(iat)
                 .setExpiration(exp)
-                .setSubject(activeUser.getUid())
+                .setSubject(Long.toString(activeUser.getUid()))
                 .claim("roles", activeUser.getRoles())
                 .claim("username", activeUser.getUsername())
                 .claim("client_ip", activeUser.getClientIP())
@@ -45,7 +45,7 @@ public abstract class JwtHelper {
         try {
             Claims claims = Jwts.parser()
                     .setSigningKey(publicKey)
-                    .deserializeJsonWith(bytes -> JsonUtils.toMap(new String(bytes, UTF_8)))
+                    .deserializeJsonWith(bytes -> JsonUtils.getMap(new String(bytes, UTF_8)))
                     .parseClaimsJws(token)
                     .getBody();
             //OK, we can trust this JWT
@@ -53,7 +53,7 @@ public abstract class JwtHelper {
             String username = (String) claims.get("username");
             String clientIP = (String) claims.get("client_ip");
             List<String> roles = claims.get("roles", ArrayList.class);
-            return new ActiveUser(uid, username, clientIP, roles);
+            return new ActiveUser(Long.parseLong(uid), username, clientIP, roles);
         } catch (Exception e) {
             //Don't trust the JWT!
             throw new AuthenticationException("The token is illegal.");

@@ -16,11 +16,12 @@ mybatis:
     cache-enabled: false
     #database-id: mysql
 
-ftp:
-  host: 192.168.8.99
-  port: 21
+sftp:
   username: ftpuser
   password: ftpuser
+  host: 192.168.8.99
+  port: 22
+  timeout: 30000
   basePath: /home/ftpuser/www/images
 
 oss:

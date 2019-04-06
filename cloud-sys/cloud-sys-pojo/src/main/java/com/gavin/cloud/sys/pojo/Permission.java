@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class Permission implements Serializable {
-    private String id;
+    private Long id;
 
     private String code;
 
@@ -17,11 +17,11 @@ public class Permission implements Serializable {
 
     private String url;
 
-    private Integer seq;
+    private Short seq;
 
     private Boolean isParent;
 
-    private String parentId;
+    private Long parentId;
 
     private static final long serialVersionUID = 1L;
 }
