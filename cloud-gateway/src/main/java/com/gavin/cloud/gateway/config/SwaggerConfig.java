@@ -25,7 +25,6 @@ import java.util.List;
 public class SwaggerConfig implements SwaggerResourcesProvider {
 
     private final RouteLocator routeLocator;
-
     private final DiscoveryClient discoveryClient;
 
     public SwaggerConfig(RouteLocator routeLocator, DiscoveryClient discoveryClient) {

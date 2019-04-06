@@ -2,7 +2,6 @@ package com.gavin.cloud.sys.web;
 
 import com.gavin.cloud.common.base.problem.InternalServerErrorException;
 import com.gavin.cloud.sys.core.service.PictureService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +16,11 @@ import java.io.InputStream;
 @RequestMapping("/pictures")
 public class PictureResource {
 
-    @Autowired
-    private PictureService pictureService;
+    private final PictureService pictureService;
+
+    public PictureResource(PictureService pictureService) {
+        this.pictureService = pictureService;
+    }
 
     @PostMapping("/upload")
     public ResponseEntity<String> upload(@RequestParam Part file) {

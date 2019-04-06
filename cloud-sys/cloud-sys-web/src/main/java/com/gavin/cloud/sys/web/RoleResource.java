@@ -1,11 +1,10 @@
 package com.gavin.cloud.sys.web;
 
-import com.gavin.cloud.sys.pojo.Role;
-import com.gavin.cloud.sys.core.service.RoleService;
 import com.gavin.cloud.common.base.page.Page;
 import com.gavin.cloud.common.web.annotation.RequiresPermissions;
 import com.gavin.cloud.common.web.util.HeaderUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.gavin.cloud.sys.core.service.RoleService;
+import com.gavin.cloud.sys.pojo.Role;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,8 +24,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/roles")
 public class RoleResource {
 
-    @Autowired
-    private RoleService roleService;
+    private final RoleService roleService;
+
+    public RoleResource(RoleService roleService) {
+        this.roleService = roleService;
+    }
 
     @PostMapping
     @RequiresPermissions("role:create")

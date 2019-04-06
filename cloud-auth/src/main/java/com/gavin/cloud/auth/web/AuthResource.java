@@ -19,7 +19,6 @@ import com.gavin.cloud.sys.api.UserApi;
 import com.gavin.cloud.sys.pojo.User;
 import com.gavin.cloud.sys.pojo.dto.RegisterDTO;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -46,20 +45,23 @@ public class AuthResource {
 
     private static final String BASE_URL = "baseUrl";
 
-    @Autowired
-    private JwtExtProperties jwtProperties;
+    private final JwtExtProperties jwtProperties;
+    private final AccountApi accountApi;
+    private final UserApi userApi;
+    private final RoleApi roleApi;
+    private final PermissionApi permissionApi;
 
-    @Autowired
-    private AccountApi accountApi;
-
-    @Autowired
-    private UserApi userApi;
-
-    @Autowired
-    private RoleApi roleApi;
-
-    @Autowired
-    private PermissionApi permissionApi;
+    public AuthResource(JwtExtProperties jwtProperties,
+                        AccountApi accountApi,
+                        UserApi userApi,
+                        RoleApi roleApi,
+                        PermissionApi permissionApi) {
+        this.jwtProperties = jwtProperties;
+        this.accountApi = accountApi;
+        this.userApi = userApi;
+        this.roleApi = roleApi;
+        this.permissionApi = permissionApi;
+    }
 
     /**
      * POST  /login/{type} : User login.

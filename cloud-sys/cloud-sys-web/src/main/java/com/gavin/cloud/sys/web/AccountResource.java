@@ -4,10 +4,15 @@ import com.gavin.cloud.common.web.annotation.RequiresGuest;
 import com.gavin.cloud.sys.core.service.AccountService;
 import com.gavin.cloud.sys.pojo.User;
 import com.gavin.cloud.sys.pojo.dto.RegisterDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -15,8 +20,11 @@ import javax.validation.Valid;
 @RequestMapping("/account")
 public class AccountResource {
 
-    @Autowired
-    private AccountService accountService;
+    private final AccountService accountService;
+
+    public AccountResource(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
     @RequiresGuest
     @PostMapping("/register")

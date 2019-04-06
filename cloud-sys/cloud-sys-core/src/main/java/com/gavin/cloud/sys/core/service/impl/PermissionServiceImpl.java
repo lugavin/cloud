@@ -1,8 +1,8 @@
 package com.gavin.cloud.sys.core.service.impl;
 
+import com.gavin.cloud.sys.core.enums.ResourceType;
 import com.gavin.cloud.common.base.util.JsonUtils;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
-import com.gavin.cloud.sys.core.enums.ResourceType;
 import com.gavin.cloud.sys.core.mapper.PermissionMapper;
 import com.gavin.cloud.sys.core.mapper.RolePermissionMapper;
 import com.gavin.cloud.sys.core.mapper.ext.PermissionExtMapper;
@@ -15,7 +15,7 @@ import com.gavin.cloud.sys.pojo.RolePermissionExample;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -34,20 +34,23 @@ public class PermissionServiceImpl implements PermissionService {
     private static final String REDIS_KEY_PERM = "perm";
     private static final String MUTEX_KEY_PREFIX = "mutex:perm:";
 
-    @Autowired
-    private PermissionMapper permissionMapper;
+    private final StringRedisTemplate redisTemplate;
+    private final PermissionMapper permissionMapper;
+    private final PermissionExtMapper permissionExtMapper;
+    private final RolePermissionMapper rolePermissionMapper;
+    private final RolePermissionExtMapper rolePermissionExtMapper;
 
-    @Autowired
-    private PermissionExtMapper permissionExtMapper;
-
-    @Autowired
-    private RolePermissionMapper rolePermissionMapper;
-
-    @Autowired
-    private RolePermissionExtMapper rolePermissionExtMapper;
-
-    @Autowired
-    private StringRedisTemplate redisTemplate;
+    public PermissionServiceImpl(ObjectProvider<StringRedisTemplate> redisTemplateProvider,
+                                 PermissionMapper permissionMapper,
+                                 PermissionExtMapper permissionExtMapper,
+                                 RolePermissionMapper rolePermissionMapper,
+                                 RolePermissionExtMapper rolePermissionExtMapper) {
+        this.redisTemplate = redisTemplateProvider.getIfAvailable();
+        this.permissionMapper = permissionMapper;
+        this.permissionExtMapper = permissionExtMapper;
+        this.rolePermissionMapper = rolePermissionMapper;
+        this.rolePermissionExtMapper = rolePermissionExtMapper;
+    }
 
     @Override
     @Transactional

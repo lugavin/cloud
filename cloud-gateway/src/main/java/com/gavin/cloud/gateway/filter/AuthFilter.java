@@ -7,18 +7,15 @@ import com.gavin.cloud.common.base.problem.AuthenticationException;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
-import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.Cookie;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Component
@@ -26,11 +23,13 @@ public class AuthFilter extends ZuulFilter {
 
     private final PathMatcher pathMatcher = new AntPathMatcher();
 
-    @Autowired
-    private AuthProperties authProperties;
+    private final AuthProperties authProperties;
+    private final JwtProperties jwtProperties;
 
-    @Autowired
-    private JwtProperties jwtProperties;
+    public AuthFilter(AuthProperties authProperties, JwtProperties jwtProperties) {
+        this.authProperties = authProperties;
+        this.jwtProperties = jwtProperties;
+    }
 
     @Override
     public String filterType() {
@@ -52,6 +51,7 @@ public class AuthFilter extends ZuulFilter {
     public Object run() {
         // (2)判断Token是否有效
         RequestContext ctx = RequestContext.getCurrentContext();
+
         try {
             Cookie cookie = Arrays.stream(ctx.getRequest().getCookies())
                     .filter(c -> jwtProperties.getCookieName().equals(c.getName()))

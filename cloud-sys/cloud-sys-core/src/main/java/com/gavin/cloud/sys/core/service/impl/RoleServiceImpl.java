@@ -29,17 +29,20 @@ import java.util.stream.Collectors;
 @Transactional
 public class RoleServiceImpl implements RoleService {
 
-    @Autowired
     private RoleMapper roleMapper;
-
-    @Autowired
     private RoleExtMapper roleExtMapper;
-
-    @Autowired
     private UserRoleMapper userRoleMapper;
-
-    @Autowired
     private UserRoleExtMapper userRoleExtMapper;
+
+    public RoleServiceImpl(RoleMapper roleMapper,
+                           RoleExtMapper roleExtMapper,
+                           UserRoleMapper userRoleMapper,
+                           UserRoleExtMapper userRoleExtMapper) {
+        this.roleMapper = roleMapper;
+        this.roleExtMapper = roleExtMapper;
+        this.userRoleMapper = userRoleMapper;
+        this.userRoleExtMapper = userRoleExtMapper;
+    }
 
     @Override
     public Role createRole(Role role) {

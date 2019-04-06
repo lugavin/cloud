@@ -10,7 +10,6 @@ import com.gavin.cloud.sys.core.service.UserService;
 import com.gavin.cloud.sys.pojo.User;
 import com.gavin.cloud.sys.pojo.UserExample;
 import com.gavin.cloud.sys.pojo.dto.RegisterDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,11 +21,14 @@ import java.util.Optional;
 @Transactional
 public class AccountServiceImpl implements AccountService {
 
-    @Autowired
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
+    private final UserService userService;
 
-    @Autowired
-    private UserService userService;
+    public AccountServiceImpl(UserMapper userMapper,
+                              UserService userService) {
+        this.userMapper = userMapper;
+        this.userService = userService;
+    }
 
     @Override
     public User register(RegisterDTO registerDTO) {

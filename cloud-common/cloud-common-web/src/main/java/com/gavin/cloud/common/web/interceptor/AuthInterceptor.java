@@ -90,7 +90,7 @@ public class AuthInterceptor extends AbstractInterceptor {
 
     private boolean isPermitted(ActiveUser subject, String[] permissions, Logical logical) {
         List<String> roles = subject.getRoles();
-        //TODO 根据角色从缓存中获取权限信息
+        // TODO 通过授权服务接口获取
         List<String> perms = new ArrayList<>();
         return logical == Logical.AND
                 ? perms.containsAll(Arrays.asList(permissions))

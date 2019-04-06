@@ -19,7 +19,8 @@ public class PictureServiceImpl implements PictureService {
     private final SftpProperties sftpProperties;
     private final OssProperties ossProperties;
 
-    public PictureServiceImpl(SftpProperties sftpProperties, OssProperties ossProperties) {
+    public PictureServiceImpl(SftpProperties sftpProperties,
+                              OssProperties ossProperties) {
         this.sftpProperties = sftpProperties;
         this.ossProperties = ossProperties;
     }

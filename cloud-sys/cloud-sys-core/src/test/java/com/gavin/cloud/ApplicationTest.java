@@ -1,10 +1,10 @@
 package com.gavin.cloud;
 
+import com.gavin.cloud.sys.core.enums.ResourceType;
 import com.gavin.cloud.common.base.page.Page;
 import com.gavin.cloud.common.base.page.PageRequest;
 import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.base.util.JsonUtils;
-import com.gavin.cloud.sys.core.enums.ResourceType;
 import com.gavin.cloud.sys.core.mapper.UserMapper;
 import com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper;
 import com.gavin.cloud.sys.core.service.PermissionService;

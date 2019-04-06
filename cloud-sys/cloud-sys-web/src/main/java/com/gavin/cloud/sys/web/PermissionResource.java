@@ -1,7 +1,7 @@
 package com.gavin.cloud.sys.web;
 
-import com.gavin.cloud.common.web.annotation.RequiresPermissions;
 import com.gavin.cloud.sys.core.enums.ResourceType;
+import com.gavin.cloud.common.web.annotation.RequiresPermissions;
 import com.gavin.cloud.sys.core.service.PermissionService;
 import com.gavin.cloud.sys.pojo.Permission;
 import org.springframework.http.ResponseEntity;

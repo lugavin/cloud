@@ -7,7 +7,6 @@ import com.gavin.cloud.common.web.util.HeaderUtils;
 import com.gavin.cloud.sys.core.enums.LoginType;
 import com.gavin.cloud.sys.core.service.UserService;
 import com.gavin.cloud.sys.pojo.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,8 +26,11 @@ import java.util.Map;
 @RequestMapping("/users")
 public class UserResource {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserResource(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping
     @RequiresPermissions("user:create")

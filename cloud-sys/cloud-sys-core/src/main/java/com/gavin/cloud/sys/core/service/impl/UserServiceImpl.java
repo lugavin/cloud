@@ -6,8 +6,6 @@ import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.base.util.Md5Hash;
 import com.gavin.cloud.common.base.util.RandomUtils;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
-import com.gavin.cloud.sys.pojo.User;
-import com.gavin.cloud.sys.pojo.UserExample;
 import com.gavin.cloud.sys.core.enums.LoginType;
 import com.gavin.cloud.sys.core.mapper.UserMapper;
 import com.gavin.cloud.sys.core.mapper.ext.UserExtMapper;
@@ -15,10 +13,10 @@ import com.gavin.cloud.sys.core.problem.EmailAlreadyUsedException;
 import com.gavin.cloud.sys.core.problem.LoginAlreadyUsedException;
 import com.gavin.cloud.sys.core.problem.PhoneAlreadyUsedException;
 import com.gavin.cloud.sys.core.service.UserService;
-import lombok.NonNull;
+import com.gavin.cloud.sys.pojo.User;
+import com.gavin.cloud.sys.pojo.UserExample;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,11 +31,14 @@ import java.util.Map;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
+    private final UserExtMapper userExtMapper;
 
-    @Autowired
-    private UserExtMapper userExtMapper;
+    public UserServiceImpl(UserMapper userMapper,
+                           UserExtMapper userExtMapper) {
+        this.userMapper = userMapper;
+        this.userExtMapper = userExtMapper;
+    }
 
     @Override
     public User createUser(User user) {
