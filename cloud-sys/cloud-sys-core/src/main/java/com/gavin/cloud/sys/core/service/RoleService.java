@@ -18,6 +18,6 @@ public interface RoleService {
 
     Page<Role> getRoles(Map<String, Object> param, int page, int pageSize);
 
-    void addRoles(Long uid, Long[] roleIds);
+    void assignRoles(Long uid, Long[] roleIds);
 
 }

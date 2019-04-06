@@ -9,7 +9,7 @@ public interface PermissionService {
 
     Permission createPermission(Permission permission);
 
-    Permission updatePermission(Permission permission);
+    Permission updatePermission(Long id, Permission permission);
 
     void deletePermission(Long id);
 

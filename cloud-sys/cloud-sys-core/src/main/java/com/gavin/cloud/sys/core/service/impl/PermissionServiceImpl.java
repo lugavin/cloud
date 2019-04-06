@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 public class PermissionServiceImpl implements PermissionService {
 
     private static final int DEFAULT_TIMEOUT = 3 * 60;
+    private static final String REDIS_KEY_PERM = "perm";
     private static final String MUTEX_KEY_PREFIX = "mutex:perm:";
 
     @Autowired
@@ -52,13 +53,14 @@ public class PermissionServiceImpl implements PermissionService {
     @Transactional
     public Permission createPermission(Permission permission) {
         permission.setId(SnowflakeIdWorker.getInstance().nextId());
-        permissionMapper.insert(permission);
+        permissionMapper.insertSelective(permission);
         return permission;
     }
 
     @Override
     @Transactional
-    public Permission updatePermission(Permission permission) {
+    public Permission updatePermission(Long id, Permission permission) {
+        permission.setId(id);
         permissionMapper.updateByPrimaryKey(permission);
         return permission;
     }
@@ -66,15 +68,23 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     @Transactional
     public void deletePermission(Long id) {
+        RolePermissionExample example = new RolePermissionExample();
+        example.createCriteria().andPermissionIdEqualTo(id);
+        rolePermissionMapper.deleteByExample(example);
         permissionMapper.deleteByPrimaryKey(id);
+        syncCache(REDIS_KEY_PERM); // 缓存同步
     }
 
     @Override
     @Transactional
     public void deletePermissions(Long[] ids) {
+        RolePermissionExample rolePermExample = new RolePermissionExample();
+        rolePermExample.createCriteria().andPermissionIdIn(Arrays.asList(ids));
+        rolePermissionMapper.deleteByExample(rolePermExample);
         PermissionExample example = new PermissionExample();
         example.createCriteria().andIdIn(Arrays.asList(ids));
         permissionMapper.deleteByExample(example);
+        syncCache(REDIS_KEY_PERM); // 缓存同步
     }
 
     @Override
@@ -94,6 +104,7 @@ public class PermissionServiceImpl implements PermissionService {
             }
             rolePermissionExtMapper.insertBatch(list);
         }
+        syncCache(REDIS_KEY_PERM); // 缓存同步
     }
 
     @Override
@@ -108,9 +119,9 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public List<Permission> getPermissions(Long userId, ResourceType type) {
-        String hashKey = Long.toString(userId);
+        String hashKey = type.name() + "_" + userId;
         // 从缓存中获取数据
-        List<Permission> perms = getPermsFromCache(type.name(), hashKey);
+        List<Permission> perms = getPermsFromCache(REDIS_KEY_PERM, hashKey);
         if (perms != null) {
             return perms;
         }
@@ -118,12 +129,28 @@ public class PermissionServiceImpl implements PermissionService {
             // 从DB中查询数据
             perms = permissionExtMapper.getPerms(userId, type);
             // 将数据回设到缓存中
-            setPermsToCache(type.name(), hashKey, perms);
+            setPermsToCache(REDIS_KEY_PERM, hashKey, perms);
             return perms;
         }
         // 休眠500毫秒再重试
         sleep(500L);
         return getPermissions(userId, type);
+    }
+
+    private void syncCache(String key) {
+        try {
+            redisTemplate.delete(key);
+        } catch (Exception e) {
+            log.warn("缓存同步失败", e);
+        }
+    }
+
+    private void syncCache(String key, String hashKey) {
+        try {
+            redisTemplate.opsForHash().delete(key, hashKey);
+        } catch (Exception e) {
+            log.warn("缓存同步失败", e);
+        }
     }
 
     private void setPermsToCache(String key, String hashKey, List<Permission> perms) {

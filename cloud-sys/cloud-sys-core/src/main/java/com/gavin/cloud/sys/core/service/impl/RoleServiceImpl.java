@@ -80,7 +80,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void addRoles(Long uid, Long[] roleIds) {
+    public void assignRoles(Long uid, Long[] roleIds) {
         if (ArrayUtils.isEmpty(roleIds)) {
             UserRoleExample example = new UserRoleExample();
             example.createCriteria().andUserIdEqualTo(uid);
