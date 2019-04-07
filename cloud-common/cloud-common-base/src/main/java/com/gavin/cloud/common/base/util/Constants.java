@@ -19,9 +19,10 @@ public interface Constants {
     String REGEX_LOGIN_NAME = "^[_.@A-Za-z0-9-]*$";
     String REGEX_LOGIN_TYPE = "1|2|3";
 
-    String USER = "ROLE_USER";
-    String ADMIN = "ROLE_ADMIN";
-    String ANONYMOUS = "ROLE_ANONYMOUS";
+    String ROLE_USER = "ROLE_USER";
+    String ROLE_ADMIN = "ROLE_ADMIN";
+    String ROLE_ANONYMOUS = "ROLE_ANONYMOUS";
+    String ROLE_MANAGEMENT = "ROLE_MANAGEMENT";
 
     String EMPTY = "";
     String SPACE = " ";
