@@ -13,13 +13,21 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/permissions")
+@RequestMapping("/perms")
 public class PermissionResource {
 
     private final PermissionService permissionService;
 
     public PermissionResource(PermissionService permissionService) {
         this.permissionService = permissionService;
+    }
+
+    /**
+     * GET http://cloud-sys/perms/ROLE_ADMIN,ROLE_USER/roles
+     */
+    @GetMapping("/{roles}/roles")
+    public ResponseEntity<List<Permission>> getMenuPerms(@PathVariable String[] roles) {
+        return ResponseEntity.ok(permissionService.getPermissions(roles));
     }
 
     @GetMapping("/{userId}/menus")

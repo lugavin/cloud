@@ -22,8 +22,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -143,6 +143,16 @@ public class PermissionServiceImpl implements PermissionService {
         // 休眠500毫秒再重试
         sleep(500L);
         return getPermissions(role);
+    }
+
+    @Override
+    public List<Permission> getPermissions(String... roles) {
+        return Arrays.stream(roles)
+                .map(this::getPermissions)
+                .collect(Collectors.toList())
+                .stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     @Override

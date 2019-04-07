@@ -12,10 +12,13 @@ import static com.gavin.cloud.sys.api.SysApi.SERVICE_NAME;
 @FeignClient(SERVICE_NAME)
 public interface PermissionApi extends SysApi {
 
-    @GetMapping(value = "/permissions/{userId}/menus")
+    @GetMapping(value = "/perms/{roles}/roles")
+    List<Permission> getPerms(@PathVariable("roles") String[] roles);
+
+    @GetMapping(value = "/perms/{userId}/menus")
     List<Permission> getMenus(@PathVariable("userId") Long userId);
 
-    @GetMapping(value = "/permissions/{userId}/funcs")
+    @GetMapping(value = "/perms/{userId}/funcs")
     List<Permission> getFuncs(@PathVariable("userId") Long userId);
 
 }

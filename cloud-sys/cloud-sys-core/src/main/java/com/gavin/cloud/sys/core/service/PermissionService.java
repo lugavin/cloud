@@ -29,6 +29,8 @@ public interface PermissionService {
 
     List<Permission> getPermissions(String role);
 
+    List<Permission> getPermissions(String... roles);
+
     List<Permission> getPermissions(Long userId, ResourceType type);
 
 }
