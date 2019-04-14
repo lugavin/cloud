@@ -1,4 +1,4 @@
-package com.gavin.cloud.disruptor;
+package com.gavin.cloud.distributed;
 
 import com.lmax.disruptor.LiteBlockingWaitStrategy;
 import com.lmax.disruptor.RingBuffer;

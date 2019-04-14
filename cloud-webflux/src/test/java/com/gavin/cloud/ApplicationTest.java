@@ -1,6 +1,6 @@
 package com.gavin.cloud;
 
-import com.gavin.cloud.distributed.RemoteService;
+import com.gavin.cloud.retry.RetryService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,16 +14,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class ApplicationTest {
 
     @Autowired
-    private RemoteService remoteService;
+    private RetryService retryService;
 
     @Before
     public void setUp() {
-        Assert.assertNotNull(remoteService);
+        Assert.assertNotNull(retryService);
     }
 
     @Test
     public void testRetry() {
-        remoteService.call();
+        retryService.call();
     }
 
 }

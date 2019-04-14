@@ -11,7 +11,7 @@ import java.util.UUID;
 public class BuilderTest {
 
     @Test
-    public void testBuild() throws Exception {
+    public void testBuild() {
         MethodLock methodLock = MethodLock.builder()
                 .id(UUID.randomUUID().toString())
                 .methodName("CreateUser")
@@ -74,6 +74,14 @@ public class BuilderTest {
                 return this;
             }
 
+            /**
+             * JDK默认会把当前实例传入到非静态方法中, 参数名为this, 参数位置是第一个:
+             * <pre>{@code
+             *   public MethodLock build(MethodLockBuilder this) {
+             *     return new MethodLock(this.id, this.methodName, this.updatedAt);
+             *   }
+             * }</pre>
+             */
             public MethodLock build() {
                 return new MethodLock(this.id, this.methodName, this.updatedAt);
             }

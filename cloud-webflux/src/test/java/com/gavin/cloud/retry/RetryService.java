@@ -1,4 +1,4 @@
-package com.gavin.cloud.distributed;
+package com.gavin.cloud.retry;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.remoting.RemoteAccessException;
@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @EnableRetry
-public class RemoteService {
+public class RetryService {
 
     @Retryable(value = {RemoteAccessException.class}, maxAttempts = 2, backoff = @Backoff(delay = 5000L, multiplier = 1))
     public void call() {
