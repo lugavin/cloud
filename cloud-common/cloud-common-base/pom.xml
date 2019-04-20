@@ -23,11 +23,6 @@
             <artifactId>logback-classic</artifactId>
         </dependency>
 
-        <!-- Google Findbugs -->
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-        </dependency>
         <!-- Google Guava -->
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -57,6 +52,7 @@
             <artifactId>commons-net</artifactId>
         </dependency>
 
+        <!-- JSch -->
         <dependency>
             <groupId>com.jcraft</groupId>
             <artifactId>jsch</artifactId>

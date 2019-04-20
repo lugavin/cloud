@@ -1,6 +1,6 @@
 package com.gavin.cloud.common.core.service;
 
-import com.gavin.cloud.common.base.model.AbstractModel;
+import com.gavin.cloud.common.base.pojo.AbstractModel;
 
 import java.io.Serializable;
 import java.util.List;

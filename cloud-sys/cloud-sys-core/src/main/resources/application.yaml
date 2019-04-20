@@ -4,8 +4,10 @@
 # {@link org.mybatis.spring.boot.autoconfigure.MybatisProperties}
 # ===================================================================
 mybatis:
-  #type-aliases-package: com.example.domain.model
-  #type-handlers-package: com.example.typehandler
+  #type-aliases-package: com.gavin.cloud.sys.pojo
+  #type-aliases-super-type: com.gavin.cloud.common.base.pojo.AbstractModel
+  #type-handlers-package: com.gavin.cloud.sys.core.mapper
+  #executor-type: BATCH
   configuration:
     # 开启自动驼峰命名规则
     map-underscore-to-camel-case: true

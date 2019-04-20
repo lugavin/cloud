@@ -1,6 +1,6 @@
 package com.gavin.cloud.common.core.service;
 
-import com.gavin.cloud.common.base.model.AbstractModel;
+import com.gavin.cloud.common.base.pojo.AbstractModel;
 import com.gavin.cloud.common.core.mapper.CrudMapper;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
