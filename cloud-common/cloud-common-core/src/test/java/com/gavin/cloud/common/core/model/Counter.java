@@ -7,11 +7,13 @@ import java.util.Date;
 @Data
 public class Counter {
 
-    private String id;
-    private int time;
+    private Long id;
+    private Integer time;
     private String title;
     private String url;
-    private Date createAt;
-    private Date updateAt;
+    private Date createdAt;
+    private String createdBy;
+    private Date updatedAt;
+    private String updatedBy;
 
 }

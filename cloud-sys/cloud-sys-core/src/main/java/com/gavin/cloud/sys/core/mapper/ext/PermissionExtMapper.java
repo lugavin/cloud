@@ -1,6 +1,7 @@
 package com.gavin.cloud.sys.core.mapper.ext;
 
 import com.gavin.cloud.sys.core.enums.ResourceType;
+import com.gavin.cloud.sys.core.mapper.PermissionMapper;
 import com.gavin.cloud.sys.pojo.Permission;
 import com.gavin.cloud.sys.pojo.vo.PermissionVO;
 import org.apache.ibatis.annotations.Mapper;
@@ -9,7 +10,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 @Mapper
-public interface PermissionExtMapper {
+public interface PermissionExtMapper extends PermissionMapper {
 
     List<Permission> getPermsByRole(String... role);
 

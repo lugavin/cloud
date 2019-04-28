@@ -7,6 +7,7 @@ import com.gavin.cloud.common.base.util.JsonUtils;
 import com.gavin.cloud.sys.core.mapper.UserMapper;
 import com.gavin.cloud.sys.core.mapper.ext.PermissionExtMapper;
 import com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper;
+import com.gavin.cloud.sys.core.mapper.ext.UserExtMapper;
 import com.gavin.cloud.sys.core.service.PermissionService;
 import com.gavin.cloud.sys.core.service.UserService;
 import com.gavin.cloud.sys.pojo.Permission;
@@ -50,7 +51,7 @@ public class ApplicationTest {
     private SqlSessionFactory sqlSessionFactory;
 
     @Autowired
-    private UserMapper userMapper;
+    private UserExtMapper userExtMapper;
 
     @Autowired
     private RoleExtMapper roleExtMapper;
@@ -127,7 +128,7 @@ public class ApplicationTest {
         UserExample.Criteria criteria = example.createCriteria();
         criteria.andActivatedNotEqualTo(Boolean.TRUE);
         criteria.andCreatedAtBetween(DateUtils.addDays(sysTime, -3), sysTime);
-        List<User> users = userMapper.selectByExample(example);
+        List<User> users = userExtMapper.selectByExample(example);
         log.info(JsonUtils.toJson(users));
     }
 

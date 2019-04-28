@@ -1,6 +1,11 @@
 package com.gavin.cloud.common.core;
 
+import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
+import com.gavin.cloud.common.core.mapper.CommentMapper;
+import com.gavin.cloud.common.core.mapper.CounterMapper;
+import com.gavin.cloud.common.core.model.Comment;
 import com.gavin.cloud.common.core.transaction.ServiceA;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +30,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  *
  * @see <a href="https://www.ibm.com/developerworks/cn/java/j-lo-spring-ts1/">Spring Transaction Manager</a>
  */
+@Slf4j
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class ApplicationTest {
@@ -32,14 +38,40 @@ public class ApplicationTest {
     @Autowired
     private ServiceA serviceA;
 
+    @Autowired
+    private CommentMapper commentMapper;
+
+    @Autowired
+    private CounterMapper counterMapper;
+
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         Assert.assertNotNull(serviceA);
+        Assert.assertNotNull(commentMapper);
+        Assert.assertNotNull(counterMapper);
     }
 
     @Test
     public void testTransaction() {
         serviceA.execute();
+    }
+
+    @Test
+    public void testInsertProvider() {
+        Comment record = new Comment();
+        record.setId(SnowflakeIdWorker.getInstance().nextId());
+        record.setCreatedBy("admin");
+        log.debug("====== {} ======", commentMapper.insert(record));
+    }
+
+    @Test
+    public void testSelectProvider() {
+        log.debug("====== {} ======", commentMapper.selectByPrimaryKey(101L));
+    }
+
+    @Test
+    public void testSelect() {
+        log.debug("====== {} ======", counterMapper.selectByPrimaryKey(101L));
     }
 
 }

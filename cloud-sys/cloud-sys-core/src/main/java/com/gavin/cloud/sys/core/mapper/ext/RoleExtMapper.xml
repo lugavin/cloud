@@ -15,7 +15,7 @@
         id, code, `name`, remark
     </sql>
 
-    <select id="getList" parameterType="map" resultMap="BaseResultMap" databaseId="mysql">
+    <select id="getList" resultMap="BaseResultMap" databaseId="mysql">
         SELECT
         <include refid="Base_Column_List"/>
         FROM sys_role
@@ -32,7 +32,7 @@
         </where>
     </select>
 
-    <select id="getPage" parameterType="com.gavin.cloud.common.base.page.Pageable" resultMap="BaseResultMap" databaseId="mysql">
+    <select id="getPage" resultMap="BaseResultMap" databaseId="mysql">
         SELECT
         <include refid="Base_Column_List"/>
         FROM sys_role

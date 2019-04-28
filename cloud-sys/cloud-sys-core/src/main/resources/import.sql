@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : 127.0.0.1
+Source Server         : 127.0.0.1 - mysql
 Source Server Version : 50170
-Source Host           : localhost:3306
+Source Host           : 127.0.0.1:3306
 Source Database       : cloud
 
 Target Server Type    : MYSQL
 Target Server Version : 50170
 File Encoding         : 65001
 
-Date: 2019-03-06 09:57:48
+Date: 2019-04-25 19:45:58
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -32,27 +32,28 @@ CREATE TABLE `sys_permission` (
   PRIMARY KEY (`id`),
   KEY `SYS_PERMISSION_FK` (`parent_id`) USING BTREE,
   CONSTRAINT `sys_permission_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `sys_permission` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='权限表';
 
 -- ----------------------------
 -- Records of sys_permission
 -- ----------------------------
-INSERT INTO `sys_permission` VALUES (1, '', '系统管理', 'MENU', 'fa fa-desktop', '', '1', '1', NULL);
-INSERT INTO `sys_permission` VALUES (11, '', '用户管理', 'MENU', 'fa fa-user', '/sys/user', '101', '1', 1);
-INSERT INTO `sys_permission` VALUES (12, 'user:create', '用户新增', 'FUNC', '', '', '102', '0', 11);
-INSERT INTO `sys_permission` VALUES (13, 'user:delete', '用户删除', 'FUNC', '', '', '103', '0', 11);
-INSERT INTO `sys_permission` VALUES (14, 'user:update', '用户修改', 'FUNC', '', '', '104', '0', 11);
-INSERT INTO `sys_permission` VALUES (15, 'user:search', '用户查询', 'FUNC', '', '', '105', '0', 11);
-INSERT INTO `sys_permission` VALUES (21, '', '角色管理', 'MENU', 'fa fa-lock', '/sys/role', '201', '1', 1);
-INSERT INTO `sys_permission` VALUES (22, 'role:create', '角色新增', 'FUNC', '', '', '202', '0', 21);
-INSERT INTO `sys_permission` VALUES (23, 'role:delete', '角色删除', 'FUNC', '', '', '203', '0', 21);
-INSERT INTO `sys_permission` VALUES (24, 'role:update', '角色修改', 'FUNC', '', '', '204', '0', 21);
-INSERT INTO `sys_permission` VALUES (25, 'role:search', '角色查询', 'FUNC', '', '', '205', '0', 21);
-INSERT INTO `sys_permission` VALUES (31, '', '权限管理', 'MENU', 'fa fa-key', '/sys/perm', '301', '1', 1);
-INSERT INTO `sys_permission` VALUES (32, 'perm:create', '权限新增', 'FUNC', '', '', '302', '0', 31);
-INSERT INTO `sys_permission` VALUES (33, 'perm:delete', '权限删除', 'FUNC', '', '', '303', '0', 31);
-INSERT INTO `sys_permission` VALUES (34, 'perm:update', '权限修改', 'FUNC', '', '', '304', '0', 31);
-INSERT INTO `sys_permission` VALUES (35, 'perm:search', '权限查询', 'FUNC', '', '', '305', '0', 31);
+INSERT INTO `sys_permission` VALUES ('1', '', '系统管理', 'MENU', 'fa fa-desktop', '', '1', '1', null);
+INSERT INTO `sys_permission` VALUES ('11', '', '用户管理', 'MENU', 'fa fa-user', '/sys/user', '101', '1', '1');
+INSERT INTO `sys_permission` VALUES ('12', 'user:create', '用户新增', 'FUNC', '', '', '102', '0', '11');
+INSERT INTO `sys_permission` VALUES ('13', 'user:delete', '用户删除', 'FUNC', '', '', '103', '0', '11');
+INSERT INTO `sys_permission` VALUES ('14', 'user:update', '用户修改', 'FUNC', '', '', '104', '0', '11');
+INSERT INTO `sys_permission` VALUES ('15', 'user:search', '用户查询', 'FUNC', '', '', '105', '0', '11');
+INSERT INTO `sys_permission` VALUES ('21', '', '角色管理', 'MENU', 'fa fa-lock', '/sys/role', '201', '1', '1');
+INSERT INTO `sys_permission` VALUES ('22', 'role:create', '角色新增', 'FUNC', '', '', '202', '0', '21');
+INSERT INTO `sys_permission` VALUES ('23', 'role:delete', '角色删除', 'FUNC', '', '', '203', '0', '21');
+INSERT INTO `sys_permission` VALUES ('24', 'role:update', '角色修改', 'FUNC', '', '', '204', '0', '21');
+INSERT INTO `sys_permission` VALUES ('25', 'role:search', '角色查询', 'FUNC', '', '', '205', '0', '21');
+INSERT INTO `sys_permission` VALUES ('31', '', '权限管理', 'MENU', 'fa fa-key', '/sys/perm', '301', '1', '1');
+INSERT INTO `sys_permission` VALUES ('32', 'perm:create', '权限新增', 'FUNC', '', '', '302', '0', '31');
+INSERT INTO `sys_permission` VALUES ('33', 'perm:delete', '权限删除', 'FUNC', '', '', '303', '0', '31');
+INSERT INTO `sys_permission` VALUES ('34', 'perm:update', '权限修改', 'FUNC', '', '', '304', '0', '31');
+INSERT INTO `sys_permission` VALUES ('35', 'perm:search', '权限查询', 'FUNC', '', '', '305', '0', '31');
+INSERT INTO `sys_permission` VALUES ('36', null, '测试数据', '', null, null, null, '0', null);
 
 -- ----------------------------
 -- Table structure for `sys_role`
@@ -65,12 +66,12 @@ CREATE TABLE `sys_role` (
   `remark` varchar(200) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`),
   UNIQUE KEY `SYS_ROLE_CODE_UK` (`code`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色表';
 
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
-INSERT INTO `sys_role` VALUES (1001, 'admin', '管理员', '');
+INSERT INTO `sys_role` VALUES ('1001', 'admin', '管理员', '');
 
 -- ----------------------------
 -- Table structure for `sys_role_permission`
@@ -85,28 +86,29 @@ CREATE TABLE `sys_role_permission` (
   KEY `SYS_ROLE_PERMISSION_FK_2` (`permission_id`) USING BTREE,
   CONSTRAINT `sys_role_permission_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `sys_role` (`id`),
   CONSTRAINT `sys_role_permission_ibfk_2` FOREIGN KEY (`permission_id`) REFERENCES `sys_permission` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色-权限中间表';
 
 -- ----------------------------
 -- Records of sys_role_permission
 -- ----------------------------
-INSERT INTO `sys_role_permission` VALUES (10001, 1001, 1);
-INSERT INTO `sys_role_permission` VALUES (10002, 1001, 11);
-INSERT INTO `sys_role_permission` VALUES (10003, 1001, 12);
-INSERT INTO `sys_role_permission` VALUES (10004, 1001, 13);
-INSERT INTO `sys_role_permission` VALUES (10005, 1001, 14);
-INSERT INTO `sys_role_permission` VALUES (10006, 1001, 15);
-INSERT INTO `sys_role_permission` VALUES (10007, 1001, 2);
-INSERT INTO `sys_role_permission` VALUES (10008, 1001, 21);
-INSERT INTO `sys_role_permission` VALUES (10009, 1001, 22);
-INSERT INTO `sys_role_permission` VALUES (10010, 1001, 23);
-INSERT INTO `sys_role_permission` VALUES (10011, 1001, 24);
-INSERT INTO `sys_role_permission` VALUES (10012, 1001, 25);
-INSERT INTO `sys_role_permission` VALUES (10013, 1001, 31);
-INSERT INTO `sys_role_permission` VALUES (10014, 1001, 32);
-INSERT INTO `sys_role_permission` VALUES (10015, 1001, 33);
-INSERT INTO `sys_role_permission` VALUES (10016, 1001, 34);
-INSERT INTO `sys_role_permission` VALUES (10017, 1001, 35);
+INSERT INTO `sys_role_permission` VALUES ('10001', '1001', '1');
+INSERT INTO `sys_role_permission` VALUES ('10007', '1001', '2');
+INSERT INTO `sys_role_permission` VALUES ('10002', '1001', '11');
+INSERT INTO `sys_role_permission` VALUES ('10003', '1001', '12');
+INSERT INTO `sys_role_permission` VALUES ('10004', '1001', '13');
+INSERT INTO `sys_role_permission` VALUES ('10005', '1001', '14');
+INSERT INTO `sys_role_permission` VALUES ('10006', '1001', '15');
+INSERT INTO `sys_role_permission` VALUES ('10008', '1001', '21');
+INSERT INTO `sys_role_permission` VALUES ('10009', '1001', '22');
+INSERT INTO `sys_role_permission` VALUES ('10010', '1001', '23');
+INSERT INTO `sys_role_permission` VALUES ('10011', '1001', '24');
+INSERT INTO `sys_role_permission` VALUES ('10012', '1001', '25');
+INSERT INTO `sys_role_permission` VALUES ('10013', '1001', '31');
+INSERT INTO `sys_role_permission` VALUES ('10014', '1001', '32');
+INSERT INTO `sys_role_permission` VALUES ('10015', '1001', '33');
+INSERT INTO `sys_role_permission` VALUES ('10016', '1001', '34');
+INSERT INTO `sys_role_permission` VALUES ('10017', '1001', '35');
+INSERT INTO `sys_role_permission` VALUES ('10018', '1001', '36');
 
 -- ----------------------------
 -- Table structure for `sys_user`
@@ -131,18 +133,15 @@ CREATE TABLE `sys_user` (
   `updated_by` varchar(50) DEFAULT NULL COMMENT '最后修改人',
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改日期',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `SYS_USER_USERNAME_UK` (`username`),
-  UNIQUE KEY `SYS_USER_USERNAME_IDX` (`username`),
-  UNIQUE KEY `SYS_USER_PHONE_UK` (`phone`),
-  UNIQUE KEY `SYS_USER_PHONE_IDX` (`phone`),
-  UNIQUE KEY `SYS_USER_EMAIL_UK` (`email`),
-  UNIQUE KEY `SYS_USER_EMAIL_IDX` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `SYS_USER_USERNAME_UK` (`username`),
+  KEY `SYS_USER_PHONE_UK` (`phone`),
+  KEY `SYS_USER_EMAIL_UK` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (101, 'admin', MD5(CONCAT('20190406000000','111111')), 'Gavin', '20190406000000', '16666666666', 'admin@gmail.com', NULL, NULL, 1, NULL, NULL, NULL, 'system', '2019-01-01 00:00:00', NULL, NULL);
+INSERT INTO `sys_user` VALUES ('101', 'admin', '91a11846b148ff2e474847afcc130d48', '管理员', '20190406000000', '16666666666', 'admin@gmail.com', null, null, '', null, null, null, 'system', '2019-01-01 00:00:00', null, '2019-04-15 21:32:42');
 
 -- ----------------------------
 -- Table structure for `sys_user_role`
@@ -157,9 +156,9 @@ CREATE TABLE `sys_user_role` (
   KEY `SYS_USER_ROLE_FK_2` (`role_id`) USING BTREE,
   CONSTRAINT `sys_user_role_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `sys_user` (`id`),
   CONSTRAINT `sys_user_role_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `sys_role` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户-角色中间表';
 
 -- ----------------------------
 -- Records of sys_user_role
 -- ----------------------------
-INSERT INTO `sys_user_role` VALUES (10001, 101, 1001);
+INSERT INTO `sys_user_role` VALUES ('10001', '101', '1001');

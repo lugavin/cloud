@@ -1,10 +1,25 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/cloud?useUnicode=true&characterEncoding=utf8&useSSL=false
+    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf8&useSSL=false
     username: root
     password: root
     #schema: classpath:import.sql
     type: com.zaxxer.hikari.HikariDataSource
+
+mybatis:
+  #type-aliases-package: com.gavin.cloud.sys.pojo
+  #type-aliases-super-type: com.gavin.cloud.common.base.pojo.AbstractModel
+  #type-handlers-package: com.gavin.cloud.sys.core.mapper
+  #executor-type: BATCH
+  configuration:
+    # 开启自动驼峰命名规则
+    map-underscore-to-camel-case: true
+    # 开启延迟加载
+    lazy-loading-enabled: true
+    aggressive-lazy-loading: false
+    # 禁用二级缓存
+    cache-enabled: false
+    #database-id: mysql
 
 logging:
   level:
