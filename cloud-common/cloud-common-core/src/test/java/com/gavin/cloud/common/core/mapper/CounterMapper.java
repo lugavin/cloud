@@ -5,16 +5,14 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import java.util.Objects;
-
 @Mapper
 public interface CounterMapper {
 
     default Counter selectByPrimaryKey(Long id) {
-        return selectByPrimaryKey(id, Objects.hash(id) % 2);
+        return selectByPrimaryKey(id, false);
     }
 
-    @Select("SELECT * FROM counter_${tableIndex} WHERE id=#{id}")
-    Counter selectByPrimaryKey(@Param("id") Long id, @Param("tableIndex") int tableIndex);
+    @Select("SELECT * FROM ${hist?'counter_hist':'counter'} WHERE id=#{id}")
+    Counter selectByPrimaryKey(@Param("id") Long id, @Param("hist") boolean hist);
 
 }

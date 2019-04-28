@@ -71,7 +71,7 @@ public class ApplicationTest {
 
     @Test
     public void testSelect() {
-        log.debug("====== {} ======", counterMapper.selectByPrimaryKey(101L));
+        log.debug("====== {} ======", counterMapper.selectByPrimaryKey(102L));
     }
 
 }
