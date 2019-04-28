@@ -1,7 +1,6 @@
 package com.gavin.cloud.sys.core.service.impl;
 
 import com.gavin.cloud.common.base.page.Page;
-import com.gavin.cloud.common.base.page.PageRequest;
 import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.base.util.Md5Hash;
 import com.gavin.cloud.common.base.util.RandomUtils;
@@ -21,11 +20,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -131,7 +126,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public Page<User> getUsers(Map<String, Object> param, int page, int pageSize) {
-        return userExtMapper.getPage(new PageRequest<>(param, page, pageSize));
+        return userExtMapper.getPage(param, page, pageSize);
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.gavin.cloud.sys.core.service.impl;
 
 import com.gavin.cloud.common.base.page.Page;
-import com.gavin.cloud.common.base.page.PageRequest;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import com.gavin.cloud.sys.core.mapper.RoleMapper;
 import com.gavin.cloud.sys.core.mapper.UserRoleMapper;
@@ -14,7 +13,6 @@ import com.gavin.cloud.sys.pojo.RoleExample;
 import com.gavin.cloud.sys.pojo.UserRole;
 import com.gavin.cloud.sys.pojo.UserRoleExample;
 import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -79,7 +77,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional(readOnly = true)
     public Page<Role> getRoles(Map<String, Object> param, int page, int pageSize) {
-        return roleExtMapper.getPage(new PageRequest<>(param, page, pageSize));
+        return roleExtMapper.getPage(param, page, pageSize);
     }
 
     @Override

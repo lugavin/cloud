@@ -140,7 +140,7 @@ public class ApplicationTest {
 
     @Test
     public void testGetPage() {
-        Page<Role> page = roleExtMapper.getPage(new PageRequest<>(Collections.emptyMap(), 1, 10));
+        Page<Role> page = roleExtMapper.getPage(Collections.emptyMap(), 1, 10);
         log.info("====== {} ======", JsonUtils.toJson(page));
     }
 

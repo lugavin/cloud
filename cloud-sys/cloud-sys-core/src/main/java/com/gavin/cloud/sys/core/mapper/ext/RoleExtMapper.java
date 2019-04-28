@@ -1,6 +1,7 @@
 package com.gavin.cloud.sys.core.mapper.ext;
 
 import com.gavin.cloud.common.base.page.Page;
+import com.gavin.cloud.common.base.page.PageRequest;
 import com.gavin.cloud.common.base.page.Pageable;
 import com.gavin.cloud.sys.core.mapper.RoleMapper;
 import com.gavin.cloud.sys.pojo.Role;
@@ -17,5 +18,9 @@ public interface RoleExtMapper extends RoleMapper {
     List<Role> getList(Map<String, Object> param);
 
     Page<Role> getPage(Pageable<Map<String, Object>> pageable);
+
+    default Page<Role> getPage(Map<String, Object> param, int page, int pageSize) {
+        return getPage(new PageRequest<>(param, page, pageSize));
+    }
 
 }
