@@ -5,12 +5,7 @@ import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.base.util.JsonUtils;
 import com.gavin.cloud.sys.core.mapper.UserMapper;
 import com.gavin.cloud.sys.core.mapper.ext.PermissionExtMapper;
-import com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper;
 import com.gavin.cloud.sys.core.mapper.ext.UserExtMapper;
-import com.gavin.cloud.sys.core.service.PermissionService;
-import com.gavin.cloud.sys.core.service.UserService;
-import com.gavin.cloud.sys.pojo.Permission;
-import com.gavin.cloud.sys.pojo.Role;
 import com.gavin.cloud.sys.pojo.User;
 import com.gavin.cloud.sys.pojo.UserExample;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +24,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.IntStream;
 
 /**
  * 当在Junit单元测试类中加了{@link SpringBootTest}注解时, 如果你的单元测试方法上加了{@link Transactional}注解,
@@ -48,16 +42,7 @@ public class ApplicationTest {
     private UserExtMapper userExtMapper;
 
     @Autowired
-    private RoleExtMapper roleExtMapper;
-
-    @Autowired
     private PermissionExtMapper permissionExtMapper;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private PermissionService permissionService;
 
     @Before
     public void setUp() {
@@ -65,54 +50,79 @@ public class ApplicationTest {
     }
 
     /**
-     * 一级缓存
+     * 测试一级缓存
      */
     @Test
-    public void testPrimaryCache() {
+    public void testPrimaryCache1() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
             log.info("{}", userMapper.selectByPrimaryKey(101L)); // 发出SQL语句
             log.info("{}", userMapper.selectByPrimaryKey(101L)); // 不发出SQL语句
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testPrimaryCache2() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            log.info("{}", userMapper.selectByPrimaryKey(101L)); // 发出SQL语句
+            sqlSession.commit();                                    // 清空缓存
+            log.info("{}", userMapper.selectByPrimaryKey(101L)); // 发出SQL语句
         }
     }
 
     /**
-     * 二级缓存
+     * 测试二级缓存
      */
     @Test
-    public void testSecondaryCache() {
+    public void testSecondaryCache1() {
         try (SqlSession sqlSession1 = sqlSessionFactory.openSession();
              SqlSession sqlSession2 = sqlSessionFactory.openSession()) {
 
             UserMapper userMapper1 = sqlSession1.getMapper(UserMapper.class);
             log.info("{}", userMapper1.selectByPrimaryKey(101L)); // 发出SQL语句
-
-            // sqlSession1.commit(); // 执行SELECT的commit操作会将SqlSession中的数据存入二级缓存区域
-
-            // User user = new User();
-            // user.setId("102");
-            // user.setUsername("Alan");
-            // user.setPassword("111111");
-            // user.setActivated(Boolean.TRUE);
-            // user.setCreatedBy("Admin");
-            // user.setCreatedDate(new Date());
-            // userMapper1.insert(user);
-            sqlSession1.commit(); // 当执行了非SELECT语句时整个namespace中的缓存会被清空
+            sqlSession1.commit(); // 执行SELECT的commit操作会将SqlSession中的数据存入二级缓存区域
 
             UserMapper userMapper2 = sqlSession2.getMapper(UserMapper.class);
             log.info("{}", userMapper2.selectByPrimaryKey(101L)); // 不发出SQL语句
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
     @Test
-    public void testGetUsers() {
-        Page<User> users = userService.getUsers(Collections.singletonMap("username", "admin"), 1, 10);
-        log.debug(JsonUtils.toJson(users));
+    public void testSecondaryCache2() {
+        try (SqlSession sqlSession1 = sqlSessionFactory.openSession();
+             SqlSession sqlSession2 = sqlSessionFactory.openSession()) {
+
+            UserMapper userMapper1 = sqlSession1.getMapper(UserMapper.class);
+            User user = userMapper1.selectByPrimaryKey(101L); // 发出SQL语句
+            log.info("{}", user);
+            user.setEmail("admin@gmail.com");
+            userMapper1.updateByPrimaryKey(user);
+            sqlSession1.commit(); // 当执行了非SELECT语句时整个namespace中的缓存会被清空
+
+            UserMapper userMapper2 = sqlSession2.getMapper(UserMapper.class);
+            log.info("{}", userMapper2.selectByPrimaryKey(101L)); // 发出SQL语句
+        }
+    }
+
+    /**
+     * 测试分页拦截器
+     */
+    @Test
+    public void testPageInterceptor() {
+        Map<String, Object> param = new HashMap<>();
+        param.put("nickname", "管理员");
+        Page<User> page = userExtMapper.getPage(param, 1, 10);
+        log.info("====== {} ======", JsonUtils.toJson(page));
+    }
+
+    /**
+     * 测试Mapper继承
+     */
+    @Test
+    public void testExtMapper() {
+        Optional.ofNullable(permissionExtMapper.selectByPrimaryKey(11L))
+                .ifPresent(r -> log.info("====== {} ======", JsonUtils.toJson(r)));
     }
 
     @Test
@@ -124,27 +134,6 @@ public class ApplicationTest {
         criteria.andCreatedAtBetween(DateUtils.addDays(sysTime, -3), sysTime);
         List<User> users = userExtMapper.selectByExample(example);
         log.info(JsonUtils.toJson(users));
-    }
-
-    @Test
-    public void testGetPermById() {
-        Optional.ofNullable(permissionExtMapper.selectByPrimaryKey(11L))
-                .ifPresent(r -> log.info("====== {} ======", JsonUtils.toJson(r)));
-    }
-
-    @Test
-    public void testGetPage() {
-        Page<Role> page = roleExtMapper.getPage(Collections.emptyMap(), 1, 10);
-        log.info("====== {} ======", JsonUtils.toJson(page));
-    }
-
-    @Test
-    public void testGetPermissions() throws Exception {
-        IntStream.rangeClosed(1, 10).forEach(i -> new Thread(() -> {
-            List<Permission> list = permissionService.getPermissions("admin");
-            log.info("====== {} ======", list);
-        }).start());
-        Thread.currentThread().join();
     }
 
     @Test

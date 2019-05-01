@@ -1,6 +1,7 @@
 package com.gavin.cloud.common.core.config;
 
 import com.gavin.cloud.common.core.dialect.Database;
+import com.gavin.cloud.common.core.dialect.MySQLDialect;
 import com.gavin.cloud.common.core.plugin.PageInterceptor;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.mapping.VendorDatabaseIdProvider;
@@ -42,7 +43,7 @@ public class MybatisConfig {
     @Bean
     @ConditionalOnMissingBean
     public Interceptor pageInterceptor() {
-        return new PageInterceptor();
+        return new PageInterceptor(new MySQLDialect());
     }
 
 }

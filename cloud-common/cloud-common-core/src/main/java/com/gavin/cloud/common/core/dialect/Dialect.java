@@ -1,8 +1,6 @@
 package com.gavin.cloud.common.core.dialect;
 
-public interface DialectHandler {
-
-    boolean supportsType(Database database);
+public interface Dialect {
 
     String getLimitString(String sql, int offset, int pageSize);
 

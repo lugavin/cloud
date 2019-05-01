@@ -2,29 +2,18 @@ package com.gavin.cloud.common.core.plugin;
 
 import com.gavin.cloud.common.base.page.PageImpl;
 import com.gavin.cloud.common.base.page.Pageable;
-import com.gavin.cloud.common.base.util.JsonUtils;
-import com.gavin.cloud.common.core.dialect.Database;
-import com.gavin.cloud.common.core.dialect.DialectHandler;
-import com.gavin.cloud.common.core.dialect.DialectHandlerFactory;
+import com.gavin.cloud.common.core.dialect.Dialect;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.executor.Executor;
-import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
-import org.apache.ibatis.mapping.SqlSource;
+import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.plugin.*;
-import org.apache.ibatis.scripting.defaults.DefaultParameterHandler;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
-import org.springframework.jdbc.datasource.DataSourceUtils;
-import org.springframework.jdbc.support.JdbcUtils;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -35,36 +24,47 @@ import java.util.Properties;
 })
 public class PageInterceptor implements Interceptor {
 
-    private static final String SPACE = " ";
-    private static final String MULTI_SPACE_PATTERN = " +";
-    private static final String NEWLINE_PATTERN = "[\\n\\r\\t]";
+    private static final String COUNT_SUFFIX = "Count";
 
     private static final int MAPPED_STATEMENT_INDEX = 0;
     private static final int PARAMETER_INDEX = 1;
     private static final int ROW_BOUNDS_INDEX = 2;
     private static final int RESULT_HANDLER_INDEX = 3;
 
+    private final Dialect dialect;
+
+    public PageInterceptor(Dialect dialect) {
+        this.dialect = dialect;
+    }
+
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         final Object[] args = invocation.getArgs();
         final Object parameter = args[PARAMETER_INDEX];
+        Executor executor = (Executor) invocation.getTarget();
         if (parameter instanceof Pageable) {
             Pageable<?> pageable = (Pageable<?>) parameter;
-            final MappedStatement ms = (MappedStatement) args[MAPPED_STATEMENT_INDEX];
-            final BoundSql boundSql = ms.getBoundSql(parameter);
             int page = pageable.getPage();
             int pageSize = pageable.getPageSize();
+            final MappedStatement ms = (MappedStatement) args[MAPPED_STATEMENT_INDEX];
+            final ResultHandler resultHandler = (ResultHandler) args[RESULT_HANDLER_INDEX];
+            final BoundSql boundSql = ms.getBoundSql(parameter);
 
-            DialectCountHolder holder = getCount(ms, boundSql);
-            DialectHandler dialectHandler = holder.getDialectHandler();
-            int totalItems = holder.getCount();
+            Counter counter = new Counter();
+            String countSql = dialect.getCountString(boundSql.getSql());
+            MappedStatement countStatement = newCountMappedStatement(ms, boundSql, countSql);
+            executor.query(countStatement, boundSql.getParameterObject(), RowBounds.DEFAULT, rc -> counter.value = ((Long) rc.getResultObject()).intValue());
 
-            String limitSql = dialectHandler.getLimitString(boundSql.getSql(), (page - 1) * pageSize, pageSize);
-            args[ROW_BOUNDS_INDEX] = new RowBounds(RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
-            args[MAPPED_STATEMENT_INDEX] = newMappedStatement(ms, boundSql, limitSql);
-            List<?> items = (List<?>) invocation.proceed();
+            String limitSql = dialect.getLimitString(boundSql.getSql(), (page - 1) * pageSize, pageSize);
+            MappedStatement limitStatement = newLimitMappedStatement(ms, boundSql, limitSql);
+            List<?> items = executor.query(limitStatement, parameter, RowBounds.DEFAULT, resultHandler);
 
-            return Collections.singletonList(new PageImpl<>(page, pageSize, items, totalItems));
+            //String limitSql = dialect.getLimitString(boundSql.getSql(), (page - 1) * pageSize, pageSize);
+            //args[ROW_BOUNDS_INDEX] = new RowBounds(RowBounds.NO_ROW_OFFSET, RowBounds.NO_ROW_LIMIT);
+            //args[MAPPED_STATEMENT_INDEX] = newLimitMappedStatement(ms, boundSql, limitSql);
+            //List<?> items = (List<?>) invocation.proceed();
+
+            return Collections.singletonList(new PageImpl<>(page, pageSize, items, counter.value));
         }
         return invocation.proceed();
     }
@@ -78,113 +78,44 @@ public class PageInterceptor implements Interceptor {
     public void setProperties(Properties properties) {
     }
 
-    /**
-     * @see org.springframework.jdbc.core.JdbcTemplate#execute
-     * @see DataSourceUtils
-     * @see <a href="https://www.ibm.com/developerworks/cn/java/j-lo-spring-ts1/">Spring Transaction Manager</a>
-     */
-    private DialectCountHolder getCount(MappedStatement ms, BoundSql boundSql) throws SQLException {
-        DataSource dataSource = ms.getConfiguration().getEnvironment().getDataSource();
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        try {
-            // 首先尝试从事务上下文中获取连接, 失败后再从数据源获取连接
-            conn = DataSourceUtils.getConnection(dataSource);
-            DialectHandler dialectHandler = getDatabaseDialect(conn);
-            String countSql = dialectHandler.getCountString(boundSql.getSql());
-            stmt = conn.prepareStatement(countSql);
-            log.debug("==>  Preparing: {}", countSql.replaceAll(NEWLINE_PATTERN, SPACE).replaceAll(MULTI_SPACE_PATTERN, SPACE));
-            BoundSql countBoundSql = newBoundSql(ms, boundSql, countSql);
-            ParameterHandler handler = new DefaultParameterHandler(ms, boundSql.getParameterObject(), countBoundSql);
-            handler.setParameters(stmt);
-            log.debug("==> Parameters: {}", JsonUtils.toJson(boundSql.getParameterObject()));
-            rs = stmt.executeQuery();
-            int count = 0;
-            if (rs.next()) {
-                count = rs.getInt(1);
-            }
-            log.debug("<==      Total: {}", count);
-            return new DialectCountHolder(dialectHandler, count);
-        } finally {
-            JdbcUtils.closeResultSet(rs);
-            JdbcUtils.closeStatement(stmt);
-            // 释放连接, 放回到连接池中
-            DataSourceUtils.releaseConnection(conn, dataSource);
-        }
+    private MappedStatement newCountMappedStatement(MappedStatement ms, BoundSql boundSql, String countSql) {
+        String countStatementId = ms.getId() + COUNT_SUFFIX;
+        List<ResultMap> countResultMaps = Collections.singletonList(new ResultMap.Builder(ms.getConfiguration(), countStatementId, Long.class, Collections.emptyList()).build());
+        return newMappedStatement(ms, boundSql, countSql, countStatementId, countResultMaps);
     }
 
-    private MappedStatement newMappedStatement(MappedStatement ms, BoundSql boundSql, String sql) {
-        return newMappedStatement(ms, p -> newBoundSql(ms, boundSql, sql));
+    private MappedStatement newLimitMappedStatement(MappedStatement ms, BoundSql boundSql, String limitSql) {
+        return newMappedStatement(ms, boundSql, limitSql, ms.getId(), ms.getResultMaps());
+    }
+
+    private MappedStatement newMappedStatement(MappedStatement ms, BoundSql boundSql, String sql, String statementId, List<ResultMap> resultMaps) {
+        return new MappedStatement.Builder(ms.getConfiguration(), statementId, p -> newBoundSql(ms, boundSql, sql), ms.getSqlCommandType())
+                .resource(ms.getResource())
+                .fetchSize(ms.getFetchSize())
+                .statementType(ms.getStatementType())
+                .keyGenerator(ms.getKeyGenerator())
+                .keyProperty(StringUtils.join(ms.getKeyProperties(), ","))
+                .timeout(ms.getTimeout())
+                .parameterMap(ms.getParameterMap())
+                .resultMaps(resultMaps)
+                .resultSetType(ms.getResultSetType())
+                .cache(ms.getCache())
+                .flushCacheRequired(ms.isFlushCacheRequired())
+                .useCache(ms.isUseCache())
+                .build();
     }
 
     private BoundSql newBoundSql(MappedStatement ms, BoundSql boundSql, String sql) {
         final BoundSql newBoundSql = new BoundSql(ms.getConfiguration(), sql, boundSql.getParameterMappings(), boundSql.getParameterObject());
-        for (ParameterMapping mapping : boundSql.getParameterMappings()) {
-            String prop = mapping.getProperty();
-            if (boundSql.hasAdditionalParameter(prop)) {
-                newBoundSql.setAdditionalParameter(prop, boundSql.getAdditionalParameter(prop));
-            }
-        }
+        boundSql.getParameterMappings().stream()
+                .map(ParameterMapping::getProperty)
+                .filter(boundSql::hasAdditionalParameter)
+                .forEach(p -> newBoundSql.setAdditionalParameter(p, boundSql.getAdditionalParameter(p)));
         return newBoundSql;
     }
 
-    /**
-     * @see org.apache.ibatis.builder.MapperBuilderAssistant
-     */
-    private MappedStatement newMappedStatement(MappedStatement ms, SqlSource sqlSource) {
-        MappedStatement.Builder builder = new MappedStatement.Builder(ms.getConfiguration(), ms.getId(), sqlSource, ms.getSqlCommandType());
-        builder.resource(ms.getResource());
-        builder.fetchSize(ms.getFetchSize());
-        builder.statementType(ms.getStatementType());
-        builder.keyGenerator(ms.getKeyGenerator());
-        if (ms.getKeyProperties() != null && ms.getKeyProperties().length != 0) {
-            StringBuilder keyProperties = new StringBuilder();
-            for (String keyProperty : ms.getKeyProperties()) {
-                keyProperties.append(keyProperty).append(",");
-            }
-            keyProperties.delete(keyProperties.length() - 1, keyProperties.length());
-            builder.keyProperty(keyProperties.toString());
-        }
-        builder.timeout(ms.getTimeout());
-        builder.parameterMap(ms.getParameterMap());
-        builder.resultMaps(ms.getResultMaps());
-        builder.resultSetType(ms.getResultSetType());
-        builder.cache(ms.getCache());
-        builder.flushCacheRequired(ms.isFlushCacheRequired());
-        builder.useCache(ms.isUseCache());
-        return builder.build();
-    }
-
-    /**
-     * @see org.apache.ibatis.mapping.VendorDatabaseIdProvider#getDatabaseProductName
-     */
-    private DialectHandler getDatabaseDialect(Connection conn) throws SQLException {
-        String productName = conn.getMetaData().getDatabaseProductName();
-        return DialectHandlerFactory.getDialectHandler().stream()
-                .filter(h -> h.supportsType(Database.fromType(productName)))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Unsupported database type: " + productName));
-    }
-
-    private static class DialectCountHolder {
-
-        private final DialectHandler dialectHandler;
-        private final int count;
-
-        DialectCountHolder(DialectHandler dialectHandler, int count) {
-            this.dialectHandler = dialectHandler;
-            this.count = count;
-        }
-
-        DialectHandler getDialectHandler() {
-            return dialectHandler;
-        }
-
-        int getCount() {
-            return count;
-        }
-
+    private static class Counter {
+        private int value;
     }
 
 }

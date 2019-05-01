@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC
+        "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+    <properties resource="jdbc.properties"/>
+
+    <!-- 全局设置 -->
+    <settings>
+        <!-- 开启延迟加载 -->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <!-- 开启二级缓存 -->
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+
+    <!-- 别名设置 -->
+    <typeAliases>
+        <!-- 内建的常见类型别名 -->
+        <!--
+        <typeAlias alias="_byte" type="byte"/>
+        <typeAlias alias="_long" type="long"/>
+        <typeAlias alias="_short" type="short"/>
+        <typeAlias alias="_int" type="int"/>
+        <typeAlias alias="_integer" type="int"/>
+        <typeAlias alias="_double" type="double"/>
+        <typeAlias alias="_float" type="float"/>
+        <typeAlias alias="_boolean" type="boolean"/>
+        <typeAlias alias="string" type="String"/>
+        <typeAlias alias="byte" type="Byte"/>
+        <typeAlias alias="long" type="Long"/>
+        <typeAlias alias="short" type="Short"/>
+        <typeAlias alias="int" type="Integer"/>
+        <typeAlias alias="integer" type="Integer"/>
+        <typeAlias alias="double" type="Double"/>
+        <typeAlias alias="float" type="Float"/>
+        <typeAlias alias="boolean" type="Boolean"/>
+        <typeAlias alias="date" type="Date"/>
+        <typeAlias alias="decimal" type="BigDecimal"/>
+        <typeAlias alias="bigdecimal" type="BigDecimal"/>
+        <typeAlias alias="object" type="Object"/>
+        <typeAlias alias="map" type="Map"/>
+        <typeAlias alias="hashmap" type="HashMap"/>
+        <typeAlias alias="list" type="List"/>
+        <typeAlias alias="arraylist" type="ArrayList"/>
+        <typeAlias alias="collection" type="Collection"/>
+        <typeAlias alias="iterator" type="Iterator"/>
+        -->
+        <!-- MyBatis自动扫描所指定包中的类并自动创建别名(别名就是类名且大小写均可) -->
+        <!--<package name="org.mybatis.api.model"/>-->
+    </typeAliases>
+
+    <environments default="development">
+        <environment id="development">
+            <!-- 使用JDBC事务管理(由MyBatis管理) -->
+            <transactionManager type="JDBC"/>
+            <!-- 使用数据库连接池(由MyBatis管理) -->
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!-- 映射文件 -->
+    <mappers>
+        <!-- Mapper代理开发(当映射文件和Mapper接口在同级目录下时，可让MyBatis自动扫描指定包下的映射文件) -->
+        <package name="com.gavin.cloud.sys.core.mapper"/>
+    </mappers>
+
+</configuration>

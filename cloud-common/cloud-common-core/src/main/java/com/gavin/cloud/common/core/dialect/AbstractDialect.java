@@ -3,7 +3,7 @@ package com.gavin.cloud.common.core.dialect;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class AbstractDialectHandler implements DialectHandler {
+public abstract class AbstractDialect implements Dialect {
 
     private static final String COUNT_REPLACEMENT_TEMPLATE = "SELECT COUNT(1) %s";
     private static final Pattern ORDER_BY_PATTERN = Pattern.compile("\\s+ORDER\\s+BY\\s+.*", Pattern.CASE_INSENSITIVE);
@@ -24,7 +24,7 @@ public abstract class AbstractDialectHandler implements DialectHandler {
         return String.format(COUNT_REPLACEMENT_TEMPLATE, removeSelect(removeOrderBy(sql)));
     }
 
-    abstract String getLimitQueryString(String sql, int offset, int pageSize);
+    protected abstract String getLimitQueryString(String sql, int offset, int pageSize);
 
     /**
      * Remove select clause
