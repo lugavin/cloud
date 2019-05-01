@@ -20,6 +20,6 @@ public interface PermissionExtMapper extends PermissionMapper {
      */
     List<Permission> getPermsByUid(@Param("uid") Long uid, @Param("type") ResourceType type);
 
-    PermissionVO getById(Long id);
+    PermissionVO selectByPrimaryKey(Long id);
 
 }

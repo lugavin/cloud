@@ -4,32 +4,12 @@
 
 <mapper namespace="com.gavin.cloud.sys.core.mapper.ext.UserExtMapper">
 
-    <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.pojo.User">
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="username" jdbcType="VARCHAR" property="username"/>
-        <result column="password" jdbcType="VARCHAR" property="password"/>
-        <result column="nickname" jdbcType="VARCHAR" property="nickname"/>
-        <result column="salt" jdbcType="VARCHAR" property="salt"/>
-        <result column="phone" jdbcType="VARCHAR" property="phone"/>
-        <result column="email" jdbcType="VARCHAR" property="email"/>
-        <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
-        <result column="lang_key" jdbcType="VARCHAR" property="langKey"/>
-        <result column="activated" jdbcType="BIT" property="activated"/>
-        <result column="activation_key" jdbcType="VARCHAR" property="activationKey"/>
-        <result column="reset_key" jdbcType="VARCHAR" property="resetKey"/>
-        <result column="reset_date" jdbcType="TIMESTAMP" property="resetDate"/>
-        <result column="created_by" jdbcType="VARCHAR" property="createdBy"/>
-        <result column="created_at" jdbcType="TIMESTAMP" property="createdAt"/>
-        <result column="updated_by" jdbcType="VARCHAR" property="updatedBy"/>
-        <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt"/>
-    </resultMap>
-
     <sql id="Base_Column_List">
         id, username, `password`, nickname, salt, phone, email, avatar, lang_key, activated,
         activation_key, reset_key, reset_date, created_by, created_at, updated_by, updated_at
     </sql>
 
-    <select id="getList" parameterType="map" resultMap="BaseResultMap" databaseId="mysql">
+    <select id="getList" parameterType="map" resultType="com.gavin.cloud.sys.pojo.User">
         SELECT
         <include refid="Base_Column_List"/>
         FROM sys_user
@@ -41,12 +21,17 @@
                 AND username = #{username}
             </if>
             <if test="nickname!=null and nickname!=''">
-                AND nickname LIKE CONCAT('%',#{nickname},'%')
+                <if test="_databaseId == 'mysql'">
+                    AND nickname LIKE CONCAT('%',#{nickname},'%')
+                </if>
+                <if test="_databaseId == 'oracle'">
+                    AND nickname LIKE '%'||#{nickname}||'%'
+                </if>
             </if>
         </where>
     </select>
 
-    <select id="getPage" parameterType="com.gavin.cloud.common.base.page.Pageable" resultMap="BaseResultMap" databaseId="mysql">
+    <select id="getPage" parameterType="com.gavin.cloud.common.base.page.Pageable" resultType="com.gavin.cloud.sys.pojo.User" databaseId="mysql">
         SELECT
         <include refid="Base_Column_List"/>
         FROM sys_user

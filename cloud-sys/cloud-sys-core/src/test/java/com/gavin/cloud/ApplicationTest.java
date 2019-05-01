@@ -1,7 +1,6 @@
 package com.gavin.cloud;
 
 import com.gavin.cloud.common.base.page.Page;
-import com.gavin.cloud.common.base.page.PageRequest;
 import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.base.util.JsonUtils;
 import com.gavin.cloud.sys.core.mapper.UserMapper;
@@ -29,12 +28,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.IntStream;
 
 /**
@@ -133,9 +127,9 @@ public class ApplicationTest {
     }
 
     @Test
-    public void testGetRoles() {
-        roleExtMapper.getList(Collections.emptyMap())
-                .forEach(r -> log.info("====== {} ======", JsonUtils.toJson(r)));
+    public void testGetPermById() {
+        Optional.ofNullable(permissionExtMapper.selectByPrimaryKey(11L))
+                .ifPresent(r -> log.info("====== {} ======", JsonUtils.toJson(r)));
     }
 
     @Test

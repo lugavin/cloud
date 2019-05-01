@@ -4,18 +4,11 @@
 
 <mapper namespace="com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper">
 
-    <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.pojo.Role">
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="code" jdbcType="VARCHAR" property="code"/>
-        <result column="name" jdbcType="VARCHAR" property="name"/>
-        <result column="remark" jdbcType="VARCHAR" property="remark"/>
-    </resultMap>
-
     <sql id="Base_Column_List">
         id, code, `name`, remark
     </sql>
 
-    <select id="getList" resultMap="BaseResultMap" databaseId="mysql">
+    <select id="getList" resultType="com.gavin.cloud.sys.pojo.Role">
         SELECT
         <include refid="Base_Column_List"/>
         FROM sys_role
@@ -27,12 +20,17 @@
                 AND code = #{code}
             </if>
             <if test="name!=null and name!=''">
-                AND name LIKE CONCAT('%',#{name},'%')
+                <if test="_databaseId == 'mysql'">
+                    AND name LIKE CONCAT('%',#{name},'%')
+                </if>
+                <if test="_databaseId == 'oracle'">
+                    AND name LIKE '%'||#{name}||'%'
+                </if>
             </if>
         </where>
     </select>
 
-    <select id="getPage" resultMap="BaseResultMap" databaseId="mysql">
+    <select id="getPage" resultType="com.gavin.cloud.sys.pojo.Role">
         SELECT
         <include refid="Base_Column_List"/>
         FROM sys_role
@@ -42,13 +40,18 @@
                     AND code = #{param.code}
                 </if>
                 <if test="param.name!=null and param.name!=''">
-                    AND name LIKE CONCAT('%',#{param.name},'%')
+                    <if test="_databaseId == 'mysql'">
+                        AND name LIKE CONCAT('%',#{param.name},'%')
+                    </if>
+                    <if test="_databaseId == 'oracle'">
+                        AND name LIKE '%'||#{param.name}||'%'
+                    </if>
                 </if>
             </if>
         </where>
     </select>
 
-    <select id="getByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <select id="getByUserId" parameterType="java.lang.String" resultType="com.gavin.cloud.sys.pojo.Role">
         SELECT a.id, a.code, a.`name`, a.remark
           FROM sys_role a
           JOIN sys_user_role b ON a.id = b.role_id

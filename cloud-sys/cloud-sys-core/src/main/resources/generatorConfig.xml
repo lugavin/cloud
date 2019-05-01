@@ -54,6 +54,8 @@
             <property name="enableSubPackages" value="false"/>
             <!-- 从数据库返回的值被清理前后的空格 -->
             <property name="trimStrings" value="false"/>
+            <!-- rootClass : 给生成的model添加一个父类 -->
+            <property name="rootClass" value="com.gavin.cloud.common.base.pojo.AbstractModel"/>
         </javaModelGenerator>
 
         <!-- targetPackage: 生成mapper映射文件的位置 -->
@@ -67,6 +69,8 @@
                              type="XMLMAPPER">
             <!-- enableSubPackages: 是否让schema作为包的后缀 -->
             <property name="enableSubPackages" value="false"/>
+            <!-- rootInterface : 给生成的接口添加一个父类(标记接口) -->
+            <!--<property name="rootInterface" value="com.gavin.cloud.common.core.mapper.CrudMapper"/>-->
         </javaClientGenerator>
 
         <!-- 指定数据库表 -->

@@ -5,23 +5,18 @@
 
 <mapper namespace="com.gavin.cloud.sys.core.mapper.ext.PermissionExtMapper">
 
-    <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.pojo.Permission">
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="code" jdbcType="VARCHAR" property="code"/>
-        <result column="name" jdbcType="VARCHAR" property="name"/>
-        <result column="type" jdbcType="VARCHAR" property="type"/>
-        <result column="icon" jdbcType="VARCHAR" property="icon"/>
-        <result column="url" jdbcType="VARCHAR" property="url"/>
-        <result column="seq" jdbcType="SMALLINT" property="seq"/>
-        <result column="is_parent" jdbcType="BIT" property="isParent"/>
-        <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
+    <!--
+    <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.pojo.vo.PermissionVO"
+               extends="com.gavin.cloud.sys.core.mapper.PermissionMapper.BaseResultMap">
+        <result column="parent_name" jdbcType="VARCHAR" property="parentName"/>
     </resultMap>
+    -->
 
     <sql id="Base_Column_List">
         a.id, a.code, a.`name`, a.`type`, a.icon, a.url, a.seq, a.is_parent, a.parent_id
     </sql>
 
-    <select id="getPermsByRole" parameterType="string" resultMap="BaseResultMap">
+    <select id="getPermsByRole" parameterType="string" resultType="com.gavin.cloud.sys.pojo.Permission">
         SELECT <include refid="Base_Column_List"/>
           FROM sys_permission a
      LEFT JOIN sys_role_permission b ON a.id = b.permission_id
@@ -32,7 +27,7 @@
         </foreach>
     </select>
 
-    <select id="getPermsByUid" parameterType="map" resultMap="BaseResultMap">
+    <select id="getPermsByUid" parameterType="map" resultType="com.gavin.cloud.sys.pojo.Permission">
         SELECT <include refid="Base_Column_List"/>
           FROM sys_permission a
      LEFT JOIN sys_role_permission b ON a.id = b.permission_id
@@ -41,7 +36,7 @@
            AND a.type = #{type}
     </select>
 
-    <select id="getById" parameterType="long" resultType="com.gavin.cloud.sys.pojo.vo.PermissionVO">
+    <select id="selectByPrimaryKey" parameterType="long" resultType="com.gavin.cloud.sys.pojo.vo.PermissionVO">
         SELECT <include refid="Base_Column_List"/>,
                b.name AS parentName
           FROM sys_permission a LEFT JOIN sys_permission b

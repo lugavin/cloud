@@ -24,6 +24,9 @@ import java.util.stream.Collectors;
 @ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class})
 public class MybatisConfig {
 
+    /**
+     * @see <a href="http://www.mybatis.org/mybatis-3/zh/dynamic-sql.html">Multi-db vendor support</a>
+     */
     @Bean
     @ConditionalOnMissingBean
     public DatabaseIdProvider databaseIdProvider() {
