@@ -20,7 +20,6 @@
         <module>cloud-sys-pojo</module>
         <module>cloud-sys-core</module>
         <module>cloud-sys-api</module>
-        <module>cloud-sys-job</module>
         <module>cloud-sys-web</module>
     </modules>
 

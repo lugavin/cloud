@@ -18,6 +18,7 @@ Spring Cloud APP
 ### 分布式搜索引擎(Elasticsearch)
 ### 分布式日志分析(ELK)
 ### 分布式消息通信(Kafka)
+### 分布式任务调度
 ### 分布式事务(RocketMQ)
 ### 分库分表(ShardingSphere)
 

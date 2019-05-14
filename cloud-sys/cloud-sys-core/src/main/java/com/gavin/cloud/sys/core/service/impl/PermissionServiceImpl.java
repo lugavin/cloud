@@ -182,7 +182,7 @@ public class PermissionServiceImpl implements PermissionService {
             HashOperations<String, String, String> opsForHash = redisTemplate.opsForHash();
             String json = opsForHash.get(key, hashKey);
             if (StringUtils.isNotBlank(json)) {
-                return JsonUtils.getList(json, Permission.class);
+                return JsonUtils.fromJson(json, List.class, Permission.class);
             }
         } catch (Exception e) { // 缓存的添加不能影响正常业务逻辑
             log.warn("从缓存中获取权限数据失败", e);

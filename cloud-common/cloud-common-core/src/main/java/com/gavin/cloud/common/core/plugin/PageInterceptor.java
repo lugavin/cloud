@@ -3,7 +3,6 @@ package com.gavin.cloud.common.core.plugin;
 import com.gavin.cloud.common.base.page.PageImpl;
 import com.gavin.cloud.common.base.page.Pageable;
 import com.gavin.cloud.common.core.dialect.Dialect;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
@@ -18,7 +17,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-@Slf4j
 @Intercepts({@Signature(type = Executor.class, method = "query", args = {
         MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class})
 })

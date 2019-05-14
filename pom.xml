@@ -27,6 +27,7 @@
         <module>cloud-sys</module>
         <module>cloud-auth</module>
         <module>cloud-mail</module>
+        <module>cloud-job</module>
         <module>cloud-sms</module>
         <module>cloud-pay</module>
         <module>cloud-search</module>
@@ -136,6 +137,12 @@
         <repository>
             <id>aliyun-nexus</id>
             <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 

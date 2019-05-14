@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,11 +58,7 @@ public class ValidationAspect {
         // this.parameterNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
     }
 
-    @Pointcut("execution(* com.gavin..*.service.*Service.*(..))")
-    private void validationPointcut() {
-    }
-
-    @Before("validationPointcut()")
+    @Before("execution(* com.gavin..*.service.*Service.*(..))")
     public void validate(JoinPoint joinPoint) {
 
         LOGGER.debug("Starting Validation");

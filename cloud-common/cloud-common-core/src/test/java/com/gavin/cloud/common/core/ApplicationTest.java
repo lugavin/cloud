@@ -4,6 +4,7 @@ import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import com.gavin.cloud.common.core.mapper.CommentMapper;
 import com.gavin.cloud.common.core.mapper.CounterMapper;
 import com.gavin.cloud.common.core.model.Comment;
+import com.gavin.cloud.common.core.model.Counter;
 import com.gavin.cloud.common.core.transaction.ServiceA;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
@@ -13,6 +14,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Calendar;
+import java.util.Optional;
 
 /**
  * 对于基于接口动态代理的 AOP 事务增强来说, 由于接口的方法是 public 的, 这就要求实现类的实现方法必须是 public 的
@@ -61,17 +65,30 @@ public class ApplicationTest {
         Comment record = new Comment();
         record.setId(SnowflakeIdWorker.getInstance().nextId());
         record.setCreatedBy("admin");
-        log.debug("====== {} ======", commentMapper.insert(record));
+        int row = commentMapper.insert(record);
+        Assert.assertEquals(1, row);
     }
 
     @Test
     public void testSelectProvider() {
-        log.debug("====== {} ======", commentMapper.selectByPrimaryKey(101L));
+        Optional.ofNullable(commentMapper.selectByPrimaryKey(101L))
+                .ifPresent(r -> log.debug("====== {} ======", r));
     }
 
     @Test
-    public void testSelect() {
-        log.debug("====== {} ======", counterMapper.selectByPrimaryKey(102L));
+    public void testSharding() {
+        commentMapper.selectAll()
+                .forEach(r -> log.debug("====== {} ======", r));
+    }
+
+    @Test
+    public void testPartition() {
+        Counter record = new Counter();
+        record.setId(SnowflakeIdWorker.getInstance().nextId());
+        record.setCreatedAt(Calendar.getInstance().getTime());
+        record.setCreatedBy("admin");
+        int row = counterMapper.insert(record);
+        Assert.assertEquals(1, row);
     }
 
 }

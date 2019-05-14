@@ -2,9 +2,6 @@ package com.gavin.cloud.common.base.util;
 
 import java.io.*;
 
-/**
- * @see org.springframework.util.SerializationUtils
- */
 public abstract class SerializationUtils {
 
     /**
@@ -17,15 +14,14 @@ public abstract class SerializationUtils {
         if (object == null) {
             return null;
         }
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
-        try {
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
+             ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeObject(object);
             oos.flush();
+            return baos.toByteArray();
         } catch (IOException ex) {
             throw new IllegalArgumentException("Failed to serialize object of type: " + object.getClass(), ex);
         }
-        return baos.toByteArray();
     }
 
     /**
@@ -38,8 +34,7 @@ public abstract class SerializationUtils {
         if (bytes == null) {
             return null;
         }
-        try {
-            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes));
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
             return ois.readObject();
         } catch (IOException ex) {
             throw new IllegalArgumentException("Failed to deserialize object", ex);

@@ -9,10 +9,7 @@ import lombok.NonNull;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -45,7 +42,7 @@ public abstract class JwtHelper {
         try {
             Claims claims = Jwts.parser()
                     .setSigningKey(publicKey)
-                    .deserializeJsonWith(bytes -> JsonUtils.getMap(new String(bytes, UTF_8)))
+                    .deserializeJsonWith(bytes -> JsonUtils.fromJson(new String(bytes, UTF_8), Map.class))
                     .parseClaimsJws(token)
                     .getBody();
             //OK, we can trust this JWT
