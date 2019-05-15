@@ -1,6 +1,7 @@
 package com.gavin.cloud.common.core;
 
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
+import com.gavin.cloud.common.core.dto.PrcDTO;
 import com.gavin.cloud.common.core.mapper.CommentMapper;
 import com.gavin.cloud.common.core.mapper.CounterMapper;
 import com.gavin.cloud.common.core.model.Comment;
@@ -38,6 +39,9 @@ import java.util.Optional;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class ApplicationTest {
+
+    private static final String RET_CODE_OK = "000000";
+    private static final String RET_CODE_ERR = "999999";
 
     @Autowired
     private ServiceA serviceA;
@@ -89,6 +93,21 @@ public class ApplicationTest {
         record.setCreatedBy("admin");
         int row = counterMapper.insert(record);
         Assert.assertEquals(1, row);
+    }
+
+    @Test
+    public void testProcedure() {
+        PrcDTO prcDTO = new PrcDTO();
+        prcDTO.setBizTable("counter");
+        prcDTO.setTmpTable("counter_tmp");
+        prcDTO.setHisTable("counter_his");
+        prcDTO.setRemDays(7);
+        counterMapper.callPrc(prcDTO);
+        if (!RET_CODE_OK.equals(prcDTO.getRetCode())) {
+            throw new RuntimeException(prcDTO.getRetMsg());
+        } else {
+            log.debug("====== {} ======", prcDTO.getRetCode());
+        }
     }
 
 }
