@@ -14,7 +14,7 @@ public interface CounterMapper {
     @InsertProvider(type = CounterProvider.class, method = "insert")
     int insert(Counter record);
 
-    @Select("{ CALL prc_exchange_partition(#{bizTable,jdbcType=VARCHAR,mode=IN}, #{tmpTable,jdbcType=VARCHAR,mode=IN}, #{hisTable,jdbcType=VARCHAR,mode=IN}, #{remDays,jdbcType=INTEGER,mode=IN}, #{retCode,jdbcType=VARCHAR,mode=OUT}, #{retMsg,jdbcType=VARCHAR,mode=OUT}) }")
+    @Select("{ CALL prc_exchange_partition(#{bizTable,jdbcType=VARCHAR,mode=IN}, #{hisTable,jdbcType=VARCHAR,mode=IN}, #{tmpTable,jdbcType=VARCHAR,mode=IN}, #{remDays,jdbcType=INTEGER,mode=IN}, #{retCode,jdbcType=VARCHAR,mode=OUT}, #{retMsg,jdbcType=VARCHAR,mode=OUT}) }")
     @Options(statementType = StatementType.CALLABLE)
     void callPrc(PrcDTO prcDTO);
 

@@ -40,8 +40,7 @@ import java.util.Optional;
 @RunWith(SpringRunner.class)
 public class ApplicationTest {
 
-    private static final String RET_CODE_OK = "000000";
-    private static final String RET_CODE_ERR = "999999";
+    private static final String PRC_RET_CODE_OK = "000000";
 
     @Autowired
     private ServiceA serviceA;
@@ -96,17 +95,15 @@ public class ApplicationTest {
     }
 
     @Test
-    public void testProcedure() {
+    public void testCallPrc() {
         PrcDTO prcDTO = new PrcDTO();
         prcDTO.setBizTable("counter");
-        prcDTO.setTmpTable("counter_tmp");
         prcDTO.setHisTable("counter_his");
+        prcDTO.setTmpTable("counter_tmp");
         prcDTO.setRemDays(7);
         counterMapper.callPrc(prcDTO);
-        if (!RET_CODE_OK.equals(prcDTO.getRetCode())) {
+        if (!PRC_RET_CODE_OK.equals(prcDTO.getRetCode())) {
             throw new RuntimeException(prcDTO.getRetMsg());
-        } else {
-            log.debug("====== {} ======", prcDTO.getRetCode());
         }
     }
 

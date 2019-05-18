@@ -65,4 +65,12 @@ CREATE TABLE `counter` (
   PARTITION P_20190101 VALUES LESS THAN(TO_DAYS('2019-01-01')),
   PARTITION P_20200301 VALUES LESS THAN(TO_DAYS('2020-01-01'))
 );
+DROP TABLE IF EXISTS `counter_his`;
+CREATE TABLE counter_his LIKE counter;
+ALTER TABLE counter_his COMMENT '访问统计历史表';
+DROP TABLE IF EXISTS `counter_tmp`;
+CREATE TABLE counter_tmp LIKE counter;
+ALTER TABLE counter_tmp REMOVE PARTITIONING;
+ALTER TABLE counter_tmp COMMENT '访问统计临时表(用于分区交换数据)';
+-- INSERT INTO counter SELECT 20170101, 'Gavin\'s Blog', 'https://lugavin.github.io', 1, 'admin', '2017-01-01 00:00:00', null, null;
 -- EXPLAIN PARTITIONS SELECT COUNT(1) FROM counter WHERE created_at < '2018-01-01';
