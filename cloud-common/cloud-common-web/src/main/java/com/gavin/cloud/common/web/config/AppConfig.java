@@ -24,4 +24,12 @@ public class AppConfig {
         return new JwtProperties();
     }
 
+    //@Bean
+    //@ConfigurationProperties("app.task")
+    //public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
+    //    ThreadPoolTaskExecutor pool = new ThreadPoolTaskExecutor();
+    //    pool.setRejectedExecutionHandler(new java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy());
+    //    return pool;
+    //}
+
 }
