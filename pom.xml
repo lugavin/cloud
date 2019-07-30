@@ -165,6 +165,10 @@
                     </dependency>
                 </dependencies>
                 <configuration>
+                    <!--
+                    (1)只会覆盖Java文件不会覆盖Mapper.xml文件
+                    (2)覆盖Mapper.xml文件需要配置插件<plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
+                    -->
                     <verbose>true</verbose>
                     <overwrite>true</overwrite>
                     <!--<configurationFile>${basedir}/src/main/resources/generatorConfig.xml</configurationFile>-->
@@ -174,12 +178,14 @@
         <resources>
             <resource>
                 <directory>${basedir}/src/main/java</directory>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
             </resource>
             <resource>
                 <directory>${basedir}/src/main/resources</directory>
+                <!-- 开启filtering(将配置文件引用的@variable@替换为profile中定义的变量) -->
+                <filtering>true</filtering>
             </resource>
         </resources>
     </build>

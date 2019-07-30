@@ -20,6 +20,8 @@
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
         <!-- 该插件用来在XxxExample类中生成大小写敏感的LIKE方法 -->
         <plugin type="org.mybatis.generator.plugins.CaseInsensitiveLikePlugin"/>
+        <!-- 该插件用来自动覆盖Mapper.xml文件 -->
+        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
         <!--
         <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"/>
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
