@@ -8,6 +8,7 @@ import org.redisson.Redisson;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
+import org.springframework.util.ResourceUtils;
 
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
@@ -19,16 +20,17 @@ public class RedissonTest {
 
     @Before
     public void setUp() throws Exception {
-        URL url = Thread.currentThread().getContextClassLoader().getResource("redisson.yml");
+        //URL url = Thread.currentThread().getContextClassLoader().getResource("redisson.yml");
+        URL url = ResourceUtils.getURL("classpath:redisson.yml");
         Config config = Config.fromYAML(url);
         redisson = Redisson.create(config);
     }
 
     @After
     public void tearDown() {
-        if (redisson != null) {
-            redisson.shutdown();
-        }
+        //if (redisson != null) {
+        //    redisson.shutdown();
+        //}
     }
 
     @Test

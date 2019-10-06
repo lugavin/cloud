@@ -25,6 +25,7 @@
         <zkclient.version>0.10</zkclient.version>
         <lettuce.version>5.0.4.RELEASE</lettuce.version>
         <redisson.version>3.10.4</redisson.version>
+        <easyexcel.version>2.0.5</easyexcel.version>
     </properties>
 
     <dependencies>
@@ -103,6 +104,12 @@
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-recipes</artifactId>
             <version>${curator.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>${easyexcel.version}</version>
         </dependency>
 
         <dependency>
