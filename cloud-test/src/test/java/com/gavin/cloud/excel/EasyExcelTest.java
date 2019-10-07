@@ -2,7 +2,13 @@ package com.gavin.cloud.excel;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import com.alibaba.excel.write.metadata.style.WriteCellStyle;
+import com.alibaba.excel.write.metadata.style.WriteFont;
+import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import lombok.Data;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +33,22 @@ public class EasyExcelTest {
     }
 
     @Test
-    public void templateWrite() {
+    public void testWriteWithoutTemplate() {
+        String fileName = classpath + System.currentTimeMillis() + ".xlsx";
+        WriteCellStyle headWriteCellStyle = new WriteCellStyle(); // 设置表头样式
+        WriteFont headWriteFont = new WriteFont();
+        headWriteFont.setFontHeightInPoints((short) 16);
+        headWriteCellStyle.setWriteFont(headWriteFont);
+        headWriteCellStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+        WriteCellStyle contentWriteCellStyle = new WriteCellStyle(); // 设置单元格内容样式
+        EasyExcel.write(fileName, Model.class)
+                .registerWriteHandler(new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle))
+                .sheet(0, "工作表1")
+                .doWrite(data());
+    }
+
+    @Test
+    public void testWriteWithTemplate() {
         String templateFileName = classpath + "template.xlsx";
         String fileName = classpath + System.currentTimeMillis() + ".xlsx";
         List<Model> list1 = data();
@@ -49,7 +70,10 @@ public class EasyExcelTest {
 
     @Data
     public static class Model {
+        @ColumnWidth(30)
+        @ExcelProperty(value = "账户", index = 0)
         private final String acc;
+        @ExcelProperty(value = "金额", index = 1)
         private final BigDecimal amt;
     }
 
