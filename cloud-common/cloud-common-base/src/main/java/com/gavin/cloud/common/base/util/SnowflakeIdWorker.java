@@ -184,14 +184,16 @@ public class SnowflakeIdWorker {
     //    Set<Long> ids = new HashSet<>();
     //    // 多个线程使用同一个对象(单例)
     //    //SnowflakeIdWorker idWorker = new SnowflakeIdWorker();
-    //    IntStream.range(0, 1000).forEach(i -> new Thread(() -> {
+    //    IntStream.range(0, 1000).forEach(i -> CompletableFuture.runAsync(() -> {
     //        // 每个线程都新建一个对象, 那么每个线程的取时间戳可以同时进行, 序列自增也是, 所以才会产生相同的id
     //        SnowflakeIdWorker idWorker = new SnowflakeIdWorker();
     //        Long id = idWorker.nextId();
     //        if (!ids.add(id)) {
     //            System.err.println("存在重复ID >> " + id);
+    //        } else {
+    //            System.out.println("ID >> " + id);
     //        }
-    //    }).start());
+    //    }));
     //}
 
 }
