@@ -83,9 +83,12 @@ public class AuthResource {
             throw new AccountNotActivatedException();
         }
 
-        List<String> roles = roleApi.getRoles(user.getId());
-        String clientIP = WebUtils.getClientIP(request);
-        String token = createToken(new ActiveUser(user.getId(), user.getUsername(), clientIP, roles));
+        String token = createToken(ActiveUser.builder()
+                .uid(user.getId())
+                .username(user.getUsername())
+                .clientIP(WebUtils.getClientIP(request))
+                .roles(roleApi.getRoles(user.getId()))
+                .build());
         createCookie(request, response, token);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

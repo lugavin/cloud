@@ -46,11 +46,12 @@ public abstract class JwtHelper {
                     .parseClaimsJws(token)
                     .getBody();
             //OK, we can trust this JWT
-            String uid = claims.getSubject();
-            String username = (String) claims.get("username");
-            String clientIP = (String) claims.get("client_ip");
-            List<String> roles = claims.get("roles", ArrayList.class);
-            return new ActiveUser(Long.parseLong(uid), username, clientIP, roles);
+            return ActiveUser.builder()
+                    .uid(Long.parseLong(claims.getSubject()))
+                    .username((String) claims.get("username"))
+                    .clientIP((String) claims.get("client_ip"))
+                    .roles(claims.get("roles", ArrayList.class))
+                    .build();
         } catch (Exception e) {
             //Don't trust the JWT!
             throw new AuthenticationException("The token is illegal.");
