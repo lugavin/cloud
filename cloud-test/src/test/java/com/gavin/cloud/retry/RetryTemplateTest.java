@@ -33,18 +33,13 @@ public class RetryTemplateTest {
 
     @Test
     public void testRetry() {
-        int retryTimes = DEFAULT_MAX_ATTEMPTS + 1;
-        try {
-            retryTemplate.execute(c -> {
-                if (counter.incrementAndGet() < retryTimes) {
-                    throw new RetryException("模拟业务处理异常");
-                }
-                return null;
-            });
-            log.info("业务处理成功, 执行次数: {}", counter.get());
-        } catch (RetryException e) {
-            log.error("业务处理失败, 执行次数: {}", counter.get(), e);
-        }
+        retryTemplate.execute(c -> {
+            if (counter.incrementAndGet() < DEFAULT_MAX_ATTEMPTS) {
+                throw new RetryException("模拟业务处理异常");
+            }
+            log.info("业务第 {} 次处理成功", counter.get());
+            return null;
+        });
     }
 
     private static class RetryException extends RuntimeException {
