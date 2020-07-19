@@ -23,12 +23,11 @@ import java.util.List;
 /**
  * 权限设计思路
  * (1)登录
- * 服务端: Redis => {Token: Subject} Cookie => {AccessToken: Token}
- * 客户端: LocalStorage => {Permission: [Permissions]}
+ * 服务端: DB => RefreshToken & Redis => {Role: Permissions}
+ * 客户端: LocalStorage => AccessToken & RefreshToken
  * (2)认证
  * 会话验证: 验证Token是否合法, 并支持是否需要会话的一个URL配置, 如[忘记密码]并不需要会话.
  * 权限验证: 通过AOP实现, 在Controller相应方法上添加自定义注解{@link RequiresPermissions}来进行权限验证.
- * (权限动态更新: 管理员更新指定用户权限后, 需要对Redis中的该用户的权限数据进行同步, 然后通过WebSocket更新浏览器LocalStorage中的权限数据)
  * (3)基于URL的权限校验
  * 缺点: 对于RESTful风格的API不适用, 如 http://api.domain.com/users 可以是新增(POST)或更新(PUT)操作
  * 解决方案: 通过AOP实现, 在Controller相应方法上添加自定义注解{@link RequiresPermissions}来进行权限验证

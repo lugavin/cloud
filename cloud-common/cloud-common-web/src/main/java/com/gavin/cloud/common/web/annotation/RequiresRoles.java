@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RequiresRoles {
 
-    String[] value();
+    String[] value() default {};
 
     Logical logical() default Logical.AND;
 }

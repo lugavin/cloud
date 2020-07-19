@@ -27,9 +27,6 @@
         <module>cloud-sys</module>
         <module>cloud-auth</module>
         <module>cloud-mail</module>
-        <module>cloud-job</module>
-        <module>cloud-sms</module>
-        <module>cloud-pay</module>
         <module>cloud-search</module>
         <module>cloud-test</module>
     </modules>

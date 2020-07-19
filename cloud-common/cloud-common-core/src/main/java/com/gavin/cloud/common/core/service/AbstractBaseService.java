@@ -14,6 +14,11 @@ public abstract class AbstractBaseService<T extends AbstractModel> implements Ba
     @Autowired
     private CrudMapper<T> crudMapper;
 
+    public AbstractBaseService() {
+        // 获取泛型类型
+        // Class<?> rawClass = ResolvableType.forClass(AbstractBaseService.class, this.getClass()).getGeneric(0).getRawClass();
+    }
+
     @Override
     @Transactional
     public int create(@NonNull T model) {

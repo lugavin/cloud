@@ -1,9 +1,11 @@
 package com.gavin.cloud.auth.dto;
 
+import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Size;
 
+@Data
 public class KeyAndPasswordDTO {
 
     @NotBlank
@@ -13,21 +15,5 @@ public class KeyAndPasswordDTO {
     @NotBlank
     @Size(min = 4, max = 100)
     private String newPassword;
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public String getNewPassword() {
-        return newPassword;
-    }
-
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
-    }
 
 }
