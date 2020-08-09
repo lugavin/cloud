@@ -5,18 +5,21 @@ import com.gavin.cloud.common.base.util.JsonUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import lombok.NonNull;
 
+import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.*;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-/**
- * @see <a href="https://github.com/jhipster/generator-jhipster/blob/master/generators/server/templates/src/main/java/package/web/filter/RefreshTokenFilter.java.ejs">RefreshTokenFilter</a>
- */
 public abstract class JwtHelper {
+
+    private static final String CLAIM_KEY_USERNAME = "username";
+    private static final String CLAIM_KEY_CLIENT_IP = "client_ip";
+    private static final String CLAIM_KEY_ROLES = "roles";
 
     public static String createToken(@NonNull ActiveUser activeUser,
                                      @NonNull PrivateKey privateKey,
@@ -29,11 +32,11 @@ public abstract class JwtHelper {
                 .setIssuedAt(iat)
                 .setExpiration(exp)
                 .setSubject(Long.toString(activeUser.getUid()))
-                .claim("roles", activeUser.getRoles())
-                .claim("username", activeUser.getUsername())
-                .claim("client_ip", activeUser.getClientIP())
+                .claim(CLAIM_KEY_USERNAME, activeUser.getUsername())
+                .claim(CLAIM_KEY_CLIENT_IP, activeUser.getClientIP())
+                .claim(CLAIM_KEY_ROLES, activeUser.getRoles())
                 .serializeToJsonWith(map -> JsonUtils.toJson(map).getBytes(UTF_8))
-                .signWith(privateKey, SignatureAlgorithm.RS256)
+                .signWith(privateKey)
                 .compact();
     }
 
@@ -48,9 +51,9 @@ public abstract class JwtHelper {
             //OK, we can trust this JWT
             return ActiveUser.builder()
                     .uid(Long.parseLong(claims.getSubject()))
-                    .username((String) claims.get("username"))
-                    .clientIP((String) claims.get("client_ip"))
-                    .roles(claims.get("roles", ArrayList.class))
+                    .username((String) claims.get(CLAIM_KEY_USERNAME))
+                    .clientIP((String) claims.get(CLAIM_KEY_CLIENT_IP))
+                    .roles(claims.get(CLAIM_KEY_ROLES, ArrayList.class))
                     .build();
         } catch (Exception e) {
             //Don't trust the JWT!
@@ -58,10 +61,21 @@ public abstract class JwtHelper {
         }
     }
 
-    //public static void main(String[] args) {
-    //    KeyPair keyPair = Keys.keyPairFor(SignatureAlgorithm.RS256);
-    //    System.out.println(Base64.getUrlEncoder().encodeToString(keyPair.getPrivate().getEncoded()));
-    //    System.out.println(Base64.getUrlEncoder().encodeToString(keyPair.getPublic().getEncoded()));
-    //}
+    // public static void main(String[] args) {
+    //     KeyPair keyPair = Keys.keyPairFor(SignatureAlgorithm.RS256);
+    //     PrivateKey privateKey = keyPair.getPrivate();
+    //     PublicKey publicKey = keyPair.getPublic();
+    //     System.out.println(Base64.getUrlEncoder().encodeToString(privateKey.getEncoded()));
+    //     System.out.println(Base64.getUrlEncoder().encodeToString(publicKey.getEncoded()));
+    //     ActiveUser activeUser = ActiveUser.builder()
+    //             .uid(101L)
+    //             .username("admin")
+    //             .clientIP("127.0.0.1")
+    //             .roles(Arrays.asList("user:create", "user:delete"))
+    //             .build();
+    //     String token = createToken(activeUser, privateKey, 300);
+    //     System.err.println(token);
+    //     System.err.println(verifyToken(token, publicKey));
+    // }
 
 }

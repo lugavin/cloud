@@ -34,15 +34,17 @@
     <properties>
         <java.version>1.8</java.version>
         <spring-cloud.version>Dalston.SR5</spring-cloud.version>
+        <javax-validation.version>2.0.1.Final</javax-validation.version>
+        <hibernate-validator.version>6.0.11.Final</hibernate-validator.version>
         <logback.version>1.2.3</logback.version>
         <guava.version>23.0</guava.version>
         <commons-lang3.version>3.2.1</commons-lang3.version>
         <commons-net.version>3.3</commons-net.version>
         <commons-io.version>2.4</commons-io.version>
         <bcprov-jdk15on.version>1.60</bcprov-jdk15on.version>
-        <problem-spring-web.version>0.23.0</problem-spring-web.version>
-        <mybatis-generator.version>1.3.7</mybatis-generator.version>
         <mybatis-spring-boot.version>1.3.4</mybatis-spring-boot.version>
+        <mybatis-generator.version>1.3.7</mybatis-generator.version>
+        <problem-spring-web.version>0.23.0</problem-spring-web.version>
         <swagger.version>2.6.1</swagger.version>
         <jjwt.version>0.10.5</jjwt.version>
         <jsch.version>0.1.55</jsch.version>
@@ -56,6 +58,11 @@
                 <version>${spring-cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate.validator</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate-validator.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -83,14 +90,14 @@
                 <version>${bcprov-jdk15on.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.zalando</groupId>
-                <artifactId>problem-spring-web</artifactId>
-                <version>${problem-spring-web.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
                 <version>${mybatis-spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zalando</groupId>
+                <artifactId>problem-spring-web</artifactId>
+                <version>${problem-spring-web.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.springfox</groupId>
@@ -166,10 +173,11 @@
                     <!--
                     (1)只会覆盖Java文件不会覆盖Mapper.xml文件
                     (2)覆盖Mapper.xml文件需要配置插件<plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
+                    (3)默认configurationFile为${basedir}/src/main/resources/generatorConfig.xml
                     -->
                     <verbose>true</verbose>
                     <overwrite>true</overwrite>
-                    <!--<configurationFile>${basedir}/src/main/resources/generatorConfig.xml</configurationFile>-->
+                    <configurationFile>${basedir}/src/test/resources/mybatis-generator.xml</configurationFile>
                 </configuration>
             </plugin>
         </plugins>

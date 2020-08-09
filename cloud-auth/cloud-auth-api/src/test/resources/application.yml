@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: cloud-auth-api
+  output:
+    ansi:
+      enabled: ALWAYS
+
+stores:
+  ribbon:
+    listOfServers: google.com, apple.com
+
+ribbon:
+  ReadTimeout: 1000
+  ConnectTimeout: 1000
+  MaxAutoRetries: 1
+  MaxAutoRetriesNextServer: 1
+
+feign:
+  hystrix:
+    enabled: true
+
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 10000
+
+api:
+  github:
+    name: github
+    url: https://api.github.com
+
+logging:
+  level:
+    com.netflix.config.sources.URLConfigurationSource: ERROR

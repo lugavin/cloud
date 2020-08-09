@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.gavin.cloud.auth.core.mapper.ext.AuthTokenMapperExt">
+
+  <select id="getPage" parameterType="com.gavin.cloud.common.base.page.Pageable" resultType="com.gavin.cloud.auth.pojo.AuthToken" databaseId="mysql">
+    SELECT <include refid="com.gavin.cloud.auth.core.mapper.AuthTokenMapper.Base_Column_List"/>
+      FROM sys_auth_token
+      <where>
+        <if test="param!=null">
+          <if test="param.uid!=null">
+            AND uid = #{param.uid}
+          </if>
+        </if>
+      </where>
+  </select>
+
+</mapper>

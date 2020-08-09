@@ -11,14 +11,6 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cloud-sys-pojo</artifactId>
-    <!--
-    领域模型命名规约
-    (1)数据对象: xxxDO(xxx即为数据表名)
-    (2)数据传输对象: xxxDTO(xxx为业务领域相关的名称)
-    (3)展示对象: xxxVO(xxx一般为网页名称)
-    (4)POJO是DO/DTO/BO/VO的统称(禁止命名成xxxPOJO)
-    -->
-    <description>POJO是DO/DTO/BO/VO的统称</description>
 
     <name>${project.artifactId}</name>
     <url>http://maven.apache.org</url>

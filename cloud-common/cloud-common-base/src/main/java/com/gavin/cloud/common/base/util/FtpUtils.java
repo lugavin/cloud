@@ -1,5 +1,6 @@
 package com.gavin.cloud.common.base.util;
 
+import lombok.Data;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -9,12 +10,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.charset.Charset;
+
+import static java.nio.charset.StandardCharsets.ISO_8859_1;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public abstract class FtpUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FtpUtils.class);
 
-    public static final String DEFAULT_ENCODING = "UTF-8";
     public static final int DEFAULT_PORT = 21;
 
     public static final int MODE_TYPE_LOCAL_PASSIVE = 1;  // 本地被动模式
@@ -26,20 +30,20 @@ public abstract class FtpUtils {
     }
 
     public static FTPClient connect(String hostname, int port) {
-        return connect(hostname, port, MODE_TYPE_LOCAL_PASSIVE, DEFAULT_ENCODING);
+        return connect(hostname, port, MODE_TYPE_LOCAL_PASSIVE, UTF_8);
     }
 
     public static FTPClient connect(String hostname, int port, int mode) {
-        return connect(hostname, port, mode, DEFAULT_ENCODING);
+        return connect(hostname, port, mode, UTF_8);
     }
 
-    public static FTPClient connect(String hostname, int port, int mode, String encoding) {
+    public static FTPClient connect(String hostname, int port, int mode, Charset charset) {
 
         FTPClient ftpClient = null;
 
         try {
             ftpClient = new FTPClient();
-            ftpClient.setControlEncoding(encoding);
+            ftpClient.setControlEncoding(charset.name());
             ftpClient.connect(hostname, port);
 
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
@@ -69,7 +73,6 @@ public abstract class FtpUtils {
             }
         }
         return null;
-
     }
 
     public static void disconnect(FTPClient ftpClient) {
@@ -114,51 +117,51 @@ public abstract class FtpUtils {
     }
 
     public static boolean uploadFile(FTPClient ftpClient, String remotePath, String localPath, String filename) {
-        return uploadFile(ftpClient, remotePath, localPath, filename, DEFAULT_ENCODING);
+        return uploadFile(ftpClient, remotePath, localPath, filename, UTF_8);
     }
 
-    public static boolean uploadFile(FTPClient ftpClient, String remotePath, String localPath, String filename, String encoding) {
+    public static boolean uploadFile(FTPClient ftpClient, String remotePath, String localPath, String filename, Charset charset) {
         try {
 
-            boolean ok = ftpClient.changeWorkingDirectory(new String(remotePath.getBytes(encoding), "ISO-8859-1"));
+            boolean ok = ftpClient.changeWorkingDirectory(new String(remotePath.getBytes(charset), ISO_8859_1));
             if (!ok) {
                 LOGGER.error("can not change working directory {}", remotePath);
                 return false;
             }
 
             File file = new File(localPath, filename);
-            return ftpClient.storeFile(new String(filename.getBytes(encoding), "ISO-8859-1"), FileUtils.openInputStream(file));
+            return ftpClient.storeFile(new String(filename.getBytes(charset), ISO_8859_1), FileUtils.openInputStream(file));
         } catch (Exception e) {
-            LOGGER.error("upload file error. {}", e);
+            LOGGER.error("upload file error.", e);
         }
         return false;
     }
 
     public static boolean uploadFile(FTPClient ftpClient, String remotePath, String filename, InputStream local) {
-        return uploadFile(ftpClient, remotePath, filename, local, DEFAULT_ENCODING);
+        return uploadFile(ftpClient, remotePath, filename, local, UTF_8);
     }
 
-    public static boolean uploadFile(FTPClient ftpClient, String remotePath, String filename, InputStream local, String encoding) {
+    public static boolean uploadFile(FTPClient ftpClient, String remotePath, String filename, InputStream local, Charset charset) {
         try {
 
-            boolean ok = ftpClient.changeWorkingDirectory(new String(remotePath.getBytes(encoding), "ISO-8859-1"));
+            boolean ok = ftpClient.changeWorkingDirectory(new String(remotePath.getBytes(charset), ISO_8859_1));
             if (!ok) {
                 LOGGER.error("can not change working directory {}", remotePath);
                 return false;
             }
 
-            return ftpClient.storeFile(new String(filename.getBytes(encoding), "ISO-8859-1"), local);
+            return ftpClient.storeFile(new String(filename.getBytes(charset), ISO_8859_1), local);
         } catch (Exception e) {
-            LOGGER.error("upload file error. {}", e);
+            LOGGER.error("upload file error.", e);
         }
         return false;
     }
 
     public static Result uploadFolder(FTPClient ftpClient, String remotePath, String localPath) {
-        return uploadFolder(ftpClient, remotePath, localPath, DEFAULT_ENCODING);
+        return uploadFolder(ftpClient, remotePath, localPath, UTF_8);
     }
 
-    public static Result uploadFolder(FTPClient ftpClient, String remotePath, String localPath, String encoding) {
+    public static Result uploadFolder(FTPClient ftpClient, String remotePath, String localPath, Charset charset) {
         Result result = new Result();
         int success = 0;
         int error = 0;
@@ -173,21 +176,21 @@ public abstract class FtpUtils {
             if (files != null && files.length > 0) {
                 for (File file : files) {
                     if (file.isFile()) {
-                        boolean ok = uploadFile(ftpClient, remotePath, localPath, file.getName(), encoding);
+                        boolean ok = uploadFile(ftpClient, remotePath, localPath, file.getName(), charset);
                         if (ok) {
                             success += 1;
                         } else {
                             error += 1;
                         }
                     } else if (file.isDirectory()) {
-                        Result r = uploadFolder(ftpClient, remotePath + "/" + file.getName(), localPath + "/" + file.getName(), encoding);
+                        Result r = uploadFolder(ftpClient, remotePath + "/" + file.getName(), localPath + "/" + file.getName(), charset);
                         success += r.getSuccess();
                         error += r.getError();
                     }
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("upload folder error. {}", e);
+            LOGGER.error("upload folder error.", e);
         }
         result.setSuccess(success);
         result.setError(error);
@@ -195,14 +198,14 @@ public abstract class FtpUtils {
     }
 
     public static boolean downloadFile(FTPClient ftpClient, String remotePath, String localPath, String filename) {
-        return downloadFile(ftpClient, remotePath, localPath, filename, DEFAULT_ENCODING);
+        return downloadFile(ftpClient, remotePath, localPath, filename, UTF_8);
     }
 
-    public static boolean downloadFile(FTPClient ftpClient, String remotePath, String localPath, String filename, String encoding) {
+    public static boolean downloadFile(FTPClient ftpClient, String remotePath, String localPath, String filename, Charset charset) {
         createFilepath(localPath);
         try {
 
-            boolean ok = ftpClient.changeWorkingDirectory(new String(remotePath.getBytes(encoding), "ISO-8859-1"));
+            boolean ok = ftpClient.changeWorkingDirectory(new String(remotePath.getBytes(charset), ISO_8859_1));
             if (!ok) {
                 LOGGER.error("can not change working directory {}", remotePath);
                 return false;
@@ -225,17 +228,17 @@ public abstract class FtpUtils {
             }
             LOGGER.error("{} is not exists", remotePath + "/" + filename);
         } catch (Exception e) {
-            LOGGER.error("download file error. {}", e);
+            LOGGER.error("download file error.", e);
         }
         return false;
 
     }
 
     public static Result downloadFolder(FTPClient ftpClient, String remotePath, String localPath) {
-        return downloadFolder(ftpClient, remotePath, localPath, DEFAULT_ENCODING);
+        return downloadFolder(ftpClient, remotePath, localPath, UTF_8);
     }
 
-    public static Result downloadFolder(FTPClient ftpClient, String remotePath, String localPath, String encoding) {
+    public static Result downloadFolder(FTPClient ftpClient, String remotePath, String localPath, Charset charset) {
         createFilepath(localPath);
         Result result = new Result();
         int success = 0;
@@ -243,7 +246,7 @@ public abstract class FtpUtils {
 
         try {
 
-            boolean ok = ftpClient.changeWorkingDirectory(new String(remotePath.getBytes(encoding), "ISO-8859-1"));
+            boolean ok = ftpClient.changeWorkingDirectory(new String(remotePath.getBytes(charset), ISO_8859_1));
             if (!ok) {
                 LOGGER.error("can not change working directory {}", remotePath);
                 return result;
@@ -253,20 +256,20 @@ public abstract class FtpUtils {
             for (FTPFile ftpFile : ftpFiles) {
                 String name = ftpFile.getName();
                 if (ftpFile.isFile()) {
-                    ok = downloadFile(ftpClient, remotePath, localPath, name, encoding);
+                    ok = downloadFile(ftpClient, remotePath, localPath, name, charset);
                     if (ok) {
                         success += 1;
                     } else {
                         error += 1;
                     }
                 } else if (ftpFile.isDirectory()) {
-                    Result r = downloadFolder(ftpClient, remotePath + "/" + name, localPath + "/" + name, encoding);
+                    Result r = downloadFolder(ftpClient, remotePath + "/" + name, localPath + "/" + name, charset);
                     success += r.getSuccess();
                     error += r.getError();
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("download folder error. {}", e);
+            LOGGER.error("download folder error.", e);
         }
         result.setSuccess(success);
         result.setError(error);
@@ -281,27 +284,10 @@ public abstract class FtpUtils {
         }
     }
 
+    @Data
     static class Result {
-
         private int success;
         private int error;
-
-        public int getSuccess() {
-            return success;
-        }
-
-        public void setSuccess(int success) {
-            this.success = success;
-        }
-
-        public int getError() {
-            return error;
-        }
-
-        public void setError(int error) {
-            this.error = error;
-        }
-
     }
 
 }

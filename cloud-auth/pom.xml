@@ -12,46 +12,23 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cloud-auth</artifactId>
+    <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
     <url>http://maven.apache.org</url>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.gavin.cloud</groupId>
-            <artifactId>cloud-common-web</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.gavin.cloud</groupId>
-            <artifactId>cloud-sys-api</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <!-- Spring Cloud Sleuth -->
+    <modules>
         <!--
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-sleuth</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-sleuth-stream</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-stream-binder-kafka</artifactId>
-        </dependency>
+        领域模型命名规约
+        (1)数据对象: xxxDO(xxx即为数据表名)
+        (2)数据传输对象: xxxDTO(xxx为业务领域相关的名称)
+        (3)展示对象: xxxVO(xxx一般为网页名称)
+        (4)POJO是DO/DTO/BO/VO的统称(禁止命名成xxxPOJO)
         -->
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <!-- Package as an executable jar -->
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+        <module>cloud-auth-pojo</module>
+        <module>cloud-auth-core</module>
+        <module>cloud-auth-api</module>
+        <module>cloud-auth-web</module>
+    </modules>
 
 </project>

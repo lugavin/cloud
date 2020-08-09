@@ -1,7 +1,6 @@
 package com.gavin.cloud.sys.web;
 
 import com.gavin.cloud.common.base.page.Page;
-import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.web.annotation.RequiresPermissions;
 import com.gavin.cloud.common.web.util.HeaderUtils;
 import com.gavin.cloud.sys.core.enums.LoginType;
@@ -21,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Map;
+
+import static com.gavin.cloud.common.base.util.Constants.REGEX_LOGIN_NAME;
+import static com.gavin.cloud.common.base.util.Constants.REGEX_LOGIN_TYPE;
 
 @RestController
 @RequestMapping("/users")
@@ -62,7 +64,7 @@ public class UserResource {
         return ResponseEntity.ok(userService.getUser(id));
     }
 
-    @GetMapping("/{account:" + Constants.REGEX_LOGIN_NAME + "}/{type:" + Constants.REGEX_LOGIN_TYPE + "}")
+    @GetMapping("/{account:" + REGEX_LOGIN_NAME + "}/{type:" + REGEX_LOGIN_TYPE + "}")
     public ResponseEntity<User> getUser(@PathVariable String account, @PathVariable int type) {
         return ResponseEntity.ok(userService.getUser(account, LoginType.fromType(type)));
     }

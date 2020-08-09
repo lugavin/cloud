@@ -31,10 +31,12 @@
         </dependency>
 
         <!-- Spring Cloud Config -->
+        <!--
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
         </dependency>
+        -->
 
         <!-- Spring AOP -->
         <dependency>
@@ -56,6 +58,17 @@
             <version>${problem-spring-web.version}</version>
         </dependency>
         -->
+
+        <!-- Validation API Impl -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
+        <!-- EL Impl -->
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+        </dependency>
 
         <!-- Swagger REST API -->
         <dependency>

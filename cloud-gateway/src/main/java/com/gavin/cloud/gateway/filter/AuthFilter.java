@@ -76,8 +76,8 @@ public class AuthFilter extends ZuulFilter {
         return match(url, authProperties.getUserUrls());
     }
 
-    private boolean isAuthcUrl(String url) {
-        return match(url, authProperties.getAuthcUrls());
+    private boolean isAuthUrl(String url) {
+        return match(url, authProperties.getAuthUrls());
     }
 
     private boolean match(String path, List<String> patterns) {

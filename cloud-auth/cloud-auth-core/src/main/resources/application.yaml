@@ -1,0 +1,23 @@
+# ===================================================================
+# Mybatis properties.
+# Full reference is available at:
+# {@link org.mybatis.spring.boot.autoconfigure.MybatisProperties}
+# ===================================================================
+mybatis:
+  #type-aliases-package: com.gavin.cloud.sys.pojo
+  #type-aliases-super-type: com.gavin.cloud.common.base.pojo.AbstractModel
+  #type-handlers-package: com.gavin.cloud.sys.core.mapper
+  #executor-type: BATCH
+  configuration:
+    # 开启自动驼峰命名规则
+    map-underscore-to-camel-case: true
+    # 开启延迟加载
+    lazy-loading-enabled: true
+    aggressive-lazy-loading: false
+    # 禁用二级缓存
+    cache-enabled: false
+    #database-id: mysql
+
+app:
+  jwt:
+    private-key: MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCfVP1oq9mTSQPdMVf6-rtFBN1Zc6eawg_bDnQMwFEUUCwrOCTaX-xiX-qHw0pr7UTLqN-s4gb_6ySKHqpr2Zy617FcaGSrXk9qZhVc1aZ1cqvv3eed0yeGx4hPw4n4Iy6FbYmYVejdWY122TqIAR7C6WEBJX0Y6fpk41IPS98g5IN6wD56xw9wOt_DgjEIH0G5ASmu-E-0rH1qD-8fa-C1QXFByvZmE3_4nmKNZu77aYRhR0PQWyu8AvqFuQeFUh8nwUYx9T5rnWJ7xdNqGMn0r303pNmr0InHOgG6cBMqkNWqCcganS8VdmOSxP-JsXm5sKmzZtqHlPLEJB0ebSCvAgMBAAECggEAML4eW_QetpkirntW7_febGnlkWT5RDXUBe6w_-mhpDY2nO4rEAdCWIIBTJEo5kWKw0chTlFDVO1Jm1twRVgoQ1yS7LMfAPH0F5etN15A8zMmeFYJclXThL7r64LlZVzV8YmmC01U1Mp9pXslFdBJ6dTdkS03zPRfXpfQVc-fLf9bm74MfPkrtDoOlnUTU4ci-uCLzdxN6ifEOWNnkpIhx01L2ewp0bwq6pmOVViWDfB4Z2XgVYciH-pnxQ0-8xaitU576_8tDN8d4rImU7EJ53sTlmzKYWcA7kvVCU-nOx4ED1Xsn99ijiAbpYSyGbeaPyEJFA-vOMBZDqLptQZZcQKBgQD9Vhm4Qd5JKmv4Yk4Lv870bfiSyc9WWV6s-PY3bbk7rSl9XRj1mJzrF5pysPqq_EtY4WH2CbeS9_OTyg6b5H1jZNzkOmckx-qJEckurT9bhuJalro2HvVndzwTJiYsh1mcrgKkWjr5xBHiBDixPD8Oj3qYJjhVTjNg-Nb-48MvlwKBgQChAdwwMv0rll59i8dlsWTxRM734ZIWyF2askBOHCRBmJifAQ3w8fTUjz0NYjBjUwOu53WOMF7uV1cto2eqYdkkKLhdsjT5Ujtp7sf1oSl_Ept9WApo8Hj9SskKKGjlfcZRwFWXViXVEtfMOGSmrqv3ufHumi7s5osOuTVWndm6qQKBgC_7p-FzcGPRSiQAkqG9EbjQP32mBcRoJvuCKDh1atk3wh0BjiGuZ0JL9S_1_3R1VtwdzE0qp_-JQTRj2AKE847o4sHDohegWfbeTImvvMlcMfFQjTKFCJwxREqoNiDG_h0kBFIW2QbHsU9q10YSkCr02BaLXq4hoq-iUi5y-1w_AoGAULa0AV2uWSl6mQl3nl09s03BS7bDG7S6aBCv9_hXnKK48A0BRiali-F6w7jTdRdqo0XZQryw-l7Cj1h5YYrH5j6bniz2LX6x1jsj9tkiClfzpvR5032pyaCyA-uaGmHhB56ZydIgCR73G6OxoXWzM-79f5W_rHcuguUJ_jAHtHECgYA-rZyQ972K0mCrQQxCVWTWmYLTk-GgwWyMau8LKpCjvjH3OpN9YKKImZbzJ4M2grctpIeL7LftpDkJFulBU7ADAh8zU4WN52XIejZC1G0NzZghlf-818HPFKRBWmWAibgFJPGqTJ3qI5-BTaRGop2dgsgXTZux_WyDtOAiiSF_VQ==
