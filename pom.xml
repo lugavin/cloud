@@ -35,7 +35,7 @@
         <java.version>1.8</java.version>
         <spring-cloud.version>Dalston.SR5</spring-cloud.version>
         <javax-validation.version>2.0.1.Final</javax-validation.version>
-        <hibernate-validator.version>6.0.11.Final</hibernate-validator.version>
+        <hibernate-validator.version>6.1.0.Final</hibernate-validator.version>
         <logback.version>1.2.3</logback.version>
         <guava.version>23.0</guava.version>
         <commons-lang3.version>3.2.1</commons-lang3.version>
