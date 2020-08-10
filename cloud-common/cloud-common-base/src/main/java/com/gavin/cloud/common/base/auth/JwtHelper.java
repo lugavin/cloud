@@ -8,9 +8,10 @@ import lombok.NonNull;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -22,15 +23,11 @@ public abstract class JwtHelper {
 
     public static String createToken(@NonNull ActiveUser activeUser,
                                      @NonNull PrivateKey privateKey,
-                                     @NonNull Integer validityInSeconds) {
-        Calendar calendar = Calendar.getInstance();
-        Date iat = calendar.getTime();
-        calendar.add(Calendar.SECOND, validityInSeconds);
-        Date exp = calendar.getTime();
+                                     @NonNull Long validityInSeconds) {
         return Jwts.builder()
                 .serializeToJsonWith(map -> JsonUtils.toJson(map).getBytes(UTF_8))
-                .setIssuedAt(iat)
-                .setExpiration(exp)
+                .setIssuedAt(Date.from(Instant.now()))
+                .setExpiration(Date.from(Instant.now().plusSeconds(validityInSeconds)))
                 .setSubject(Long.toString(activeUser.getUid()))
                 .claim(CLAIM_KEY_USERNAME, activeUser.getUsername())
                 .claim(CLAIM_KEY_CLIENT_IP, activeUser.getClientIP())
@@ -43,15 +40,15 @@ public abstract class JwtHelper {
     public static ActiveUser verifyToken(@NonNull String token, @NonNull PublicKey publicKey) throws AuthenticationException {
         try {
             Claims claims = Jwts.parser()
-                    .deserializeJsonWith(bytes -> JsonUtils.fromJson(new String(bytes, UTF_8), Object.class))
+                    .deserializeJsonWith(bytes -> JsonUtils.fromJson(new String(bytes, UTF_8), Map.class, String.class, Object.class))
                     .setSigningKey(publicKey)
                     .parseClaimsJws(token)
                     .getBody();
             //OK, we can trust this JWT
             return ActiveUser.builder()
                     .uid(Long.parseLong(claims.getSubject()))
-                    .username((String) claims.get(CLAIM_KEY_USERNAME))
-                    .clientIP((String) claims.get(CLAIM_KEY_CLIENT_IP))
+                    .username(claims.get(CLAIM_KEY_USERNAME, String.class))
+                    .clientIP(claims.get(CLAIM_KEY_CLIENT_IP, String.class))
                     .roles(claims.get(CLAIM_KEY_ROLES, ArrayList.class))
                     .build();
         } catch (Exception e) {
@@ -64,15 +61,15 @@ public abstract class JwtHelper {
     //     KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
     //     keyPairGenerator.initialize(2048);
     //     KeyPair keyPair = keyPairGenerator.generateKeyPair();
-    //     System.err.println(Base64.getUrlEncoder().encodeToString(keyPair.getPrivate().getEncoded()));
-    //     System.err.println(Base64.getUrlEncoder().encodeToString(keyPair.getPublic().getEncoded()));
+    //     System.err.println(Base64Utils.encodeToString(keyPair.getPrivate().getEncoded()));
+    //     System.err.println(Base64Utils.encodeToString(keyPair.getPublic().getEncoded()));
     //     ActiveUser activeUser = ActiveUser.builder()
     //             .uid(101L)
     //             .username("admin")
     //             .clientIP("127.0.0.1")
     //             .roles(Arrays.asList("user:create", "user:delete"))
     //             .build();
-    //     String token = createToken(activeUser, keyPair.getPrivate(), 300);
+    //     String token = createToken(activeUser, keyPair.getPrivate(), 300L);
     //     System.out.println(token);
     //     System.out.println(verifyToken(token, keyPair.getPublic()));
     // }

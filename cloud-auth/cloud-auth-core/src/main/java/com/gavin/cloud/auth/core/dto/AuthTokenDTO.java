@@ -7,6 +7,6 @@ public class AuthTokenDTO {
 
     private final String accessToken;
     private final String refreshToken;
-    private final Integer expiresIn;
+    private final Long expiresIn;
 
 }

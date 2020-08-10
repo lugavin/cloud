@@ -9,11 +9,10 @@ import com.gavin.cloud.auth.pojo.AuthTokenExample;
 import com.gavin.cloud.common.base.auth.ActiveUser;
 import com.gavin.cloud.common.base.auth.JwtHelper;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Calendar;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -34,15 +33,13 @@ public class AuthServiceImpl implements AuthService {
     public AuthTokenDTO createAuthToken(ActiveUser activeUser) {
         String accessToken = JwtHelper.createToken(activeUser, jwtProperties.getPrivateKey(), jwtProperties.getAccessTokenExpires());
         String refreshToken = UUID.randomUUID().toString();
-        Date createdAt = Calendar.getInstance().getTime();
-        Date expiredAt = DateUtils.addSeconds(createdAt, jwtProperties.getRefreshTokenExpires());
         AuthToken authToken = new AuthToken();
         authToken.setId(SnowflakeIdWorker.getInstance().nextId());
         authToken.setUid(activeUser.getUid());
         authToken.setClientIp(activeUser.getClientIP());
         authToken.setRefreshToken(refreshToken);
-        authToken.setCreatedAt(createdAt);
-        authToken.setExpiredAt(expiredAt);
+        authToken.setCreatedAt(Date.from(Instant.now()));
+        authToken.setExpiredAt(Date.from(Instant.now().plusSeconds(jwtProperties.getRefreshTokenExpires())));
         authTokenMapperExt.insert(authToken);
         return new AuthTokenDTO(accessToken, refreshToken, jwtProperties.getAccessTokenExpires());
     }
@@ -56,7 +53,7 @@ public class AuthServiceImpl implements AuthService {
         List<AuthToken> authTokens = authTokenMapperExt.selectByExample(example);
         if (!authTokens.isEmpty()) {
             AuthToken authToken = authTokens.get(0);
-            if (authToken.getId().equals(activeUser.getUid()) && authToken.getExpiredAt().after(new Date())) {
+            if (authToken.getId().equals(activeUser.getUid()) && authToken.getExpiredAt().after(Date.from(Instant.now()))) {
                 String accessToken = JwtHelper.createToken(activeUser, jwtProperties.getPrivateKey(), jwtProperties.getAccessTokenExpires());
                 return new AuthTokenDTO(accessToken, refreshToken, jwtProperties.getAccessTokenExpires());
             }

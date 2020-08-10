@@ -4,16 +4,17 @@ import com.gavin.cloud.common.base.util.KeyHelper;
 import lombok.Data;
 
 import java.security.PublicKey;
+import java.util.concurrent.TimeUnit;
 
 @Data
 public class JwtProperties {
 
-    private static final Integer DEFAULT_ACCESS_TOKEN_EXPIRES = 5 * 60;
-    private static final Integer DEFAULT_REFRESH_TOKEN_EXPIRES = 30 * 24 * 60 * 60;
+    private static final Long DEFAULT_ACCESS_TOKEN_EXPIRES = TimeUnit.MINUTES.toSeconds(5);
+    private static final Long DEFAULT_REFRESH_TOKEN_EXPIRES = TimeUnit.DAYS.toSeconds(30);
     private static final String DEFAULT_COOKIE_PATH = "/";
 
-    private Integer accessTokenExpires = DEFAULT_ACCESS_TOKEN_EXPIRES;
-    private Integer refreshTokenExpires = DEFAULT_REFRESH_TOKEN_EXPIRES;
+    private Long accessTokenExpires = DEFAULT_ACCESS_TOKEN_EXPIRES;
+    private Long refreshTokenExpires = DEFAULT_REFRESH_TOKEN_EXPIRES;
     private PublicKey publicKey;
     private String cookieName;
     private String cookieDomain;
