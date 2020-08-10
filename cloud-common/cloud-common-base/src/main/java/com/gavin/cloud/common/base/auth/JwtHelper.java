@@ -4,14 +4,13 @@ import com.gavin.cloud.common.base.problem.AuthenticationException;
 import com.gavin.cloud.common.base.util.JsonUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import lombok.NonNull;
 
-import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -29,13 +28,13 @@ public abstract class JwtHelper {
         calendar.add(Calendar.SECOND, validityInSeconds);
         Date exp = calendar.getTime();
         return Jwts.builder()
+                .serializeToJsonWith(map -> JsonUtils.toJson(map).getBytes(UTF_8))
                 .setIssuedAt(iat)
                 .setExpiration(exp)
                 .setSubject(Long.toString(activeUser.getUid()))
                 .claim(CLAIM_KEY_USERNAME, activeUser.getUsername())
                 .claim(CLAIM_KEY_CLIENT_IP, activeUser.getClientIP())
                 .claim(CLAIM_KEY_ROLES, activeUser.getRoles())
-                .serializeToJsonWith(map -> JsonUtils.toJson(map).getBytes(UTF_8))
                 .signWith(privateKey)
                 .compact();
     }
@@ -44,8 +43,8 @@ public abstract class JwtHelper {
     public static ActiveUser verifyToken(@NonNull String token, @NonNull PublicKey publicKey) throws AuthenticationException {
         try {
             Claims claims = Jwts.parser()
+                    .deserializeJsonWith(bytes -> JsonUtils.fromJson(new String(bytes, UTF_8), Object.class))
                     .setSigningKey(publicKey)
-                    .deserializeJsonWith(bytes -> JsonUtils.fromJson(new String(bytes, UTF_8), Map.class))
                     .parseClaimsJws(token)
                     .getBody();
             //OK, we can trust this JWT
@@ -61,21 +60,21 @@ public abstract class JwtHelper {
         }
     }
 
-    // public static void main(String[] args) {
-    //     KeyPair keyPair = Keys.keyPairFor(SignatureAlgorithm.RS256);
-    //     PrivateKey privateKey = keyPair.getPrivate();
-    //     PublicKey publicKey = keyPair.getPublic();
-    //     System.out.println(Base64.getUrlEncoder().encodeToString(privateKey.getEncoded()));
-    //     System.out.println(Base64.getUrlEncoder().encodeToString(publicKey.getEncoded()));
+    // public static void main(String[] args) throws Exception {
+    //     KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+    //     keyPairGenerator.initialize(2048);
+    //     KeyPair keyPair = keyPairGenerator.generateKeyPair();
+    //     System.err.println(Base64.getUrlEncoder().encodeToString(keyPair.getPrivate().getEncoded()));
+    //     System.err.println(Base64.getUrlEncoder().encodeToString(keyPair.getPublic().getEncoded()));
     //     ActiveUser activeUser = ActiveUser.builder()
     //             .uid(101L)
     //             .username("admin")
     //             .clientIP("127.0.0.1")
     //             .roles(Arrays.asList("user:create", "user:delete"))
     //             .build();
-    //     String token = createToken(activeUser, privateKey, 300);
-    //     System.err.println(token);
-    //     System.err.println(verifyToken(token, publicKey));
+    //     String token = createToken(activeUser, keyPair.getPrivate(), 300);
+    //     System.out.println(token);
+    //     System.out.println(verifyToken(token, keyPair.getPublic()));
     // }
 
 }
