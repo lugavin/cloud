@@ -29,6 +29,7 @@ import org.springframework.web.util.CookieGenerator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 import static com.gavin.cloud.common.base.util.Constants.REGEX_LOGIN_TYPE;
@@ -69,20 +70,16 @@ public class AuthResource {
     @PostMapping("/login/{type:" + REGEX_LOGIN_TYPE + "}")
     public ResponseEntity<AuthTokenDTO> login(@Valid @RequestBody LoginDTO loginDTO, @PathVariable int type,
                                               HttpServletRequest request, HttpServletResponse response) {
-        User user = Optional.ofNullable(userApi.getUser(loginDTO.getUsername(), type))
-                .orElseThrow(AccountNotFoundException::new);
+        User user = Optional.ofNullable(userApi.getUser(loginDTO.getUsername(), type)).orElseThrow(AccountNotFoundException::new);
         if (!Md5Hash.hash(loginDTO.getPassword(), user.getSalt()).equals(user.getPassword())) {
             throw new InvalidPasswordException();
         }
         if (!BooleanUtils.isTrue(user.getActivated())) {
             throw new AccountNotActivatedException();
         }
-        AuthTokenDTO authToken = authService.createAuthToken(ActiveUser.builder()
-                .uid(user.getId())
-                .username(user.getUsername())
-                .clientIP(WebUtils.getClientIP(request))
-                .roles(roleApi.getRoles(user.getId()))
-                .build());
+        List<String> roles = roleApi.getRoles(user.getId());
+        ActiveUser activeUser = new ActiveUser(user.getId(), user.getUsername(), WebUtils.getClientIP(request), roles);
+        AuthTokenDTO authToken = authService.createAuthToken(activeUser);
         createCookie(request, response, authToken.getAccessToken());
         return ResponseEntity.ok(authToken);
     }
@@ -90,14 +87,9 @@ public class AuthResource {
     @GetMapping("/token/{refreshToken}")
     public ResponseEntity<String> getNewAccessToken(@PathVariable String refreshToken, @RequestParam Long uid,
                                                     HttpServletRequest request, HttpServletResponse response) {
-        User user = Optional.ofNullable(userApi.getUser(uid))
-                .orElseThrow(AccountNotFoundException::new);
-        ActiveUser activeUser = ActiveUser.builder()
-                .uid(user.getId())
-                .username(user.getUsername())
-                .clientIP(WebUtils.getClientIP(request))
-                .roles(roleApi.getRoles(user.getId()))
-                .build();
+        User user = Optional.ofNullable(userApi.getUser(uid)).orElseThrow(AccountNotFoundException::new);
+        List<String> roles = roleApi.getRoles(user.getId());
+        ActiveUser activeUser = new ActiveUser(user.getId(), user.getUsername(), WebUtils.getClientIP(request), roles);
         AuthTokenDTO authToken = authService.createAuthToken(activeUser, refreshToken);
         createCookie(request, response, authToken.getAccessToken());
         return ResponseEntity.ok(authToken.getAccessToken());

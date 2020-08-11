@@ -1,8 +1,6 @@
 package com.gavin.cloud.common.base.auth;
 
-import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -10,19 +8,14 @@ import java.util.Collection;
 import java.util.List;
 
 @Data
-@Builder
 public class ActiveUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @NonNull
-    private Long uid;
-    @NonNull
-    private String username;
-    @NonNull
-    private String clientIP;
-    @NonNull
-    private List<String> roles;
+    private final Long uid;
+    private final String username;
+    private final String clientIP;
+    private final List<String> roles;
 
     public boolean hasRole(String role) {
         return this.roles.contains(role);

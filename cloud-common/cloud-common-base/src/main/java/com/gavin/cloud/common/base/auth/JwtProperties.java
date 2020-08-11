@@ -1,9 +1,7 @@
 package com.gavin.cloud.common.base.auth;
 
-import com.gavin.cloud.common.base.util.KeyHelper;
 import lombok.Data;
 
-import java.security.PublicKey;
 import java.util.concurrent.TimeUnit;
 
 @Data
@@ -15,16 +13,12 @@ public class JwtProperties {
 
     private Long accessTokenExpires = DEFAULT_ACCESS_TOKEN_EXPIRES;
     private Long refreshTokenExpires = DEFAULT_REFRESH_TOKEN_EXPIRES;
-    private PublicKey publicKey;
+    private String publicKey;
     private String cookieName;
     private String cookieDomain;
     private String cookiePath = DEFAULT_COOKIE_PATH;
     private Integer cookieMaxAge;
     private boolean useHttpOnlyCookie = true;
     private boolean useSecureCookie = false;
-
-    public void setPublicKey(String publicKeyEncoded) {
-        this.publicKey = KeyHelper.createPublicKey(publicKeyEncoded);
-    }
 
 }

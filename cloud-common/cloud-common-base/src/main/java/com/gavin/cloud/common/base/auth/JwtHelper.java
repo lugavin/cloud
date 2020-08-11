@@ -6,23 +6,29 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.NonNull;
 
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public abstract class JwtHelper {
 
+    private static final String ALGORITHM_RSA = "RSA";
+
     private static final String CLAIM_KEY_USERNAME = "username";
     private static final String CLAIM_KEY_CLIENT_IP = "client_ip";
     private static final String CLAIM_KEY_ROLES = "roles";
 
+    public static String createToken(ActiveUser activeUser, String privateKeyEncoded, Long validityInSeconds) {
+        return createToken(activeUser, createPrivateKey(privateKeyEncoded), validityInSeconds);
+    }
+
     public static String createToken(@NonNull ActiveUser activeUser,
-                                     @NonNull PrivateKey privateKey,
+                                     @NonNull Key privateKey,
                                      @NonNull Long validityInSeconds) {
         return Jwts.builder()
                 .serializeToJsonWith(map -> JsonUtils.toJson(map).getBytes(UTF_8))
@@ -36,8 +42,12 @@ public abstract class JwtHelper {
                 .compact();
     }
 
+    public static ActiveUser verifyToken(String token, String publicKeyEncoded) {
+        return verifyToken(token, createPublicKey(publicKeyEncoded));
+    }
+
     @SuppressWarnings("unchecked")
-    public static ActiveUser verifyToken(@NonNull String token, @NonNull PublicKey publicKey) throws AuthenticationException {
+    public static ActiveUser verifyToken(@NonNull String token, @NonNull Key publicKey) {
         try {
             Claims claims = Jwts.parser()
                     .deserializeJsonWith(bytes -> JsonUtils.fromJson(new String(bytes, UTF_8), Map.class, String.class, Object.class))
@@ -45,33 +55,41 @@ public abstract class JwtHelper {
                     .parseClaimsJws(token)
                     .getBody();
             //OK, we can trust this JWT
-            return ActiveUser.builder()
-                    .uid(Long.parseLong(claims.getSubject()))
-                    .username(claims.get(CLAIM_KEY_USERNAME, String.class))
-                    .clientIP(claims.get(CLAIM_KEY_CLIENT_IP, String.class))
-                    .roles(claims.get(CLAIM_KEY_ROLES, ArrayList.class))
-                    .build();
+            return new ActiveUser(Long.parseLong(claims.getSubject()), claims.get(CLAIM_KEY_USERNAME, String.class),
+                    claims.get(CLAIM_KEY_CLIENT_IP, String.class), claims.get(CLAIM_KEY_ROLES, ArrayList.class));
         } catch (Exception e) {
             //Don't trust the JWT!
             throw new AuthenticationException("The token is illegal.");
         }
     }
 
-    // public static void main(String[] args) throws Exception {
-    //     KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-    //     keyPairGenerator.initialize(2048);
-    //     KeyPair keyPair = keyPairGenerator.generateKeyPair();
-    //     System.err.println(Base64Utils.encodeToString(keyPair.getPrivate().getEncoded()));
-    //     System.err.println(Base64Utils.encodeToString(keyPair.getPublic().getEncoded()));
-    //     ActiveUser activeUser = ActiveUser.builder()
-    //             .uid(101L)
-    //             .username("admin")
-    //             .clientIP("127.0.0.1")
-    //             .roles(Arrays.asList("user:create", "user:delete"))
-    //             .build();
-    //     String token = createToken(activeUser, keyPair.getPrivate(), 300L);
-    //     System.out.println(token);
-    //     System.out.println(verifyToken(token, keyPair.getPublic()));
-    // }
+    private static PrivateKey createPrivateKey(String privateKeyEncoded) {
+        try {
+            return KeyFactory.getInstance(ALGORITHM_RSA)
+                    .generatePrivate(new PKCS8EncodedKeySpec(Base64.getUrlDecoder().decode(privateKeyEncoded)));
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private static PublicKey createPublicKey(String publicKeyEncoded) {
+        try {
+            return KeyFactory.getInstance(ALGORITHM_RSA)
+                    .generatePublic(new X509EncodedKeySpec(Base64.getUrlDecoder().decode(publicKeyEncoded)));
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(2048);
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        String privateKeyEncoded = Base64.getUrlEncoder().encodeToString(keyPair.getPrivate().getEncoded());
+        String publicKeyEncoded = Base64.getUrlEncoder().encodeToString(keyPair.getPublic().getEncoded());
+        ActiveUser activeUser = new ActiveUser(101L, "admin", "127.0.0.1", Arrays.asList("user:create", "user:delete"));
+        String token = createToken(activeUser, privateKeyEncoded, 300L);
+        System.err.println(verifyToken(token, publicKeyEncoded));
+    }
 
 }
