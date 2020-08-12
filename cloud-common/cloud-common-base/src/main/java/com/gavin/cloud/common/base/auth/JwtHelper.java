@@ -81,15 +81,15 @@ public abstract class JwtHelper {
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(2048);
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
-        String privateKeyEncoded = Base64.getUrlEncoder().encodeToString(keyPair.getPrivate().getEncoded());
-        String publicKeyEncoded = Base64.getUrlEncoder().encodeToString(keyPair.getPublic().getEncoded());
-        ActiveUser activeUser = new ActiveUser(101L, "admin", "127.0.0.1", Arrays.asList("user:create", "user:delete"));
-        String token = createToken(activeUser, privateKeyEncoded, 300L);
-        System.err.println(verifyToken(token, publicKeyEncoded));
-    }
+    // public static void main(String[] args) throws Exception {
+    //     KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+    //     keyPairGenerator.initialize(2048);
+    //     KeyPair keyPair = keyPairGenerator.generateKeyPair();
+    //     String privateKeyEncoded = Base64.getUrlEncoder().encodeToString(keyPair.getPrivate().getEncoded());
+    //     String publicKeyEncoded = Base64.getUrlEncoder().encodeToString(keyPair.getPublic().getEncoded());
+    //     ActiveUser activeUser = new ActiveUser(101L, "admin", "127.0.0.1", Arrays.asList("user:create", "user:delete"));
+    //     String token = createToken(activeUser, privateKeyEncoded, 300L);
+    //     System.err.println(verifyToken(token, publicKeyEncoded));
+    // }
 
 }

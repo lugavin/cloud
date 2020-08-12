@@ -54,7 +54,7 @@ public class AuthFilter extends ZuulFilter {
 
         try {
             Cookie cookie = Arrays.stream(ctx.getRequest().getCookies())
-                    .filter(c -> jwtProperties.getCookieName().equals(c.getName()))
+                    .filter(c -> jwtProperties.getCookie().getName().equals(c.getName()))
                     .findFirst()
                     .orElseThrow(AuthenticationException::new);
             return JwtHelper.verifyToken(cookie.getValue(), jwtProperties.getPublicKey());

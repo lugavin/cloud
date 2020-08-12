@@ -9,12 +9,13 @@ app:
     access-token-expires: 300
     refresh-token-expires: 2592000
     public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn1T9aKvZk0kD3TFX-vq7RQTdWXOnmsIP2w50DMBRFFAsKzgk2l_sYl_qh8NKa-1Ey6jfrOIG_-skih6qa9mcutexXGhkq15PamYVXNWmdXKr793nndMnhseIT8OJ-CMuhW2JmFXo3VmNdtk6iAEewulhASV9GOn6ZONSD0vfIOSDesA-escPcDrfw4IxCB9BuQEprvhPtKx9ag_vH2vgtUFxQcr2ZhN_-J5ijWbu-2mEYUdD0FsrvAL6hbkHhVIfJ8FGMfU-a51ie8XTahjJ9K99N6TZq9CJxzoBunATKpDVqgnIGp0vFXZjksT_ibF5ubCps2bah5TyxCQdHm0grwIDAQAB
-    cookie-path: /
-    cookie-name: accessToken
-    cookie-domain:                 # 顶级域名(domain.com)
-    cookie-max-age: -1             # 若设置的值不大于0则关闭浏览器失效
-    use-http-only-cookie: true     # 若设置为true则通过JS脚本将无法读取到Cookie信息(防止XSS跨站脚本攻击)
-    use-secure-cookie: false       # 若设置为true则只能在Https连接中被浏览器传递到服务端
+    cookie:
+      path: /
+      name: accessToken
+      domain:           # 顶级域名(domain.com)
+      max-age: -1       # 若设置的值不大于0则关闭浏览器失效
+      http-only: true  # 若设置为true则通过JS脚本将无法读取到Cookie信息(防止XSS跨站脚本攻击)
+      secure: false    # 若设置为true则只能在Https连接中被浏览器传递到服务端
   auth:
     anonUrls:
       - /**/v2/api-docs/**

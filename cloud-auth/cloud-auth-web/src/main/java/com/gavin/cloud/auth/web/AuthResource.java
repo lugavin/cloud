@@ -10,6 +10,7 @@ import com.gavin.cloud.auth.web.dto.KeyAndPasswordDTO;
 import com.gavin.cloud.auth.web.dto.LoginDTO;
 import com.gavin.cloud.common.base.auth.ActiveUser;
 import com.gavin.cloud.common.base.auth.JwtHelper;
+import com.gavin.cloud.common.base.auth.JwtProperties;
 import com.gavin.cloud.common.base.util.Md5Hash;
 import com.gavin.cloud.common.web.annotation.RequiresGuest;
 import com.gavin.cloud.common.web.util.WebUtils;
@@ -154,7 +155,7 @@ public class AuthResource {
     private void createCookie(HttpServletRequest request, HttpServletResponse response, String token) {
         CookieGenerator cookieGenerator = new CookieGenerator();
         setCookieProperties(request, cookieGenerator);
-        cookieGenerator.setCookieMaxAge(jwtProperties.getCookieMaxAge());
+        cookieGenerator.setCookieMaxAge(jwtProperties.getCookie().getMaxAge());
         cookieGenerator.addCookie(response, token);
     }
 
@@ -166,17 +167,18 @@ public class AuthResource {
     }
 
     private void setCookieProperties(HttpServletRequest request, CookieGenerator cookieGenerator) {
-        cookieGenerator.setCookiePath(jwtProperties.getCookiePath());
-        String cookieDomain = jwtProperties.getCookieDomain();
+        JwtProperties.Cookie cookie = jwtProperties.getCookie();
+        cookieGenerator.setCookiePath(cookie.getPath());
+        String cookieDomain = cookie.getDomain();
         if (StringUtils.isEmpty(cookieDomain)) {
             cookieDomain = WebUtils.getCookieDomain(request);
         }
         if (StringUtils.isNotEmpty(cookieDomain)) {
             cookieGenerator.setCookieDomain(cookieDomain);
         }
-        cookieGenerator.setCookieHttpOnly(jwtProperties.isUseHttpOnlyCookie());
-        cookieGenerator.setCookieName(jwtProperties.getCookieName());
-        cookieGenerator.setCookieSecure(jwtProperties.isUseSecureCookie());
+        cookieGenerator.setCookieHttpOnly(cookie.isHttpOnly());
+        cookieGenerator.setCookieName(cookie.getName());
+        cookieGenerator.setCookieSecure(cookie.isSecure());
     }
 
 }

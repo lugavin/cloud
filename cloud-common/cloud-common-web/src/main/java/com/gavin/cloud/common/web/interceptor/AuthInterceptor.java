@@ -51,7 +51,7 @@ public class AuthInterceptor extends AbstractInterceptor {
         // 需要登录才可访问
         try {
             Cookie cookie = Arrays.stream(request.getCookies())
-                    .filter(c -> jwtProperties.getCookieName().equals(c.getName()))
+                    .filter(c -> jwtProperties.getCookie().getName().equals(c.getName()))
                     .findFirst()
                     .orElseThrow(AuthenticationException::new);
             ActiveUser activeUser = JwtHelper.verifyToken(cookie.getValue(), jwtProperties.getPublicKey());

@@ -9,16 +9,25 @@ public class JwtProperties {
 
     private static final Long DEFAULT_ACCESS_TOKEN_EXPIRES = TimeUnit.MINUTES.toSeconds(5);
     private static final Long DEFAULT_REFRESH_TOKEN_EXPIRES = TimeUnit.DAYS.toSeconds(30);
-    private static final String DEFAULT_COOKIE_PATH = "/";
+
+    private final Cookie cookie = new Cookie();
 
     private Long accessTokenExpires = DEFAULT_ACCESS_TOKEN_EXPIRES;
     private Long refreshTokenExpires = DEFAULT_REFRESH_TOKEN_EXPIRES;
     private String publicKey;
-    private String cookieName;
-    private String cookieDomain;
-    private String cookiePath = DEFAULT_COOKIE_PATH;
-    private Integer cookieMaxAge;
-    private boolean useHttpOnlyCookie = true;
-    private boolean useSecureCookie = false;
+
+    @Data
+    public static class Cookie {
+
+        private static final String DEFAULT_PATH = "/";
+
+        private String name;
+        private String domain;
+        private Integer maxAge;
+        private String path = DEFAULT_PATH;
+        private boolean httpOnly = true;
+        private boolean secure = false;
+
+    }
 
 }
