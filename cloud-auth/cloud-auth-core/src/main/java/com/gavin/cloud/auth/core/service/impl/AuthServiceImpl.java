@@ -8,6 +8,7 @@ import com.gavin.cloud.auth.pojo.AuthToken;
 import com.gavin.cloud.auth.pojo.AuthTokenExample;
 import com.gavin.cloud.common.base.auth.ActiveUser;
 import com.gavin.cloud.common.base.auth.JwtHelper;
+import com.gavin.cloud.common.base.util.NanoIdUtils;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public AuthTokenDTO createAuthToken(ActiveUser activeUser) {
         String accessToken = JwtHelper.createToken(activeUser, jwtProperties.getPrivateKey(), jwtProperties.getAccessTokenExpires());
-        String refreshToken = UUID.randomUUID().toString();
+        String refreshToken = NanoIdUtils.randomNanoId();
         AuthToken authToken = new AuthToken();
         authToken.setId(SnowflakeIdWorker.getInstance().nextId());
         authToken.setUid(activeUser.getUid());
