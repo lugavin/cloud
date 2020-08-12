@@ -15,6 +15,7 @@ public class JwtProperties {
     private Long accessTokenExpires = DEFAULT_ACCESS_TOKEN_EXPIRES;
     private Long refreshTokenExpires = DEFAULT_REFRESH_TOKEN_EXPIRES;
     private String publicKey;
+    private boolean enableCookie = false;
 
     @Data
     public static class Cookie {

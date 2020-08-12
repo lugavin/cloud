@@ -81,7 +81,9 @@ public class AuthResource {
         List<String> roles = roleApi.getRoles(user.getId());
         ActiveUser activeUser = new ActiveUser(user.getId(), user.getUsername(), WebUtils.getClientIP(request), roles);
         AuthTokenDTO authToken = authService.createAuthToken(activeUser);
-        createCookie(request, response, authToken.getAccessToken());
+        if (jwtProperties.isEnableCookie()) {
+            createCookie(request, response, authToken.getAccessToken());
+        }
         return ResponseEntity.ok(authToken);
     }
 
@@ -92,7 +94,9 @@ public class AuthResource {
         List<String> roles = roleApi.getRoles(user.getId());
         ActiveUser activeUser = new ActiveUser(user.getId(), user.getUsername(), WebUtils.getClientIP(request), roles);
         AuthTokenDTO authToken = authService.createAuthToken(activeUser, refreshToken);
-        createCookie(request, response, authToken.getAccessToken());
+        if (jwtProperties.isEnableCookie()) {
+            createCookie(request, response, authToken.getAccessToken());
+        }
         return ResponseEntity.ok(authToken.getAccessToken());
     }
 
@@ -100,7 +104,9 @@ public class AuthResource {
     @GetMapping("/logout")
     public ResponseEntity<Void> logout(@RequestParam String refreshToken, HttpServletRequest request, HttpServletResponse response) {
         authService.rejectRefreshToken(refreshToken);
-        clearCookie(request, response);
+        if (jwtProperties.isEnableCookie()) {
+            clearCookie(request, response);
+        }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

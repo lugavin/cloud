@@ -3,6 +3,7 @@ package com.gavin.cloud.auth.core.service.impl;
 import com.gavin.cloud.auth.core.config.properties.JwtExtProperties;
 import com.gavin.cloud.auth.core.dto.AuthTokenDTO;
 import com.gavin.cloud.auth.core.mapper.ext.AuthTokenMapperExt;
+import com.gavin.cloud.auth.core.problem.AuthException;
 import com.gavin.cloud.auth.core.service.AuthService;
 import com.gavin.cloud.auth.pojo.AuthToken;
 import com.gavin.cloud.auth.pojo.AuthTokenExample;
@@ -16,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -59,7 +59,7 @@ public class AuthServiceImpl implements AuthService {
                 return new AuthTokenDTO(accessToken, refreshToken, jwtProperties.getAccessTokenExpires());
             }
         }
-        throw new RuntimeException("The refresh token has expired!");
+        throw new AuthException("The refresh token has expired!");
     }
 
     @Override
