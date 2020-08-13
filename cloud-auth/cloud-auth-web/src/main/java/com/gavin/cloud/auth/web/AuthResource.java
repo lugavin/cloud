@@ -1,15 +1,14 @@
 package com.gavin.cloud.auth.web;
 
 import com.gavin.cloud.auth.core.config.properties.JwtExtProperties;
+import com.gavin.cloud.auth.core.dto.AuthTokenDTO;
 import com.gavin.cloud.auth.core.problem.AccountNotActivatedException;
 import com.gavin.cloud.auth.core.problem.AccountNotFoundException;
 import com.gavin.cloud.auth.core.problem.InvalidPasswordException;
 import com.gavin.cloud.auth.core.service.AuthService;
-import com.gavin.cloud.auth.core.dto.AuthTokenDTO;
 import com.gavin.cloud.auth.web.dto.KeyAndPasswordDTO;
 import com.gavin.cloud.auth.web.dto.LoginDTO;
 import com.gavin.cloud.common.base.auth.ActiveUser;
-import com.gavin.cloud.common.base.auth.JwtHelper;
 import com.gavin.cloud.common.base.auth.JwtProperties;
 import com.gavin.cloud.common.base.util.Md5Hash;
 import com.gavin.cloud.common.web.annotation.RequiresGuest;
@@ -17,6 +16,7 @@ import com.gavin.cloud.common.web.util.WebUtils;
 import com.gavin.cloud.sys.api.AccountApi;
 import com.gavin.cloud.sys.api.RoleApi;
 import com.gavin.cloud.sys.api.UserApi;
+import com.gavin.cloud.sys.pojo.Role;
 import com.gavin.cloud.sys.pojo.User;
 import com.gavin.cloud.sys.pojo.dto.RegisterDTO;
 import org.apache.commons.lang3.BooleanUtils;
@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.gavin.cloud.common.base.util.Constants.REGEX_LOGIN_TYPE;
 
@@ -78,26 +79,13 @@ public class AuthResource {
         if (!BooleanUtils.isTrue(user.getActivated())) {
             throw new AccountNotActivatedException();
         }
-        List<String> roles = roleApi.getRoles(user.getId());
+        List<String> roles = roleApi.getRoles(user.getId()).stream().map(Role::getCode).collect(Collectors.toList());
         ActiveUser activeUser = new ActiveUser(user.getId(), user.getUsername(), WebUtils.getClientIP(request), roles);
         AuthTokenDTO authToken = authService.createAuthToken(activeUser);
         if (jwtProperties.isEnableCookie()) {
             createCookie(request, response, authToken.getAccessToken());
         }
         return ResponseEntity.ok(authToken);
-    }
-
-    @GetMapping("/token/{refreshToken}")
-    public ResponseEntity<String> getNewAccessToken(@PathVariable String refreshToken, @RequestParam Long uid,
-                                                    HttpServletRequest request, HttpServletResponse response) {
-        User user = Optional.ofNullable(userApi.getUser(uid)).orElseThrow(AccountNotFoundException::new);
-        List<String> roles = roleApi.getRoles(user.getId());
-        ActiveUser activeUser = new ActiveUser(user.getId(), user.getUsername(), WebUtils.getClientIP(request), roles);
-        AuthTokenDTO authToken = authService.createAuthToken(activeUser, refreshToken);
-        if (jwtProperties.isEnableCookie()) {
-            createCookie(request, response, authToken.getAccessToken());
-        }
-        return ResponseEntity.ok(authToken.getAccessToken());
     }
 
     @RequiresGuest
@@ -110,9 +98,22 @@ public class AuthResource {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/account/{token}")
-    public ResponseEntity<?> getAccount(@PathVariable("token") String token, @RequestParam(required = false) String jsonpCallback) {
-        ActiveUser activeUser = JwtHelper.verifyToken(token, jwtProperties.getPublicKey());
+    @GetMapping("/token/{refreshToken}")
+    public ResponseEntity<String> getNewAccessToken(@PathVariable String refreshToken, @RequestParam Long uid,
+                                                    HttpServletRequest request, HttpServletResponse response) {
+        User user = Optional.ofNullable(userApi.getUser(uid)).orElseThrow(AccountNotFoundException::new);
+        List<String> roles = roleApi.getRoles(user.getId()).stream().map(Role::getCode).collect(Collectors.toList());
+        ActiveUser activeUser = new ActiveUser(user.getId(), user.getUsername(), WebUtils.getClientIP(request), roles);
+        AuthTokenDTO authToken = authService.createAuthToken(activeUser, refreshToken);
+        if (jwtProperties.isEnableCookie()) {
+            createCookie(request, response, authToken.getAccessToken());
+        }
+        return ResponseEntity.ok(authToken.getAccessToken());
+    }
+
+    @GetMapping("/account/{accessToken}")
+    public ResponseEntity<?> getAccount(@PathVariable String accessToken, @RequestParam(required = false) String jsonpCallback) {
+        ActiveUser activeUser = authService.verifyAccessToken(accessToken);
         if (StringUtils.isEmpty(jsonpCallback)) {
             return ResponseEntity.ok(activeUser);
         }
@@ -125,7 +126,7 @@ public class AuthResource {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public void registerAccount(@Valid RegisterDTO registerDTO) {
-        // TODO 通过消息通知发送邮件
+        // TODO 通过消息异步通知发送邮件
         //User user = accountApi.register(registerDTO);
         //Map<String, Object> variables = new HashMap<>();
         //variables.put(USER, user);
@@ -143,7 +144,7 @@ public class AuthResource {
     @RequiresGuest
     @PostMapping("/account/reset-password/init")
     public void requestPasswordReset(@RequestBody String mail) {
-        // TODO 通过消息通知发送邮件
+        // TODO 通过消息异步通知发送邮件
         // User user = accountApi.requestPasswordReset(mail);
         // Map<String, Object> variables = new HashMap<>();
         // variables.put(USER, user);
@@ -159,21 +160,21 @@ public class AuthResource {
     }
 
     private void createCookie(HttpServletRequest request, HttpServletResponse response, String token) {
-        CookieGenerator cookieGenerator = new CookieGenerator();
-        setCookieProperties(request, cookieGenerator);
+        CookieGenerator cookieGenerator = createCookieGenerator(request);
         cookieGenerator.setCookieMaxAge(jwtProperties.getCookie().getMaxAge());
         cookieGenerator.addCookie(response, token);
     }
 
     private void clearCookie(HttpServletRequest request, HttpServletResponse response) {
-        CookieGenerator cookieGenerator = new CookieGenerator();
-        setCookieProperties(request, cookieGenerator);
+        CookieGenerator cookieGenerator = createCookieGenerator(request);
         cookieGenerator.setCookieMaxAge(0);
         cookieGenerator.addCookie(response, "");
     }
 
-    private void setCookieProperties(HttpServletRequest request, CookieGenerator cookieGenerator) {
+    private CookieGenerator createCookieGenerator(HttpServletRequest request) {
+        CookieGenerator cookieGenerator = new CookieGenerator();
         JwtProperties.Cookie cookie = jwtProperties.getCookie();
+        cookieGenerator.setCookieName(cookie.getName());
         cookieGenerator.setCookiePath(cookie.getPath());
         String cookieDomain = cookie.getDomain();
         if (StringUtils.isEmpty(cookieDomain)) {
@@ -183,8 +184,8 @@ public class AuthResource {
             cookieGenerator.setCookieDomain(cookieDomain);
         }
         cookieGenerator.setCookieHttpOnly(cookie.isHttpOnly());
-        cookieGenerator.setCookieName(cookie.getName());
         cookieGenerator.setCookieSecure(cookie.isSecure());
+        return cookieGenerator;
     }
 
 }

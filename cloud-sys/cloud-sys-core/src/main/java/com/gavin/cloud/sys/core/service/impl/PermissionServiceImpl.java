@@ -3,10 +3,8 @@ package com.gavin.cloud.sys.core.service.impl;
 import com.gavin.cloud.common.base.util.JsonUtils;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import com.gavin.cloud.sys.core.enums.ResourceType;
-import com.gavin.cloud.sys.core.mapper.PermissionMapper;
-import com.gavin.cloud.sys.core.mapper.RoleMapper;
-import com.gavin.cloud.sys.core.mapper.RolePermissionMapper;
 import com.gavin.cloud.sys.core.mapper.ext.PermissionExtMapper;
+import com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper;
 import com.gavin.cloud.sys.core.mapper.ext.RolePermissionExtMapper;
 import com.gavin.cloud.sys.core.service.PermissionService;
 import com.gavin.cloud.sys.pojo.Permission;
@@ -33,28 +31,22 @@ import java.util.stream.Collectors;
 @Service
 public class PermissionServiceImpl implements PermissionService {
 
-    private static final int DEFAULT_TIMEOUT = 3 * 60;
+    private static final long DEFAULT_TIMEOUT = TimeUnit.MINUTES.toSeconds(3);
     private static final String REDIS_KEY_PERM = "role";
     private static final String MUTEX_KEY_PREFIX = "mutex:role:";
 
     private final StringRedisTemplate redisTemplate;
-    private final RoleMapper roleMapper;
-    private final PermissionMapper permissionMapper;
+    private final RoleExtMapper roleExtMapper;
     private final PermissionExtMapper permissionExtMapper;
-    private final RolePermissionMapper rolePermissionMapper;
     private final RolePermissionExtMapper rolePermissionExtMapper;
 
     public PermissionServiceImpl(ObjectProvider<StringRedisTemplate> redisTemplateProvider,
-                                 RoleMapper roleMapper,
-                                 PermissionMapper permissionMapper,
+                                 RoleExtMapper roleExtMapper,
                                  PermissionExtMapper permissionExtMapper,
-                                 RolePermissionMapper rolePermissionMapper,
                                  RolePermissionExtMapper rolePermissionExtMapper) {
         this.redisTemplate = redisTemplateProvider.getIfAvailable();
-        this.roleMapper = roleMapper;
-        this.permissionMapper = permissionMapper;
+        this.roleExtMapper = roleExtMapper;
         this.permissionExtMapper = permissionExtMapper;
-        this.rolePermissionMapper = rolePermissionMapper;
         this.rolePermissionExtMapper = rolePermissionExtMapper;
     }
 
@@ -62,7 +54,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Transactional
     public Permission createPermission(Permission permission) {
         permission.setId(SnowflakeIdWorker.getInstance().nextId());
-        permissionMapper.insertSelective(permission);
+        permissionExtMapper.insertSelective(permission);
         return permission;
     }
 
@@ -70,7 +62,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Transactional
     public Permission updatePermission(Long id, Permission permission) {
         permission.setId(id);
-        permissionMapper.updateByPrimaryKey(permission);
+        permissionExtMapper.updateByPrimaryKey(permission);
         return permission;
     }
 
@@ -79,8 +71,8 @@ public class PermissionServiceImpl implements PermissionService {
     public void deletePermission(Long id) {
         RolePermissionExample example = new RolePermissionExample();
         example.createCriteria().andPermissionIdEqualTo(id);
-        rolePermissionMapper.deleteByExample(example);
-        permissionMapper.deleteByPrimaryKey(id);
+        rolePermissionExtMapper.deleteByExample(example);
+        permissionExtMapper.deleteByPrimaryKey(id);
     }
 
     @Override
@@ -88,42 +80,41 @@ public class PermissionServiceImpl implements PermissionService {
     public void deletePermissions(Long[] ids) {
         RolePermissionExample rolePermExample = new RolePermissionExample();
         rolePermExample.createCriteria().andPermissionIdIn(Arrays.asList(ids));
-        rolePermissionMapper.deleteByExample(rolePermExample);
+        rolePermissionExtMapper.deleteByExample(rolePermExample);
         PermissionExample example = new PermissionExample();
         example.createCriteria().andIdIn(Arrays.asList(ids));
-        permissionMapper.deleteByExample(example);
+        permissionExtMapper.deleteByExample(example);
     }
 
     @Override
     @Transactional
     public void assignPermissions(Long roleId, Long[] permIds) {
-        Optional.ofNullable(roleMapper.selectByPrimaryKey(roleId))
-                .ifPresent(role -> {
-                    RolePermissionExample example = new RolePermissionExample();
-                    example.createCriteria().andRoleIdEqualTo(roleId);
-                    rolePermissionMapper.deleteByExample(example);
-                    if (ArrayUtils.isNotEmpty(permIds)) {
-                        List<RolePermission> list = Arrays.stream(permIds).map(permId -> {
-                            RolePermission rolePermission = new RolePermission();
-                            rolePermission.setId(SnowflakeIdWorker.getInstance().nextId());
-                            rolePermission.setRoleId(roleId);
-                            rolePermission.setPermissionId(permId);
-                            return rolePermission;
-                        }).collect(Collectors.toList());
-                        rolePermissionExtMapper.insertBatch(list);
-                    }
-                    syncCache(REDIS_KEY_PERM, role.getCode()); // 缓存同步
-                });
+        Optional.ofNullable(roleExtMapper.selectByPrimaryKey(roleId)).ifPresent(role -> {
+            RolePermissionExample example = new RolePermissionExample();
+            example.createCriteria().andRoleIdEqualTo(roleId);
+            rolePermissionExtMapper.deleteByExample(example);
+            if (ArrayUtils.isNotEmpty(permIds)) {
+                List<RolePermission> list = Arrays.stream(permIds).map(permId -> {
+                    RolePermission rolePermission = new RolePermission();
+                    rolePermission.setId(SnowflakeIdWorker.getInstance().nextId());
+                    rolePermission.setRoleId(roleId);
+                    rolePermission.setPermissionId(permId);
+                    return rolePermission;
+                }).collect(Collectors.toList());
+                rolePermissionExtMapper.insertBatch(list);
+            }
+            syncCache(REDIS_KEY_PERM, role.getCode()); // 缓存同步
+        });
     }
 
     @Override
     public Permission getPermission(Long id) {
-        return permissionMapper.selectByPrimaryKey(id);
+        return permissionExtMapper.selectByPrimaryKey(id);
     }
 
     @Override
     public List<Permission> getPermissions() {
-        return permissionMapper.selectByExample(new PermissionExample());
+        return permissionExtMapper.selectByExample(new PermissionExample());
     }
 
     @Override

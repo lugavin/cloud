@@ -2,7 +2,7 @@ package com.gavin.cloud.sys.core.service.impl;
 
 import com.gavin.cloud.common.base.util.Md5Hash;
 import com.gavin.cloud.common.base.util.RandomUtils;
-import com.gavin.cloud.sys.core.mapper.UserMapper;
+import com.gavin.cloud.sys.core.mapper.ext.UserExtMapper;
 import com.gavin.cloud.sys.core.problem.EmailNotFoundException;
 import com.gavin.cloud.sys.core.problem.UserNotFoundException;
 import com.gavin.cloud.sys.core.service.AccountService;
@@ -13,7 +13,8 @@ import com.gavin.cloud.sys.pojo.dto.RegisterDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Calendar;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,12 +22,11 @@ import java.util.Optional;
 @Transactional
 public class AccountServiceImpl implements AccountService {
 
-    private final UserMapper userMapper;
+    private final UserExtMapper userExtMapper;
     private final UserService userService;
 
-    public AccountServiceImpl(UserMapper userMapper,
-                              UserService userService) {
-        this.userMapper = userMapper;
+    public AccountServiceImpl(UserExtMapper userExtMapper, UserService userService) {
+        this.userExtMapper = userExtMapper;
         this.userService = userService;
     }
 
@@ -43,14 +43,14 @@ public class AccountServiceImpl implements AccountService {
     public User activateRegistration(String key) {
         UserExample example = new UserExample();
         example.createCriteria().andActivationKeyEqualTo(key);
-        List<User> users = userMapper.selectByExample(example);
+        List<User> users = userExtMapper.selectByExample(example);
         if (users.size() < 1) {
             throw new UserNotFoundException();
         }
         User user = users.get(0);
         user.setActivated(true);
         user.setActivationKey(null);
-        userMapper.updateByPrimaryKey(user);
+        userExtMapper.updateByPrimaryKey(user);
         return user;
     }
 
@@ -58,14 +58,14 @@ public class AccountServiceImpl implements AccountService {
     public User requestPasswordReset(String mail) {
         UserExample example = new UserExample();
         example.createCriteria().andEmailEqualTo(mail);
-        List<User> users = userMapper.selectByExample(example);
+        List<User> users = userExtMapper.selectByExample(example);
         if (users.size() < 1) {
             throw new EmailNotFoundException();
         }
         User user = users.get(0);
         user.setResetKey(RandomUtils.randomNumeric());
-        user.setResetDate(Calendar.getInstance().getTime());
-        userMapper.updateByPrimaryKey(user);
+        user.setResetDate(Date.from(Instant.now()));
+        userExtMapper.updateByPrimaryKey(user);
         return user;
     }
 
@@ -73,7 +73,7 @@ public class AccountServiceImpl implements AccountService {
     public User finishPasswordReset(String key, String newPassword) {
         UserExample example = new UserExample();
         example.createCriteria().andActivationKeyEqualTo(key);
-        List<User> users = userMapper.selectByExample(example);
+        List<User> users = userExtMapper.selectByExample(example);
         if (users.size() < 1) {
             throw new UserNotFoundException();
         }
@@ -82,19 +82,18 @@ public class AccountServiceImpl implements AccountService {
         user.setPassword(Md5Hash.hash(user.getPassword(), user.getSalt()));
         user.setResetKey(null);
         user.setResetDate(null);
-        userMapper.updateByPrimaryKey(user);
+        userExtMapper.updateByPrimaryKey(user);
         return user;
     }
 
     @Override
     public void changePassword(Long id, String password) {
-        User user = Optional.ofNullable(userMapper.selectByPrimaryKey(id))
-                .orElseThrow(UserNotFoundException::new);
+        User user = Optional.ofNullable(userExtMapper.selectByPrimaryKey(id)).orElseThrow(UserNotFoundException::new);
         user.setSalt(RandomUtils.randomAlphanumeric());
         user.setPassword(Md5Hash.hash(user.getPassword(), user.getSalt()));
         user.setUpdatedBy(user.getUsername());
-        user.setUpdatedAt(Calendar.getInstance().getTime());
-        userMapper.updateByPrimaryKey(user);
+        user.setUpdatedAt(Date.from(Instant.now()));
+        userExtMapper.updateByPrimaryKey(user);
     }
 
 }

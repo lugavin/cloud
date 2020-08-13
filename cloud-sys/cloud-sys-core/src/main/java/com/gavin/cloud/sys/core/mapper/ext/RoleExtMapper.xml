@@ -9,52 +9,49 @@
     </sql>
 
     <select id="getList" resultType="com.gavin.cloud.sys.pojo.Role">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM sys_role
-        <where>
-            <if test="id!=null">
-                AND id = #{id}
-            </if>
-            <if test="code!=null and code!=''">
-                AND code = #{code}
-            </if>
-            <if test="name!=null and name!=''">
-                <if test="_databaseId == 'mysql'">
-                    AND name LIKE CONCAT('%',#{name},'%')
-                </if>
-                <if test="_databaseId == 'oracle'">
-                    AND name LIKE '%'||#{name}||'%'
-                </if>
-            </if>
-        </where>
+        SELECT <include refid="Base_Column_List"/>
+          FROM sys_role
+          <where>
+              <if test="id!=null">
+                  AND id = #{id}
+              </if>
+              <if test="code!=null and code!=''">
+                  AND code = #{code}
+              </if>
+              <if test="name!=null and name!=''">
+                  <if test="_databaseId == 'mysql'">
+                      AND name LIKE CONCAT('%',#{name},'%')
+                  </if>
+                  <if test="_databaseId == 'oracle'">
+                      AND name LIKE '%'||#{name}||'%'
+                  </if>
+              </if>
+          </where>
     </select>
 
     <select id="getPage" resultType="com.gavin.cloud.sys.pojo.Role">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM sys_role
-        <where>
-            <if test="param!=null">
-                <if test="param.code!=null and param.code!=''">
-                    AND code = #{param.code}
-                </if>
-                <if test="param.name!=null and param.name!=''">
-                    <if test="_databaseId == 'mysql'">
-                        AND name LIKE CONCAT('%',#{param.name},'%')
-                    </if>
-                    <if test="_databaseId == 'oracle'">
-                        AND name LIKE '%'||#{param.name}||'%'
-                    </if>
-                </if>
-            </if>
-        </where>
+        SELECT <include refid="Base_Column_List"/>
+          FROM sys_role
+          <where>
+              <if test="param!=null">
+                  <if test="param.code!=null and param.code!=''">
+                      AND code = #{param.code}
+                  </if>
+                  <if test="param.name!=null and param.name!=''">
+                      <if test="_databaseId == 'mysql'">
+                          AND name LIKE CONCAT('%',#{param.name},'%')
+                      </if>
+                      <if test="_databaseId == 'oracle'">
+                          AND name LIKE '%'||#{param.name}||'%'
+                      </if>
+                  </if>
+              </if>
+          </where>
     </select>
 
     <select id="getByUserId" parameterType="java.lang.String" resultType="com.gavin.cloud.sys.pojo.Role">
         SELECT a.id, a.code, a.`name`, a.remark
-          FROM sys_role a
-          JOIN sys_user_role b ON a.id = b.role_id
+          FROM sys_role a JOIN sys_user_role b ON a.id = b.role_id
          WHERE b.user_id = #{userId}
     </select>
 

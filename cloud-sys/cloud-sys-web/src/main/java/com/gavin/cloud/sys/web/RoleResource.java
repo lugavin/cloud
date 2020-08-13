@@ -18,7 +18,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/roles")
@@ -38,10 +37,9 @@ public class RoleResource {
                 .body(roleService.createRole(role));
     }
 
-    @GetMapping("/{userId}/codes")
-    public ResponseEntity<List<String>> getRoles(@PathVariable Long userId) {
-        return ResponseEntity.ok(roleService.getRoles(userId).stream()
-                .map(Role::getCode).collect(Collectors.toList()));
+    @GetMapping("/{uid}")
+    public ResponseEntity<List<Role>> getRoles(@PathVariable Long uid) {
+        return ResponseEntity.ok(roleService.getRoles(uid));
     }
 
     @GetMapping

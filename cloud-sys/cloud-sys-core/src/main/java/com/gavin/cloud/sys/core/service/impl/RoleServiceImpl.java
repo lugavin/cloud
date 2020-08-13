@@ -2,8 +2,6 @@ package com.gavin.cloud.sys.core.service.impl;
 
 import com.gavin.cloud.common.base.page.Page;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
-import com.gavin.cloud.sys.core.mapper.RoleMapper;
-import com.gavin.cloud.sys.core.mapper.UserRoleMapper;
 import com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper;
 import com.gavin.cloud.sys.core.mapper.ext.UserRoleExtMapper;
 import com.gavin.cloud.sys.core.problem.RoleAlreadyUsedException;
@@ -27,18 +25,11 @@ import java.util.stream.Collectors;
 @Transactional
 public class RoleServiceImpl implements RoleService {
 
-    private RoleMapper roleMapper;
     private RoleExtMapper roleExtMapper;
-    private UserRoleMapper userRoleMapper;
     private UserRoleExtMapper userRoleExtMapper;
 
-    public RoleServiceImpl(RoleMapper roleMapper,
-                           RoleExtMapper roleExtMapper,
-                           UserRoleMapper userRoleMapper,
-                           UserRoleExtMapper userRoleExtMapper) {
-        this.roleMapper = roleMapper;
+    public RoleServiceImpl(RoleExtMapper roleExtMapper, UserRoleExtMapper userRoleExtMapper) {
         this.roleExtMapper = roleExtMapper;
-        this.userRoleMapper = userRoleMapper;
         this.userRoleExtMapper = userRoleExtMapper;
     }
 
@@ -47,19 +38,19 @@ public class RoleServiceImpl implements RoleService {
         RoleExample example = new RoleExample();
         RoleExample.Criteria criteria = example.createCriteria();
         criteria.andCodeEqualTo(role.getCode());
-        long rows = roleMapper.countByExample(example);
+        long rows = roleExtMapper.countByExample(example);
         if (rows > 0) {
             throw new RoleAlreadyUsedException();
         }
         role.setId(SnowflakeIdWorker.getInstance().nextId());
-        roleMapper.insert(role);
+        roleExtMapper.insert(role);
         return role;
     }
 
     @Override
     @Transactional(readOnly = true)
     public Role getRole(Long id) {
-        return roleMapper.selectByPrimaryKey(id);
+        return roleExtMapper.selectByPrimaryKey(id);
     }
 
     @Override
@@ -85,7 +76,7 @@ public class RoleServiceImpl implements RoleService {
         if (ArrayUtils.isEmpty(roleIds)) {
             UserRoleExample example = new UserRoleExample();
             example.createCriteria().andUserIdEqualTo(uid);
-            userRoleMapper.deleteByExample(example);
+            userRoleExtMapper.deleteByExample(example);
             return;
         }
 
@@ -101,7 +92,7 @@ public class RoleServiceImpl implements RoleService {
         if (!CollectionUtils.isEmpty(deleteRoles)) {
             UserRoleExample example = new UserRoleExample();
             example.createCriteria().andIdIn(deleteRoles);
-            userRoleMapper.deleteByExample(example);
+            userRoleExtMapper.deleteByExample(example);
         }
 
         if (!CollectionUtils.isEmpty(insertRoles)) {
@@ -120,7 +111,7 @@ public class RoleServiceImpl implements RoleService {
     private List<Long> getRoleIds(Long uid) {
         UserRoleExample example = new UserRoleExample();
         example.createCriteria().andUserIdEqualTo(uid);
-        List<UserRole> userRoles = userRoleMapper.selectByExample(example);
+        List<UserRole> userRoles = userRoleExtMapper.selectByExample(example);
         return userRoles.stream().map(UserRole::getId).collect(Collectors.toList());
     }
 

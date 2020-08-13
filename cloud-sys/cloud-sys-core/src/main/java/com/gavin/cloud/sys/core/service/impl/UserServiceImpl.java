@@ -6,7 +6,6 @@ import com.gavin.cloud.common.base.util.Md5Hash;
 import com.gavin.cloud.common.base.util.RandomUtils;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import com.gavin.cloud.sys.core.enums.LoginType;
-import com.gavin.cloud.sys.core.mapper.UserMapper;
 import com.gavin.cloud.sys.core.mapper.ext.UserExtMapper;
 import com.gavin.cloud.sys.core.problem.EmailAlreadyUsedException;
 import com.gavin.cloud.sys.core.problem.LoginAlreadyUsedException;
@@ -15,23 +14,22 @@ import com.gavin.cloud.sys.core.service.UserService;
 import com.gavin.cloud.sys.pojo.User;
 import com.gavin.cloud.sys.pojo.UserExample;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.*;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    private final UserMapper userMapper;
     private final UserExtMapper userExtMapper;
 
-    public UserServiceImpl(UserMapper userMapper,
-                           UserExtMapper userExtMapper) {
-        this.userMapper = userMapper;
+    public UserServiceImpl(UserExtMapper userExtMapper) {
         this.userExtMapper = userExtMapper;
     }
 
@@ -56,20 +54,20 @@ public class UserServiceImpl implements UserService {
         user.setActivationKey(RandomUtils.randomNumeric());
         user.setCreatedBy(Constants.ACCOUNT_SYSTEM);
         user.setCreatedAt(Calendar.getInstance().getTime());
-        userMapper.insert(user);
+        userExtMapper.insert(user);
         return user;
     }
 
     @Override
     public User updateUser(Long id, User user) {
         user.setId(id);
-        userMapper.updateByPrimaryKeySelective(user);
+        userExtMapper.updateByPrimaryKeySelective(user);
         return user;
     }
 
     @Override
     public void deleteUser(Long id) {
-        userMapper.deleteByPrimaryKey(id);
+        userExtMapper.deleteByPrimaryKey(id);
     }
 
     @Override
@@ -77,7 +75,7 @@ public class UserServiceImpl implements UserService {
         UserExample example = new UserExample();
         UserExample.Criteria criteria = example.createCriteria();
         criteria.andIdIn(Arrays.asList(ids));
-        userMapper.deleteByExample(example);
+        userExtMapper.deleteByExample(example);
     }
 
     /**
@@ -87,18 +85,17 @@ public class UserServiceImpl implements UserService {
      */
     @Scheduled(cron = "0 0 1 * * ?")
     public void deleteNotActivatedUsers() {
-        Date sysTime = Calendar.getInstance().getTime();
         UserExample example = new UserExample();
         UserExample.Criteria criteria = example.createCriteria();
         criteria.andActivatedNotEqualTo(Boolean.TRUE);
-        criteria.andCreatedAtNotBetween(DateUtils.addDays(sysTime, -3), sysTime);
-        userMapper.deleteByExample(example);
+        criteria.andCreatedAtNotBetween(Date.from(Instant.now().minus(3, DAYS)), Date.from(Instant.now()));
+        userExtMapper.deleteByExample(example);
     }
 
     @Override
     @Transactional(readOnly = true)
     public User getUser(Long id) {
-        return userMapper.selectByPrimaryKey(id);
+        return userExtMapper.selectByPrimaryKey(id);
     }
 
     @Override
@@ -113,7 +110,7 @@ public class UserServiceImpl implements UserService {
         } else {
             criteria.andEmailEqualTo(account);
         }
-        List<User> list = userMapper.selectByExample(example);
+        List<User> list = userExtMapper.selectByExample(example);
         return !list.isEmpty() ? list.get(0) : null;
     }
 
@@ -146,7 +143,7 @@ public class UserServiceImpl implements UserService {
         } else {
             criteria.andEmailEqualTo(login);
         }
-        return userMapper.countByExample(example) > 0;
+        return userExtMapper.countByExample(example) > 0;
     }
 
 }

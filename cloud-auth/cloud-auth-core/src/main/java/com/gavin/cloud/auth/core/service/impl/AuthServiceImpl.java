@@ -18,6 +18,9 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @see <a href="https://solidgeargroup.com/en/refresh-token-with-jwt-authentication-node-js/">Auth with JWT Refresh Token</a>
+ */
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -46,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public AuthTokenDTO createAuthToken(ActiveUser activeUser, String refreshToken) {
         AuthTokenExample example = new AuthTokenExample();
         AuthTokenExample.Criteria criteria = example.createCriteria();
@@ -54,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
         List<AuthToken> authTokens = authTokenMapperExt.selectByExample(example);
         if (!authTokens.isEmpty()) {
             AuthToken authToken = authTokens.get(0);
-            if (authToken.getId().equals(activeUser.getUid()) && authToken.getExpiredAt().after(Date.from(Instant.now()))) {
+            if (authToken.getUid().equals(activeUser.getUid()) && authToken.getExpiredAt().after(Date.from(Instant.now()))) {
                 String accessToken = JwtHelper.createToken(activeUser, jwtProperties.getPrivateKey(), jwtProperties.getAccessTokenExpires());
                 return new AuthTokenDTO(accessToken, refreshToken, jwtProperties.getAccessTokenExpires());
             }

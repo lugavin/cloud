@@ -56,8 +56,7 @@ public class PictureServiceImpl implements PictureService {
             sftpUtils.upload(sftpProperties.getBasePath() + filePath, filename, local);
             return ossProperties.getBaseURL() + filePath + filename;
         } finally {
-            Optional.ofNullable(sftpUtils)
-                    .ifPresent(SftpUtils::logout);
+            Optional.ofNullable(sftpUtils).ifPresent(SftpUtils::logout);
         }
     }
 
