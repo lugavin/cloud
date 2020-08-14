@@ -9,6 +9,18 @@ import java.util.Map;
  * 1. a type URI (typically, with the "http" or "https" scheme)
  * 2. a title that appropriately describes it (think short)
  * 3. the HTTP status code for it to be used with
+ * <p>
+ * For example:
+ * <pre><code>
+ * {
+ *   "type": "https://example.com/probs/out-of-credit",
+ *   "title": "You do not have enough credit.",
+ *   "detail": "Your current balance is 30, but that costs 50.",
+ *   "instance": "/account/12345/msgs/abc",
+ *   "balance": 30,
+ *   "accounts": ["/account/12345", "/account/67890"]
+ * }
+ * </code></pre>
  *
  * @see <a href="https://tools.ietf.org/html/rfc7807">RFC 7807: Problem Details for HTTP APIs</a>
  */
