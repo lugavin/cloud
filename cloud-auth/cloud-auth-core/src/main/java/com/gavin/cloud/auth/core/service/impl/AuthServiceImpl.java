@@ -3,12 +3,12 @@ package com.gavin.cloud.auth.core.service.impl;
 import com.gavin.cloud.auth.core.config.properties.JwtExtProperties;
 import com.gavin.cloud.auth.core.dto.AuthTokenDTO;
 import com.gavin.cloud.auth.core.mapper.ext.AuthTokenMapperExt;
-import com.gavin.cloud.auth.core.problem.AuthException;
 import com.gavin.cloud.auth.core.service.AuthService;
 import com.gavin.cloud.auth.pojo.AuthToken;
 import com.gavin.cloud.auth.pojo.AuthTokenExample;
 import com.gavin.cloud.common.base.auth.ActiveUser;
 import com.gavin.cloud.common.base.auth.JwtHelper;
+import com.gavin.cloud.common.base.problem.AuthenticationException;
 import com.gavin.cloud.common.base.util.NanoIdUtils;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import org.springframework.stereotype.Service;
@@ -62,7 +62,7 @@ public class AuthServiceImpl implements AuthService {
                 return new AuthTokenDTO(accessToken, refreshToken, jwtProperties.getAccessTokenExpires());
             }
         }
-        throw new AuthException("The refresh token has expired!");
+        throw new AuthenticationException("The refresh token has expired!");
     }
 
     @Override
