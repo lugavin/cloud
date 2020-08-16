@@ -23,11 +23,7 @@ import java.util.stream.Collectors;
  * DAO层一般不对参数进行校验(参数不合法直接抛出数据库异常).
  * For example:
  * <pre>{@code
- * public interface UserService {
- *
- *   void add(@NotNull @Validated({Groups.Add.class}) UserDTO dto);
- *
- * }
+ * void add(@NotNull @Validated({Groups.Add.class}) UserDTO dto);
  * }</pre>
  *
  * @see org.springframework.core.MethodParameter

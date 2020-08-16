@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * 各种状态码产生的时机: Request(网络异常或超时) => 非法请求(4XX) => 服务异常(5XX) => 正常返回(200)
  * <p>
- * 错误消息可以通过HTTP响应头返回, 例如:
+ * 错误消息国际化可以通过HTTP响应头返回错误消息KEY值, 例如:
  * <pre>{@code
  * HttpHeaders headers = new HttpHeaders();
  * headers.add("X-App-Error", "error." + errorKey);

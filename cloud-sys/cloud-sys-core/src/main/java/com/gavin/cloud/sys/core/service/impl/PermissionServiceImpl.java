@@ -35,19 +35,19 @@ public class PermissionServiceImpl implements PermissionService {
     private static final String REDIS_KEY_PERM = "role";
     private static final String MUTEX_KEY_PREFIX = "mutex:role:";
 
-    private final StringRedisTemplate redisTemplate;
     private final RoleExtMapper roleExtMapper;
     private final PermissionExtMapper permissionExtMapper;
     private final RolePermissionExtMapper rolePermissionExtMapper;
+    private final StringRedisTemplate redisTemplate;
 
-    public PermissionServiceImpl(ObjectProvider<StringRedisTemplate> redisTemplateProvider,
-                                 RoleExtMapper roleExtMapper,
+    public PermissionServiceImpl(RoleExtMapper roleExtMapper,
                                  PermissionExtMapper permissionExtMapper,
-                                 RolePermissionExtMapper rolePermissionExtMapper) {
-        this.redisTemplate = redisTemplateProvider.getIfAvailable();
+                                 RolePermissionExtMapper rolePermissionExtMapper,
+                                 ObjectProvider<StringRedisTemplate> redisTemplateProvider) {
         this.roleExtMapper = roleExtMapper;
         this.permissionExtMapper = permissionExtMapper;
         this.rolePermissionExtMapper = rolePermissionExtMapper;
+        this.redisTemplate = redisTemplateProvider.getIfAvailable();
     }
 
     @Override
