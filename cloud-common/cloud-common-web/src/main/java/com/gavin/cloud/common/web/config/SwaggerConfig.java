@@ -1,6 +1,5 @@
 package com.gavin.cloud.common.web.config;
 
-import com.gavin.cloud.common.base.util.Constants;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -21,6 +20,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import static com.gavin.cloud.common.base.util.Constants.PROFILE_SWAGGER;
 import static springfox.documentation.builders.PathSelectors.ant;
 
 /**
@@ -29,7 +29,7 @@ import static springfox.documentation.builders.PathSelectors.ant;
 @Slf4j
 @Configuration
 @EnableSwagger2
-@Profile(Constants.PROFILE_SWAGGER)
+@Profile(PROFILE_SWAGGER)
 public class SwaggerConfig {
 
     /**

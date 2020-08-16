@@ -8,9 +8,6 @@ import org.junit.Test;
 import java.util.*;
 import java.util.stream.IntStream;
 
-/**
- * 应用场景: 数据同步
- */
 @Slf4j
 public class CollectionTest {
 
@@ -19,6 +16,42 @@ public class CollectionTest {
 
     @Before
     public void setUp() {
+        initData();
+    }
+
+    @Test
+    public void testCollection() {
+        List<String> newRoles = Arrays.asList("admin", "user");
+        List<String> oldRoles = Arrays.asList("user", "guest");
+        List<String> deleteRoles = new ArrayList<>(oldRoles);
+        deleteRoles.removeAll(newRoles);
+        log.info("=== deleteRoles:{} ===", deleteRoles);
+        List<String> insertRoles = new ArrayList<>(newRoles);
+        insertRoles.removeAll(oldRoles);
+        log.info("=== insertRoles:{} ===", insertRoles);
+    }
+
+    @Test
+    public void testGetCreatedData() {
+        log.info("====== {} ======", getCreatedData(list1, list2));
+    }
+
+    @Test
+    public void testGetDeletedData() {
+        log.info("====== {} ======", getDeletedData(list1, list2));
+    }
+
+    @Test
+    public void testGetUnmodifiedData() {
+        log.info("====== {} ======", getUnmodifiedData(list1, list2));
+    }
+
+    @Test
+    public void testGetModifiedData() {
+        log.info("====== {} ======", getModifiedData(list1, list2));
+    }
+
+    private void initData() {
         Date sysdate = Calendar.getInstance().getTime();
         IntStream.rangeClosed(1, 10).forEach(i -> {
             Counter counter = new Counter();
@@ -40,26 +73,6 @@ public class CollectionTest {
             counter.setCreatedBy("system");
             list2.add(counter);
         });
-    }
-
-    @Test
-    public void testGetCreatedData() {
-        log.info("====== {} ======", getCreatedData(list1, list2));
-    }
-
-    @Test
-    public void testGetDeletedData() {
-        log.info("====== {} ======", getDeletedData(list1, list2));
-    }
-
-    @Test
-    public void testGetUnmodifiedData() {
-        log.info("====== {} ======", getUnmodifiedData(list1, list2));
-    }
-
-    @Test
-    public void testGetModifiedData() {
-        log.info("====== {} ======", getModifiedData(list1, list2));
     }
 
     private List<Counter> getCreatedData(List<Counter> list1, List<Counter> list2) {

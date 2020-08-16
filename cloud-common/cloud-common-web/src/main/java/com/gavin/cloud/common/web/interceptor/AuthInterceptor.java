@@ -44,7 +44,7 @@ public class AuthInterceptor extends AbstractInterceptor {
     }
 
     @Override
-    public boolean doPreHandle(HttpServletRequest request, HttpServletResponse response, HandlerMethod handlerMethod) throws Exception {
+    public boolean doPreHandle(HttpServletRequest request, HttpServletResponse response, HandlerMethod handlerMethod) {
         // 判断是否为匿名访问地址(不用登录即可访问)
         if (handlerMethod.hasMethodAnnotation(RequiresGuest.class)) {
             return true;
@@ -84,8 +84,7 @@ public class AuthInterceptor extends AbstractInterceptor {
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-                                Object handler, Exception ex) throws Exception {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         SubjectContextHolder.getContext().clearContext();
     }
 

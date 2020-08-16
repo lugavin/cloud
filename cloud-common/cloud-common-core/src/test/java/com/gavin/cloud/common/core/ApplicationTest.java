@@ -1,5 +1,6 @@
 package com.gavin.cloud.common.core;
 
+import com.gavin.cloud.common.base.util.JsonUtils;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import com.gavin.cloud.common.core.dto.PrcDTO;
 import com.gavin.cloud.common.core.mapper.CommentMapper;
@@ -14,9 +15,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -43,6 +48,9 @@ public class ApplicationTest {
     private static final String PRC_RET_CODE_OK = "000000";
 
     @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    @Autowired
     private ServiceA serviceA;
 
     @Autowired
@@ -53,9 +61,20 @@ public class ApplicationTest {
 
     @Before
     public void setUp() {
+        Assert.assertNotNull(redisTemplate);
         Assert.assertNotNull(serviceA);
         Assert.assertNotNull(commentMapper);
         Assert.assertNotNull(counterMapper);
+    }
+
+    @Test
+    public void testRedis() {
+        String role = "sys:role:admin";
+        List<String> permList = Arrays.asList("user:create", "user:delete");
+        ValueOperations<String, String> opsForValue = redisTemplate.opsForValue();
+        opsForValue.set(role, JsonUtils.toJson(permList));
+        List<String> perms = JsonUtils.fromJson(opsForValue.get(role), List.class, String.class);
+        Assert.assertArrayEquals(permList.toArray(), perms.toArray());
     }
 
     @Test

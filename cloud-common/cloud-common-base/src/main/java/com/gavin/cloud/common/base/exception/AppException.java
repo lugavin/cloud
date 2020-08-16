@@ -4,6 +4,8 @@ import java.util.Map;
 
 public class AppException extends AbstractThrowableProblem {
 
+    private final ProblemType problemType;
+
     public AppException(ProblemType problemType) {
         this(problemType, null);
     }
@@ -18,6 +20,11 @@ public class AppException extends AbstractThrowableProblem {
 
     public AppException(ProblemType problemType, String detail, ThrowableProblem cause, Map<String, Object> parameters) {
         super(problemType.getType(), problemType.getStatus(), problemType.getTitle(), detail, cause, parameters);
+        this.problemType = problemType;
+    }
+
+    public ProblemType getProblemType() {
+        return problemType;
     }
 
 }

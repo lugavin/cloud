@@ -1,4 +1,4 @@
-package com.gavin.cloud.common.base.dto;
+package com.gavin.cloud.common.base.pojo.dto;
 
 import lombok.Data;
 

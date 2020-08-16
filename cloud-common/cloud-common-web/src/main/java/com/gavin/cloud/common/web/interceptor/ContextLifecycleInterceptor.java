@@ -14,8 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ContextLifecycleInterceptor extends AbstractInterceptor {
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-                                Object handler, Exception ex) throws Exception {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         SubjectContextHolder.getContext().clearContext();
     }
 

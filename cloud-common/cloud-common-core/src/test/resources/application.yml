@@ -5,6 +5,11 @@ spring:
     password: root
     #schema: classpath:import.sql
     type: com.zaxxer.hikari.HikariDataSource
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    timeout: 10000
+    password: #secret#
 
 mybatis:
   #type-aliases-package: com.gavin.cloud.sys.pojo

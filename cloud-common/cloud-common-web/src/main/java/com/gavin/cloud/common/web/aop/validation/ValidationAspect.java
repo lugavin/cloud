@@ -1,6 +1,5 @@
 package com.gavin.cloud.common.web.aop.validation;
 
-import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -22,11 +21,14 @@ import java.util.stream.Collectors;
  * Controller层负责校验页面请求参数的合法性(防止非法用户绕开前端的JS校验对系统进行访问),
  * Service层负责校验关键业务参数(仅限于Service接口中使用的参数),
  * DAO层一般不对参数进行校验(参数不合法直接抛出数据库异常).
- * <p>
- * Description: Service接口方法參數校驗攔截器
- * Author: Gavin
- * Date: Nov 19, 2016 9:30:00 PM
- * Version: 1.0
+ * For example:
+ * <pre>{@code
+ * public interface UserService {
+ *
+ *   void add(@NotNull @Validated({Groups.Add.class}) UserDTO dto);
+ *
+ * }
+ * }</pre>
  *
  * @see org.springframework.core.MethodParameter
  * @see org.springframework.core.annotation.AnnotationUtils
@@ -76,7 +78,7 @@ public class ValidationAspect {
         Object[] parameterValues = joinPoint.getArgs();
 
         LOGGER.debug("Validation method {}.{}({}) with argument[s] = {}", methodSignature.getDeclaringTypeName(),
-                methodSignature.getName(), StringUtils.join(parameterNames, ", "), Arrays.toString(joinPoint.getArgs()));
+                methodSignature.getName(), String.join(", ", parameterNames), Arrays.toString(joinPoint.getArgs()));
 
         // Method targetMethod = findTargetInterfaceMethod(target, methodName, parameterTypes);
         Method targetMethod = methodCache.computeIfAbsent(method, m -> findTargetInterfaceMethod(target, methodName, parameterTypes));

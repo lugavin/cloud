@@ -25,8 +25,8 @@ import static com.gavin.cloud.common.base.util.Constants.PROFILE_DEV;
  */
 @Slf4j
 @SpringBootTest
-@RunWith(SpringRunner.class)
 @ActiveProfiles(PROFILE_DEV)
+@RunWith(SpringRunner.class)
 public class ApplicationTest {
 
     @Autowired
@@ -35,18 +35,6 @@ public class ApplicationTest {
     @Before
     public void setUp() {
         Assert.assertNotNull(sqlSessionFactory);
-    }
-
-    @Test
-    public void testCollection() {
-        List<String> newRoles = Arrays.asList("admin", "user");
-        List<String> oldRoles = Arrays.asList("user", "guest");
-        List<String> deleteRoles = new ArrayList<>(oldRoles);
-        deleteRoles.removeAll(newRoles);
-        log.info("=== deleteRoles:{} ===", deleteRoles);
-        List<String> insertRoles = new ArrayList<>(newRoles);
-        insertRoles.removeAll(oldRoles);
-        log.info("=== insertRoles:{} ===", insertRoles);
     }
 
 }

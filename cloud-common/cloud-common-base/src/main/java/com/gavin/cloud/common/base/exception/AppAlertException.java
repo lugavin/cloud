@@ -5,6 +5,8 @@ import java.util.Map;
 
 public class AppAlertException extends AbstractThrowableProblem {
 
+    private final AlertType alertType;
+
     public AppAlertException(AlertType alertType) {
         this(alertType, null);
     }
@@ -19,6 +21,11 @@ public class AppAlertException extends AbstractThrowableProblem {
 
     private AppAlertException(AlertType alertType, String detail, ThrowableProblem cause, Map<String, Object> parameters) {
         super(alertType.getType(), HttpStatus.BAD_REQUEST, alertType.getTitle(), detail, cause, parameters);
+        this.alertType = alertType;
+    }
+
+    public AlertType getAlertType() {
+        return alertType;
     }
 
     private static Map<String, Object> getAlertParameters(AlertType alertType) {

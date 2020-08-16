@@ -31,7 +31,7 @@ public abstract class AbstractInterceptor implements HandlerInterceptor {
         return patterns.stream().anyMatch(p -> pathMatcher.match(p, path));
     }
 
-    protected boolean doPreHandle(HttpServletRequest request, HttpServletResponse response, HandlerMethod handlerMethod) throws Exception {
+    protected boolean doPreHandle(HttpServletRequest request, HttpServletResponse response, HandlerMethod handlerMethod) {
         return true;
     }
 
@@ -41,7 +41,7 @@ public abstract class AbstractInterceptor implements HandlerInterceptor {
      * 返回值：true(放行) false(拦截)
      */
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         return !(handler instanceof HandlerMethod) || /*isInvokeInternal(request) ||*/ doPreHandle(request, response, (HandlerMethod) handler);
     }
 
@@ -50,8 +50,7 @@ public abstract class AbstractInterceptor implements HandlerInterceptor {
      * 应用场景：统一指定公用的模型视图数据(如菜单导航)
      */
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response,
-                           Object handler, ModelAndView modelAndView) throws Exception {
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
     }
 
     /**
@@ -59,8 +58,7 @@ public abstract class AbstractInterceptor implements HandlerInterceptor {
      * 应用场景：统一异常处理和日志处理
      */
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-                                Object handler, Exception ex) throws Exception {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
     }
 
 }
