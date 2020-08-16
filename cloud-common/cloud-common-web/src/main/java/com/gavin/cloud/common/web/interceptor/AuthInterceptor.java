@@ -3,7 +3,7 @@ package com.gavin.cloud.common.web.interceptor;
 import com.gavin.cloud.common.base.auth.ActiveUser;
 import com.gavin.cloud.common.base.auth.JwtHelper;
 import com.gavin.cloud.common.base.auth.JwtProperties;
-import com.gavin.cloud.common.base.problem.AuthenticationException;
+import com.gavin.cloud.common.base.exception.AppException;
 import com.gavin.cloud.common.web.annotation.Logical;
 import com.gavin.cloud.common.web.annotation.RequiresGuest;
 import com.gavin.cloud.common.web.annotation.RequiresPermissions;
@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.gavin.cloud.common.base.exception.DefaultProblemType.AUTHENTICATION_FAILED_TYPE;
 
 /**
  * 权限设计思路
@@ -53,7 +55,7 @@ public class AuthInterceptor extends AbstractInterceptor {
             Cookie cookie = Arrays.stream(request.getCookies())
                     .filter(c -> jwtProperties.getCookie().getName().equals(c.getName()))
                     .findFirst()
-                    .orElseThrow(AuthenticationException::new);
+                    .orElseThrow(() -> new AppException(AUTHENTICATION_FAILED_TYPE));
             ActiveUser activeUser = JwtHelper.verifyToken(cookie.getValue(), jwtProperties.getPublicKey());
             SubjectContextHolder.getContext().setSubject(activeUser);
         } catch (Exception e) {

@@ -1,4 +1,4 @@
-package com.gavin.cloud.common.base.problem;
+package com.gavin.cloud.common.web.problem;
 
 /**
  * Simple exception with a message, that returns an Internal Server Error code.

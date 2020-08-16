@@ -1,6 +1,6 @@
 package com.gavin.cloud.sys.core.service.impl;
 
-import com.gavin.cloud.common.base.problem.InternalServerErrorException;
+import com.gavin.cloud.common.base.exception.AppException;
 import com.gavin.cloud.common.base.util.SftpUtils;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import com.gavin.cloud.sys.core.config.properties.OssProperties;
@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+
+import static com.gavin.cloud.common.base.exception.DefaultProblemType.INTERNAL_SERVER_ERROR_TYPE;
 
 @Service
 public class PictureServiceImpl implements PictureService {
@@ -49,7 +51,7 @@ public class PictureServiceImpl implements PictureService {
                     sftpProperties.getTimeout()
             );
             if (!sftpUtils.login()) {
-                throw new InternalServerErrorException("Ftp service is not available.");
+                throw new AppException(INTERNAL_SERVER_ERROR_TYPE, "Ftp service is not available.");
             }
             String filePath = LocalDate.now().format(DateTimeFormatter.ofPattern("/yyyy/MM/dd/"));
             String filename = Long.toString(SnowflakeIdWorker.getInstance().nextId());

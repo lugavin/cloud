@@ -1,5 +1,6 @@
 package com.gavin.cloud.sys.core.service.impl;
 
+import com.gavin.cloud.common.base.exception.AppAlertException;
 import com.gavin.cloud.common.base.page.Page;
 import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.base.util.Md5Hash;
@@ -7,9 +8,6 @@ import com.gavin.cloud.common.base.util.RandomUtils;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import com.gavin.cloud.sys.core.enums.LoginType;
 import com.gavin.cloud.sys.core.mapper.ext.UserExtMapper;
-import com.gavin.cloud.sys.core.problem.EmailAlreadyUsedException;
-import com.gavin.cloud.sys.core.problem.LoginAlreadyUsedException;
-import com.gavin.cloud.sys.core.problem.PhoneAlreadyUsedException;
 import com.gavin.cloud.sys.core.service.UserService;
 import com.gavin.cloud.sys.pojo.User;
 import com.gavin.cloud.sys.pojo.UserExample;
@@ -21,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.*;
 
+import static com.gavin.cloud.sys.core.enums.SysAlertType.*;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
@@ -36,13 +35,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(User user) {
         if (isAlreadyUsed(user.getUsername(), LoginType.USERNAME)) {
-            throw new LoginAlreadyUsedException();
+            throw new AppAlertException(LOGIN_ALREADY_USED_TYPE);
         }
         if (isAlreadyUsed(user.getEmail(), LoginType.EMAIL)) {
-            throw new EmailAlreadyUsedException();
+            throw new AppAlertException(EMAIL_ALREADY_USED_TYPE);
         }
         if (StringUtils.isNotBlank(user.getPhone()) && isAlreadyUsed(user.getPhone(), LoginType.PHONE)) {
-            throw new PhoneAlreadyUsedException();
+            throw new AppAlertException(PHONE_ALREADY_USED_TYPE);
         }
         if (StringUtils.isBlank(user.getLangKey())) {
             user.setLangKey(Constants.DEFAULT_LANGUAGE);

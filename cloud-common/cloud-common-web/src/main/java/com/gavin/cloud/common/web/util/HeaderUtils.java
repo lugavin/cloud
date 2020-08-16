@@ -1,5 +1,6 @@
 package com.gavin.cloud.common.web.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 
 /**
@@ -10,10 +11,11 @@ import org.springframework.http.HttpHeaders;
  *               .body(newUser);
  * }</pre>
  */
+@Slf4j
 public final class HeaderUtils {
 
-    private static final String X_APP_ERROR = "X-App-Error";
     private static final String X_APP_ALERT = "X-App-Alert";
+    private static final String X_APP_ERROR = "X-App-Error";
     private static final String X_APP_PARAMS = "X-App-Params";
 
     public static HttpHeaders createEntityCreationAlert(String entityName, String param) {
@@ -36,6 +38,7 @@ public final class HeaderUtils {
     }
 
     public static HttpHeaders createFailureAlert(String entityName, String errorKey, String defaultMessage) {
+        log.warn("Entity processing failed, {}", defaultMessage);
         HttpHeaders headers = new HttpHeaders();
         headers.add(X_APP_ERROR, "error." + errorKey);
         headers.add(X_APP_PARAMS, entityName);

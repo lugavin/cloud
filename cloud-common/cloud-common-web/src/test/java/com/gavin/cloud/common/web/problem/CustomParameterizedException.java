@@ -1,4 +1,4 @@
-package com.gavin.cloud.common.base.problem;
+package com.gavin.cloud.common.web.problem;
 
 import java.util.HashMap;
 import java.util.Map;

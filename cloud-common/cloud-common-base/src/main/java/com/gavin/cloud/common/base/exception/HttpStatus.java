@@ -1,4 +1,4 @@
-package com.gavin.cloud.common.base.problem;
+package com.gavin.cloud.common.base.exception;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -7,12 +7,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Enumeration of HTTP status codes.
+ * Enumeration of HTTP Status Codes.
  *
  * @see <a href="http://www.iana.org/assignments/http-status-codes">HTTP Status Code Registry</a>
- * @see <a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes">List of HTTP status codes - Wikipedia</a>
+ * @see <a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes">List of HTTP msgStatus codes - Wikipedia</a>
  */
-public enum Status implements StatusType {
+public enum HttpStatus {
 
     // --- 1xx Informational ---
 
@@ -89,30 +89,77 @@ public enum Status implements StatusType {
     NOT_EXTENDED(510, "Not Extended"),
     NETWORK_AUTHENTICATION_REQUIRED(511, "Network Authentication Required");
 
-    private final int statusCode;
-    private final String reasonPhrase;
+    private final int value;
 
-    Status(int statusCode, String reasonPhrase) {
-        this.statusCode = statusCode;
-        this.reasonPhrase = reasonPhrase;
+    private final String reason;
+
+    HttpStatus(int value, String reason) {
+        this.value = value;
+        this.reason = reason;
     }
 
-    @Override
-    public int getStatusCode() {
-        return statusCode;
+    public int value() {
+        return value;
     }
 
-    @Override
-    public String getReasonPhrase() {
-        return reasonPhrase;
+    public String reason() {
+        return reason;
     }
 
-    private static final Map<Integer, StatusType> MAP = Arrays.stream(Status.values())
-            .collect(Collectors.toMap(Status::getStatusCode, Function.identity()));
+    public Series series() {
+        return Series.from(this);
+    }
 
-    public static StatusType fromStatusCode(int statusCode) {
-        return Optional.ofNullable(MAP.get(statusCode))
-                .orElse(new UnknownStatus(statusCode));
+    public boolean is1xxInformational() {
+        return (series() == Series.INFORMATIONAL);
+    }
+
+    public boolean is2xxSuccessful() {
+        return (series() == Series.SUCCESSFUL);
+    }
+
+    public boolean is3xxRedirection() {
+        return (series() == Series.REDIRECTION);
+    }
+
+    public boolean is4xxClientError() {
+        return (series() == Series.CLIENT_ERROR);
+    }
+
+    public boolean is5xxServerError() {
+        return (series() == Series.SERVER_ERROR);
+    }
+
+    public enum Series {
+
+        INFORMATIONAL(1),
+        SUCCESSFUL(2),
+        REDIRECTION(3),
+        CLIENT_ERROR(4),
+        SERVER_ERROR(5);
+
+        private final int value;
+
+        Series(int value) {
+            this.value = value;
+        }
+
+        public int value() {
+            return this.value;
+        }
+
+        private static final Map<Integer, Series> MAP = Arrays.stream(Series.values())
+                .collect(Collectors.toMap(Series::value, Function.identity()));
+
+        public static Series from(HttpStatus status) {
+            return from(status.value());
+        }
+
+        public static Series from(int statusCode) {
+            return Optional.ofNullable(MAP.get(statusCode / 100))
+                    .orElseThrow(() -> new IllegalArgumentException("No matching constant for [" + statusCode + "]"));
+        }
+
     }
 
 }

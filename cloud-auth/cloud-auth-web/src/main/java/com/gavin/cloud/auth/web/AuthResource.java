@@ -2,14 +2,12 @@ package com.gavin.cloud.auth.web;
 
 import com.gavin.cloud.auth.core.config.properties.JwtExtProperties;
 import com.gavin.cloud.auth.core.dto.AuthTokenDTO;
-import com.gavin.cloud.auth.core.problem.AccountNotActivatedException;
-import com.gavin.cloud.auth.core.problem.AccountNotFoundException;
-import com.gavin.cloud.auth.core.problem.InvalidPasswordException;
 import com.gavin.cloud.auth.core.service.AuthService;
 import com.gavin.cloud.auth.web.dto.KeyAndPasswordDTO;
 import com.gavin.cloud.auth.web.dto.LoginDTO;
 import com.gavin.cloud.common.base.auth.ActiveUser;
 import com.gavin.cloud.common.base.auth.JwtProperties;
+import com.gavin.cloud.common.base.exception.AppException;
 import com.gavin.cloud.common.base.util.Md5Hash;
 import com.gavin.cloud.common.web.annotation.RequiresGuest;
 import com.gavin.cloud.common.web.util.WebUtils;
@@ -34,6 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.gavin.cloud.auth.core.enums.AuthProblemType.*;
 import static com.gavin.cloud.common.base.util.Constants.REGEX_LOGIN_TYPE;
 
 @RestController
@@ -72,12 +71,13 @@ public class AuthResource {
     @PostMapping("/login/{type:" + REGEX_LOGIN_TYPE + "}")
     public ResponseEntity<AuthTokenDTO> login(@Valid @RequestBody LoginDTO loginDTO, @PathVariable int type,
                                               HttpServletRequest request, HttpServletResponse response) {
-        User user = Optional.ofNullable(userApi.getUser(loginDTO.getUsername(), type)).orElseThrow(AccountNotFoundException::new);
+        User user = Optional.ofNullable(userApi.getUser(loginDTO.getUsername(), type))
+                .orElseThrow(() -> new AppException(ACCOUNT_NOT_FOUND_TYPE));
         if (!Md5Hash.hash(loginDTO.getPassword(), user.getSalt()).equals(user.getPassword())) {
-            throw new InvalidPasswordException();
+            throw new AppException(INVALID_PASSWORD_TYPE);
         }
         if (!BooleanUtils.isTrue(user.getActivated())) {
-            throw new AccountNotActivatedException();
+            throw new AppException(ACCOUNT_NOT_ACTIVATED_TYPE);
         }
         List<String> roles = roleApi.getRoles(user.getId()).stream().map(Role::getCode).collect(Collectors.toList());
         ActiveUser activeUser = new ActiveUser(user.getId(), user.getUsername(), WebUtils.getClientIP(request), roles);
@@ -101,7 +101,8 @@ public class AuthResource {
     @GetMapping("/token/{refreshToken}")
     public ResponseEntity<String> getNewAccessToken(@PathVariable String refreshToken, @RequestParam Long uid,
                                                     HttpServletRequest request, HttpServletResponse response) {
-        User user = Optional.ofNullable(userApi.getUser(uid)).orElseThrow(AccountNotFoundException::new);
+        User user = Optional.ofNullable(userApi.getUser(uid))
+                .orElseThrow(() -> new AppException(ACCOUNT_NOT_FOUND_TYPE));
         List<String> roles = roleApi.getRoles(user.getId()).stream().map(Role::getCode).collect(Collectors.toList());
         ActiveUser activeUser = new ActiveUser(user.getId(), user.getUsername(), WebUtils.getClientIP(request), roles);
         AuthTokenDTO authToken = authService.createAuthToken(activeUser, refreshToken);

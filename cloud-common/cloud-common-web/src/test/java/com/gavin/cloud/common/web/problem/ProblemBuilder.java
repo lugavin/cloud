@@ -1,11 +1,7 @@
-package com.gavin.cloud.common.base.problem;
+package com.gavin.cloud.common.web.problem;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public final class ProblemBuilder {
 

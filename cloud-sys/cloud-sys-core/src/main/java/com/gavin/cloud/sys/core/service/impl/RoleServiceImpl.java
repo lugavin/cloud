@@ -1,10 +1,10 @@
 package com.gavin.cloud.sys.core.service.impl;
 
+import com.gavin.cloud.common.base.exception.AppAlertException;
 import com.gavin.cloud.common.base.page.Page;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper;
 import com.gavin.cloud.sys.core.mapper.ext.UserRoleExtMapper;
-import com.gavin.cloud.sys.core.problem.RoleAlreadyUsedException;
 import com.gavin.cloud.sys.core.service.RoleService;
 import com.gavin.cloud.sys.pojo.Role;
 import com.gavin.cloud.sys.pojo.RoleExample;
@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.gavin.cloud.sys.core.enums.SysAlertType.ROLE_ALREADY_USED_TYPE;
 
 @Service
 @Transactional
@@ -40,7 +42,7 @@ public class RoleServiceImpl implements RoleService {
         criteria.andCodeEqualTo(role.getCode());
         long rows = roleExtMapper.countByExample(example);
         if (rows > 0) {
-            throw new RoleAlreadyUsedException();
+            throw new AppAlertException(ROLE_ALREADY_USED_TYPE);
         }
         role.setId(SnowflakeIdWorker.getInstance().nextId());
         roleExtMapper.insert(role);

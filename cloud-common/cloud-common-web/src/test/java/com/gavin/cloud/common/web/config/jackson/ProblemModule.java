@@ -1,28 +1,15 @@
 package com.gavin.cloud.common.web.config.jackson;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.util.VersionUtil;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.gavin.cloud.common.base.problem.Exceptional;
-import com.gavin.cloud.common.base.problem.Problem;
-import com.gavin.cloud.common.base.problem.Status;
-import com.gavin.cloud.common.base.problem.StatusType;
-import com.gavin.cloud.common.base.problem.ThrowableProblem;
-import com.gavin.cloud.common.base.problem.UnknownStatus;
+import com.gavin.cloud.common.web.problem.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -32,7 +19,7 @@ import java.util.Optional;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
-public final class ProblemModule extends Module {
+public final class ProblemModule extends com.fasterxml.jackson.databind.Module {
 
     private final boolean stackTraces;
     private final Map<Integer, StatusType> statuses;

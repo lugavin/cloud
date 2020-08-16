@@ -1,4 +1,4 @@
-package com.gavin.cloud.common.base.problem;
+package com.gavin.cloud.common.web.problem;
 
 /**
  * An extension of the {@link Problem} interface for problems that extend {@link Exception}. Since {@link Exception}

@@ -3,7 +3,7 @@ package com.gavin.cloud.gateway.filter;
 import com.gavin.cloud.common.base.auth.AuthProperties;
 import com.gavin.cloud.common.base.auth.JwtHelper;
 import com.gavin.cloud.common.base.auth.JwtProperties;
-import com.gavin.cloud.common.base.problem.AuthenticationException;
+import com.gavin.cloud.common.base.exception.AppException;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +16,8 @@ import org.springframework.util.PathMatcher;
 import javax.servlet.http.Cookie;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.gavin.cloud.common.base.exception.DefaultProblemType.AUTHENTICATION_FAILED_TYPE;
 
 @Slf4j
 @Component
@@ -56,7 +58,7 @@ public class AuthFilter extends ZuulFilter {
             Cookie cookie = Arrays.stream(ctx.getRequest().getCookies())
                     .filter(c -> jwtProperties.getCookie().getName().equals(c.getName()))
                     .findFirst()
-                    .orElseThrow(AuthenticationException::new);
+                    .orElseThrow(() -> new AppException(AUTHENTICATION_FAILED_TYPE));
             return JwtHelper.verifyToken(cookie.getValue(), jwtProperties.getPublicKey());
             // (3)判断是否为公共访问地址(登录后均可访问)
             // (4)判断是否为授权访问地址(登录后需要授权才可访问)

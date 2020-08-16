@@ -27,7 +27,6 @@
         <module>cloud-sys</module>
         <module>cloud-auth</module>
         <module>cloud-mail</module>
-        <module>cloud-search</module>
         <module>cloud-test</module>
     </modules>
 
@@ -93,11 +92,6 @@
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
                 <version>${mybatis-spring-boot.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.zalando</groupId>
-                <artifactId>problem-spring-web</artifactId>
-                <version>${problem-spring-web.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.springfox</groupId>

@@ -1,4 +1,4 @@
-package com.gavin.cloud.common.base.problem;
+package com.gavin.cloud.common.web.problem;
 
 public class AccessDeniedException extends AbstractThrowableProblem {
 

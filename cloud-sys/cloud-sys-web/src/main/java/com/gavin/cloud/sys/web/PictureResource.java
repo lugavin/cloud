@@ -1,6 +1,6 @@
 package com.gavin.cloud.sys.web;
 
-import com.gavin.cloud.common.base.problem.InternalServerErrorException;
+import com.gavin.cloud.common.base.exception.AppException;
 import com.gavin.cloud.sys.core.service.PictureService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.Part;
 import java.io.IOException;
 import java.io.InputStream;
+
+import static com.gavin.cloud.common.base.exception.DefaultProblemType.INTERNAL_SERVER_ERROR_TYPE;
 
 @RestController
 @RequestMapping("/pictures")
@@ -28,7 +30,7 @@ public class PictureResource {
             String imageURL = pictureService.upload(local);
             return ResponseEntity.ok(imageURL);
         } catch (IOException e) {
-            throw new InternalServerErrorException("Picture upload failed.");
+            throw new AppException(INTERNAL_SERVER_ERROR_TYPE, "Picture upload failed.");
         }
     }
 

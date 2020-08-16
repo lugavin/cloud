@@ -1,10 +1,9 @@
 package com.gavin.cloud.sys.core.service.impl;
 
+import com.gavin.cloud.common.base.exception.AppException;
 import com.gavin.cloud.common.base.util.Md5Hash;
 import com.gavin.cloud.common.base.util.RandomUtils;
 import com.gavin.cloud.sys.core.mapper.ext.UserExtMapper;
-import com.gavin.cloud.sys.core.problem.EmailNotFoundException;
-import com.gavin.cloud.sys.core.problem.UserNotFoundException;
 import com.gavin.cloud.sys.core.service.AccountService;
 import com.gavin.cloud.sys.core.service.UserService;
 import com.gavin.cloud.sys.pojo.User;
@@ -17,6 +16,9 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static com.gavin.cloud.sys.core.enums.SysProblemType.EMAIL_NOT_FOUND_TYPE;
+import static com.gavin.cloud.sys.core.enums.SysProblemType.USER_NOT_FOUND_TYPE;
 
 @Service
 @Transactional
@@ -45,7 +47,7 @@ public class AccountServiceImpl implements AccountService {
         example.createCriteria().andActivationKeyEqualTo(key);
         List<User> users = userExtMapper.selectByExample(example);
         if (users.size() < 1) {
-            throw new UserNotFoundException();
+            throw new AppException(USER_NOT_FOUND_TYPE);
         }
         User user = users.get(0);
         user.setActivated(true);
@@ -60,7 +62,7 @@ public class AccountServiceImpl implements AccountService {
         example.createCriteria().andEmailEqualTo(mail);
         List<User> users = userExtMapper.selectByExample(example);
         if (users.size() < 1) {
-            throw new EmailNotFoundException();
+            throw new AppException(EMAIL_NOT_FOUND_TYPE);
         }
         User user = users.get(0);
         user.setResetKey(RandomUtils.randomNumeric());
@@ -75,7 +77,7 @@ public class AccountServiceImpl implements AccountService {
         example.createCriteria().andActivationKeyEqualTo(key);
         List<User> users = userExtMapper.selectByExample(example);
         if (users.size() < 1) {
-            throw new UserNotFoundException();
+            throw new AppException(USER_NOT_FOUND_TYPE);
         }
         User user = users.get(0);
         user.setSalt(RandomUtils.randomAlphanumeric());
@@ -88,7 +90,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void changePassword(Long id, String password) {
-        User user = Optional.ofNullable(userExtMapper.selectByPrimaryKey(id)).orElseThrow(UserNotFoundException::new);
+        User user = Optional.ofNullable(userExtMapper.selectByPrimaryKey(id)).orElseThrow(() -> new AppException(USER_NOT_FOUND_TYPE));
         user.setSalt(RandomUtils.randomAlphanumeric());
         user.setPassword(Md5Hash.hash(user.getPassword(), user.getSalt()));
         user.setUpdatedBy(user.getUsername());

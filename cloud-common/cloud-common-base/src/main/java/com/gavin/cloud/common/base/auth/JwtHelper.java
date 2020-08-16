@@ -1,6 +1,6 @@
 package com.gavin.cloud.common.base.auth;
 
-import com.gavin.cloud.common.base.problem.AuthenticationException;
+import com.gavin.cloud.common.base.exception.AppException;
 import com.gavin.cloud.common.base.util.JsonUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -11,8 +11,12 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Date;
+import java.util.Map;
 
+import static com.gavin.cloud.common.base.exception.DefaultProblemType.AUTHENTICATION_FAILED_TYPE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public abstract class JwtHelper {
@@ -59,7 +63,7 @@ public abstract class JwtHelper {
                     claims.get(CLAIM_KEY_CLIENT_IP, String.class), claims.get(CLAIM_KEY_ROLES, ArrayList.class));
         } catch (Exception e) {
             //Don't trust the JWT!
-            throw new AuthenticationException("The token is illegal.");
+            throw new AppException(AUTHENTICATION_FAILED_TYPE, "The token is illegal.");
         }
     }
 

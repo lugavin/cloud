@@ -8,7 +8,7 @@ import com.gavin.cloud.auth.pojo.AuthToken;
 import com.gavin.cloud.auth.pojo.AuthTokenExample;
 import com.gavin.cloud.common.base.auth.ActiveUser;
 import com.gavin.cloud.common.base.auth.JwtHelper;
-import com.gavin.cloud.common.base.problem.AuthenticationException;
+import com.gavin.cloud.common.base.exception.AppException;
 import com.gavin.cloud.common.base.util.NanoIdUtils;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import org.springframework.stereotype.Service;
@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+
+import static com.gavin.cloud.common.base.exception.DefaultProblemType.AUTHENTICATION_FAILED_TYPE;
 
 /**
  * @see <a href="https://solidgeargroup.com/en/refresh-token-with-jwt-authentication-node-js/">Auth with JWT Refresh Token</a>
@@ -62,7 +64,7 @@ public class AuthServiceImpl implements AuthService {
                 return new AuthTokenDTO(accessToken, refreshToken, jwtProperties.getAccessTokenExpires());
             }
         }
-        throw new AuthenticationException("The refresh token has expired!");
+        throw new AppException(AUTHENTICATION_FAILED_TYPE, "The refresh token has expired!");
     }
 
     @Override

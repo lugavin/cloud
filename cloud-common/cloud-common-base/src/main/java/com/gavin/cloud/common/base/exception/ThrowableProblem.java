@@ -1,11 +1,10 @@
-package com.gavin.cloud.common.base.problem;
+package com.gavin.cloud.common.base.exception;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.joining;
-
-public abstract class ThrowableProblem extends RuntimeException implements Problem, Exceptional {
+public abstract class ThrowableProblem extends RuntimeException implements Problem {
 
     protected ThrowableProblem(final ThrowableProblem cause) {
         super(cause);
@@ -15,7 +14,7 @@ public abstract class ThrowableProblem extends RuntimeException implements Probl
     public String getMessage() {
         return Stream.of(getTitle(), getDetail())
                 .filter(Objects::nonNull)
-                .collect(joining(": "));
+                .collect(Collectors.joining(": "));
     }
 
     @Override
@@ -23,6 +22,5 @@ public abstract class ThrowableProblem extends RuntimeException implements Probl
         // cast is safe, since the only way to set this is our constructor
         return (ThrowableProblem) super.getCause();
     }
-
 
 }
