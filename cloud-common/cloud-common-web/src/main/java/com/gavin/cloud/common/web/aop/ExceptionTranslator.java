@@ -6,6 +6,7 @@ import com.gavin.cloud.common.base.exception.Problem;
 import com.gavin.cloud.common.base.exception.ThrowableProblem;
 import com.gavin.cloud.common.web.util.HeaderUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,12 +35,23 @@ public class ExceptionTranslator implements ProblemAdviceTrait {
         return create(problem, request);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Problem> handleException(MethodArgumentNotValidException ex, NativeWebRequest request) {
-        return handleException(ex, request, ex.getBindingResult());
+    /**
+     * Form request parameter verification failure will throw {@link BindException}
+     */
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<Problem> handleException(BindException ex, NativeWebRequest request) {
+        return handleException(ex, ex.getBindingResult(), request);
     }
 
-    private ResponseEntity<Problem> handleException(Throwable throwable, NativeWebRequest request, BindingResult bindingResult) {
+    /**
+     * JSON request parameter verification failure will throw {@link MethodArgumentNotValidException}
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Problem> handleException(MethodArgumentNotValidException ex, NativeWebRequest request) {
+        return handleException(ex, ex.getBindingResult(), request);
+    }
+
+    private ResponseEntity<Problem> handleException(Throwable throwable, BindingResult bindingResult, NativeWebRequest request) {
         List<String> fieldErrors = bindingResult.getFieldErrors().stream()
                 .map(f -> f.getField() + ": " + f.getDefaultMessage())
                 .collect(Collectors.toList());

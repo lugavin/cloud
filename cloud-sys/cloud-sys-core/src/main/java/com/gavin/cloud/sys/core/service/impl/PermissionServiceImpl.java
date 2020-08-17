@@ -1,21 +1,19 @@
 package com.gavin.cloud.sys.core.service.impl;
 
+import com.gavin.cloud.common.base.exception.AppException;
 import com.gavin.cloud.common.base.util.JsonUtils;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
+import com.gavin.cloud.sys.core.enums.RedisKey;
 import com.gavin.cloud.sys.core.enums.ResourceType;
 import com.gavin.cloud.sys.core.mapper.ext.PermissionExtMapper;
 import com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper;
 import com.gavin.cloud.sys.core.mapper.ext.RolePermissionExtMapper;
 import com.gavin.cloud.sys.core.service.PermissionService;
-import com.gavin.cloud.sys.pojo.Permission;
-import com.gavin.cloud.sys.pojo.PermissionExample;
-import com.gavin.cloud.sys.pojo.RolePermission;
-import com.gavin.cloud.sys.pojo.RolePermissionExample;
+import com.gavin.cloud.sys.pojo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,18 +25,19 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static com.gavin.cloud.sys.core.enums.SysProblemType.ROLE_NOT_FOUND_TYPE;
+
 @Slf4j
 @Service
 public class PermissionServiceImpl implements PermissionService {
 
-    private static final long DEFAULT_TIMEOUT = TimeUnit.MINUTES.toSeconds(3);
-    private static final String REDIS_KEY_PERM = "role";
-    private static final String MUTEX_KEY_PREFIX = "mutex:role:";
+    private static final long DEFAULT_TIMEOUT = TimeUnit.SECONDS.toMillis(60);
+    private static final long DEFAULT_SLEEP_TIME = 500L;
 
     private final RoleExtMapper roleExtMapper;
     private final PermissionExtMapper permissionExtMapper;
     private final RolePermissionExtMapper rolePermissionExtMapper;
-    private final StringRedisTemplate redisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
 
     public PermissionServiceImpl(RoleExtMapper roleExtMapper,
                                  PermissionExtMapper permissionExtMapper,
@@ -47,7 +46,7 @@ public class PermissionServiceImpl implements PermissionService {
         this.roleExtMapper = roleExtMapper;
         this.permissionExtMapper = permissionExtMapper;
         this.rolePermissionExtMapper = rolePermissionExtMapper;
-        this.redisTemplate = redisTemplateProvider.getIfAvailable();
+        this.stringRedisTemplate = redisTemplateProvider.getIfAvailable();
     }
 
     @Override
@@ -87,27 +86,6 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    @Transactional
-    public void assignPermissions(Long roleId, Long[] permIds) {
-        Optional.ofNullable(roleExtMapper.selectByPrimaryKey(roleId)).ifPresent(role -> {
-            RolePermissionExample example = new RolePermissionExample();
-            example.createCriteria().andRoleIdEqualTo(roleId);
-            rolePermissionExtMapper.deleteByExample(example);
-            if (ArrayUtils.isNotEmpty(permIds)) {
-                List<RolePermission> list = Arrays.stream(permIds).map(permId -> {
-                    RolePermission rolePermission = new RolePermission();
-                    rolePermission.setId(SnowflakeIdWorker.getInstance().nextId());
-                    rolePermission.setRoleId(roleId);
-                    rolePermission.setPermissionId(permId);
-                    return rolePermission;
-                }).collect(Collectors.toList());
-                rolePermissionExtMapper.insertBatch(list);
-            }
-            syncCache(REDIS_KEY_PERM, role.getCode()); // 缓存同步
-        });
-    }
-
-    @Override
     public Permission getPermission(Long id) {
         return permissionExtMapper.selectByPrimaryKey(id);
     }
@@ -118,22 +96,50 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
+    public List<Permission> getPermissions(Long userId, ResourceType type) {
+        return permissionExtMapper.getPermsByUid(userId, type);
+    }
+
+    @Override
+    @Transactional
+    public void assignPermissions(Long roleId, Long[] permIds) {
+        Role role = Optional.ofNullable(roleExtMapper.selectByPrimaryKey(roleId))
+                .orElseThrow(() -> new AppException(ROLE_NOT_FOUND_TYPE));
+        RolePermissionExample example = new RolePermissionExample();
+        example.createCriteria().andRoleIdEqualTo(roleId);
+        rolePermissionExtMapper.deleteByExample(example);
+        if (ArrayUtils.isNotEmpty(permIds)) {
+            rolePermissionExtMapper.insertBatch(Arrays.stream(permIds).map(permId -> {
+                RolePermission rolePermission = new RolePermission();
+                rolePermission.setId(SnowflakeIdWorker.getInstance().nextId());
+                rolePermission.setRoleId(roleId);
+                rolePermission.setPermissionId(permId);
+                return rolePermission;
+            }).collect(Collectors.toList()));
+        }
+        // 缓存同步
+        delRolePermsCache(role.getCode());
+        //applicationEventPublisher.publishEvent(new PublishEvent(role.getCode()));
+    }
+
+    @Override
     public List<Permission> getPermissions(String role) {
-        // 从缓存中获取数据
-        List<Permission> perms = getPermsFromCache(REDIS_KEY_PERM, role);
-        if (perms != null) {
-            return perms;
-        }
-        if (getMutexLock(role)) {
-            // 从DB中查询数据
-            perms = permissionExtMapper.getPermsByRole(role);
-            // 将数据回设到缓存中
-            setPermsToCache(REDIS_KEY_PERM, role, perms);
-            return perms;
-        }
-        // 休眠500毫秒再重试
-        sleep(500L);
-        return getPermissions(role);
+        // 先从缓存中获取, 若缓存不存在则从DB获取
+        return Optional.ofNullable(getRolePermsFromCache(role)).orElseGet(() -> {
+            // 获取互斥锁
+            if (getRoleMutexLock(role)) {
+                // 从DB中查询数据
+                List<Permission> perms = permissionExtMapper.getPermsByRole(role);
+                // 将数据回写到缓存中
+                setRolePermsToCache(role, perms);
+                // 删除互斥锁
+                delRoleMutexLock(role);
+                return perms;
+            }
+            // 休眠500毫秒再重试
+            sleep(DEFAULT_SLEEP_TIME);
+            return getPermissions(role);
+        });
     }
 
     @Override
@@ -146,39 +152,56 @@ public class PermissionServiceImpl implements PermissionService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<Permission> getPermissions(Long userId, ResourceType type) {
-        return permissionExtMapper.getPermsByUid(userId, type);
-    }
-
-    private void syncCache(String key, String hashKey) {
+    private void delRolePermsCache(String role) {
         try {
-            redisTemplate.opsForHash().delete(key, hashKey);
+            stringRedisTemplate.delete(RedisKey.ROLE_PERMS.getKey(role));
         } catch (Exception e) {
             log.warn("缓存同步失败", e);
         }
     }
 
-    private void setPermsToCache(String key, String hashKey, List<Permission> perms) {
+    private List<Permission> getRolePermsFromCache(String role) {
         try {
-            redisTemplate.opsForHash().put(key, hashKey, JsonUtils.toJson(perms));
-            redisTemplate.delete(prefixKeyMutex(hashKey)); // 删除互斥锁
-        } catch (Exception e) { // 缓存的添加不能影响正常业务逻辑
-            log.warn("向缓存中添加权限数据失败", e);
-        }
-    }
-
-    private List<Permission> getPermsFromCache(String key, String hashKey) {
-        try {
-            HashOperations<String, String, String> opsForHash = redisTemplate.opsForHash();
-            String json = opsForHash.get(key, hashKey);
+            String json = stringRedisTemplate.opsForValue().get(RedisKey.ROLE_PERMS.getKey(role));
             if (StringUtils.isNotBlank(json)) {
                 return JsonUtils.fromJson(json, List.class, Permission.class);
             }
-        } catch (Exception e) { // 缓存的添加不能影响正常业务逻辑
-            log.warn("从缓存中获取权限数据失败", e);
+        } catch (Exception e) {
+            // 缓存的添加不能影响正常业务逻辑
+            log.warn("从缓存中获取数据失败", e);
         }
         return null;
+    }
+
+    private void setRolePermsToCache(String role, List<Permission> perms) {
+        try {
+            stringRedisTemplate.opsForValue().set(RedisKey.ROLE_PERMS.getKey(role), JsonUtils.toJson(perms));
+        } catch (Exception e) {
+            log.warn("向缓存中添加数据失败", e);
+        }
+    }
+
+    private boolean getRoleMutexLock(String role) {
+        try {
+            String mutexKey = RedisKey.ROLE_MUTEX.getKey(role);
+            long nextTimeMillis = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(DEFAULT_TIMEOUT);
+            boolean flag = stringRedisTemplate.opsForValue().setIfAbsent(mutexKey, Long.toString(nextTimeMillis));
+            if (flag) {
+                stringRedisTemplate.expire(mutexKey, DEFAULT_TIMEOUT + (int) (Math.random() * 1000), TimeUnit.MILLISECONDS);
+            }
+            return flag;
+        } catch (Exception e) {
+            log.error("获取互斥锁失败", e);
+            return false;
+        }
+    }
+
+    private void delRoleMutexLock(String role) {
+        try {
+            stringRedisTemplate.delete(RedisKey.ROLE_MUTEX.getKey(role));
+        } catch (Exception e) {
+            log.error("删除互斥锁失败", e);
+        }
     }
 
     private void sleep(long timeout) {
@@ -186,24 +209,6 @@ public class PermissionServiceImpl implements PermissionService {
             TimeUnit.MILLISECONDS.sleep(timeout);
         } catch (InterruptedException ignored) {
         }
-    }
-
-    private boolean getMutexLock(String hashKey) {
-        try {
-            String mutexKey = prefixKeyMutex(hashKey);
-            long nextTimeMillis = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(DEFAULT_TIMEOUT);
-            boolean flag = redisTemplate.opsForValue().setIfAbsent(mutexKey, Long.toString(nextTimeMillis));
-            if (flag) {
-                redisTemplate.expire(mutexKey, DEFAULT_TIMEOUT, TimeUnit.SECONDS);
-            }
-            return flag;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private static String prefixKeyMutex(String key) {
-        return MUTEX_KEY_PREFIX + ":" + key;
     }
 
 }

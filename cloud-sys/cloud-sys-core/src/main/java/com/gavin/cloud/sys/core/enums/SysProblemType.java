@@ -11,6 +11,7 @@ import static com.gavin.cloud.common.base.exception.HttpStatus.*;
 public enum SysProblemType implements ProblemType {
 
     USER_NOT_FOUND_TYPE(BAD_REQUEST, "No user was found", "/user-not-found"),
+    ROLE_NOT_FOUND_TYPE(BAD_REQUEST, "No role was found", "/role-not-found"),
     EMAIL_NOT_FOUND_TYPE(BAD_REQUEST, "Email address not registered", "/email-not-found"),
 
     ;

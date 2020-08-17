@@ -15,6 +15,12 @@ public interface PermissionService {
 
     void deletePermissions(Long[] ids);
 
+    Permission getPermission(Long id);
+
+    List<Permission> getPermissions();
+
+    List<Permission> getPermissions(Long userId, ResourceType type);
+
     /**
      * 给角色授权
      *
@@ -23,14 +29,8 @@ public interface PermissionService {
      */
     void assignPermissions(Long roleId, Long[] permIds);
 
-    Permission getPermission(Long id);
-
-    List<Permission> getPermissions();
-
     List<Permission> getPermissions(String role);
 
     List<Permission> getPermissions(String... roles);
-
-    List<Permission> getPermissions(Long userId, ResourceType type);
 
 }

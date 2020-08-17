@@ -1,7 +1,7 @@
 package com.gavin.cloud;
 
+import com.gavin.cloud.sys.core.service.PermissionService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,10 +12,6 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static com.gavin.cloud.common.base.util.Constants.PROFILE_DEV;
 
@@ -30,11 +26,16 @@ import static com.gavin.cloud.common.base.util.Constants.PROFILE_DEV;
 public class ApplicationTest {
 
     @Autowired
-    private SqlSessionFactory sqlSessionFactory;
+    private PermissionService permissionService;
 
     @Before
     public void setUp() {
-        Assert.assertNotNull(sqlSessionFactory);
+        Assert.assertNotNull(permissionService);
+    }
+
+    @Test
+    public void testGetPermissions() {
+        log.debug("{}", permissionService.getPermissions("admin"));
     }
 
 }
