@@ -4,11 +4,14 @@
 
 <mapper namespace="com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper">
 
+    <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.pojo.Role"
+               extends="com.gavin.cloud.sys.core.mapper.RoleMapper.BaseResultMap"/>
+
     <sql id="Base_Column_List">
-        id, code, `name`, remark
+        <include refid="com.gavin.cloud.sys.core.mapper.RoleMapper.Base_Column_List"/>
     </sql>
 
-    <select id="getList" resultType="com.gavin.cloud.sys.pojo.Role">
+    <select id="getList" parameterType="map" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List"/>
           FROM sys_role
           <where>
@@ -29,7 +32,7 @@
           </where>
     </select>
 
-    <select id="getPage" resultType="com.gavin.cloud.sys.pojo.Role">
+    <select id="getPage" parameterType="com.gavin.cloud.common.base.page.Pageable" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List"/>
           FROM sys_role
           <where>
@@ -49,7 +52,7 @@
           </where>
     </select>
 
-    <select id="getByUserId" parameterType="java.lang.String" resultType="com.gavin.cloud.sys.pojo.Role">
+    <select id="getByUserId" parameterType="string" resultMap="BaseResultMap">
         SELECT a.id, a.code, a.`name`, a.remark
           FROM sys_role a JOIN sys_user_role b ON a.id = b.role_id
          WHERE b.user_id = #{userId}

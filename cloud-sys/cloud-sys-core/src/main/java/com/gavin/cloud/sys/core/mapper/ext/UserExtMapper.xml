@@ -4,59 +4,59 @@
 
 <mapper namespace="com.gavin.cloud.sys.core.mapper.ext.UserExtMapper">
 
+    <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.pojo.User"
+               extends="com.gavin.cloud.sys.core.mapper.UserMapper.BaseResultMap"/>
+
     <sql id="Base_Column_List">
-        id, username, `password`, nickname, salt, phone, email, avatar, lang_key, activated,
-        activation_key, reset_key, reset_date, created_by, created_at, updated_by, updated_at
+        <include refid="com.gavin.cloud.sys.core.mapper.UserMapper.Base_Column_List"/>
     </sql>
 
-    <select id="getList" parameterType="map" resultType="com.gavin.cloud.sys.pojo.User">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM sys_user
-        <where>
-            <if test="id!=null">
-                AND id = #{id}
-            </if>
-            <if test="username!=null and username!=''">
-                AND username = #{username}
-            </if>
-            <if test="nickname!=null and nickname!=''">
-                <if test="_databaseId == 'mysql'">
-                    AND nickname LIKE CONCAT('%',#{nickname},'%')
-                </if>
-                <if test="_databaseId == 'oracle'">
-                    AND nickname LIKE '%'||#{nickname}||'%'
-                </if>
-            </if>
-        </where>
+    <select id="getList" parameterType="map" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+          FROM sys_user
+          <where>
+              <if test="id!=null">
+                  AND id = #{id}
+              </if>
+              <if test="username!=null and username!=''">
+                  AND username = #{username}
+              </if>
+              <if test="nickname!=null and nickname!=''">
+                  <if test="_databaseId == 'mysql'">
+                      AND nickname LIKE CONCAT('%',#{nickname},'%')
+                  </if>
+                  <if test="_databaseId == 'oracle'">
+                      AND nickname LIKE '%'||#{nickname}||'%'
+                  </if>
+              </if>
+          </where>
     </select>
 
-    <select id="getPage" parameterType="com.gavin.cloud.common.base.page.Pageable" resultType="com.gavin.cloud.sys.pojo.User" databaseId="mysql">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM sys_user
-        <where>
-            <if test="param!=null">
-                <if test="param.username!=null and param.username!=''">
-                    AND username = #{param.username}
-                </if>
-                <if test="param.nickname!=null and param.nickname!=''">
-                    AND nickname LIKE CONCAT('%',#{param.nickname},'%')
-                </if>
-                <if test="param.createStartDate!=null and param.createStartDate!=''">
-                    AND DATE(created_date) >= DATE(#{param.createStartDate})
-                </if>
-                <if test="param.createEndDate!=null and param.createEndDate!=''">
-                    <![CDATA[ AND DATE(created_date) <= DATE(#{param.createEndDate}) ]]>
-                </if>
-                <if test="param.modifyStartDate!=null and param.modifyStartDate!=''">
-                    AND DATE(last_modified_date) >= DATE(#{param.modifyStartDate})
-                </if>
-                <if test="param.modifyEndDate!=null and param.modifyEndDate!=''">
-                    <![CDATA[ AND DATE(last_modified_date) <= DATE(#{param.modifyEndDate}) ]]>
-                </if>
-            </if>
-        </where>
+    <select id="getPage" parameterType="com.gavin.cloud.common.base.page.Pageable" resultMap="BaseResultMap" databaseId="mysql">
+        SELECT <include refid="Base_Column_List"/>
+          FROM sys_user
+          <where>
+              <if test="param!=null">
+                  <if test="param.username!=null and param.username!=''">
+                      AND username = #{param.username}
+                  </if>
+                  <if test="param.nickname!=null and param.nickname!=''">
+                      AND nickname LIKE CONCAT('%',#{param.nickname},'%')
+                  </if>
+                  <if test="param.createStartDate!=null and param.createStartDate!=''">
+                      AND DATE(created_date) >= DATE(#{param.createStartDate})
+                  </if>
+                  <if test="param.createEndDate!=null and param.createEndDate!=''">
+                      <![CDATA[ AND DATE(created_date) <= DATE(#{param.createEndDate}) ]]>
+                  </if>
+                  <if test="param.modifyStartDate!=null and param.modifyStartDate!=''">
+                      AND DATE(last_modified_date) >= DATE(#{param.modifyStartDate})
+                  </if>
+                  <if test="param.modifyEndDate!=null and param.modifyEndDate!=''">
+                      <![CDATA[ AND DATE(last_modified_date) <= DATE(#{param.modifyEndDate}) ]]>
+                  </if>
+              </if>
+          </where>
     </select>
 
 </mapper>
