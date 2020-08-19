@@ -21,7 +21,7 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `sys_permission`;
 CREATE TABLE `sys_permission` (
   `id` bigint(20) NOT NULL COMMENT '主键',
-  `code` varchar(128) DEFAULT NULL COMMENT '资源代码',
+  `code` varchar(128) NOT NULL COMMENT '资源代码',
   `name` varchar(128) NOT NULL COMMENT '资源名称',
   `type` varchar(32) NOT NULL COMMENT '资源类型(菜单|功能)',
   `icon` varchar(32) DEFAULT NULL COMMENT '资源图标',
@@ -37,23 +37,22 @@ CREATE TABLE `sys_permission` (
 -- ----------------------------
 -- Records of sys_permission
 -- ----------------------------
-INSERT INTO `sys_permission` VALUES ('1', '', '系统管理', 'MENU', 'fa fa-desktop', '', '1', '1', null);
-INSERT INTO `sys_permission` VALUES ('11', '', '用户管理', 'MENU', 'fa fa-user', '/sys/user', '101', '1', '1');
+INSERT INTO `sys_permission` VALUES ('1', 'sys:mgmt', '系统管理', 'MENU', 'fa fa-desktop', '', '1', '1', null);
+INSERT INTO `sys_permission` VALUES ('11', 'user:mgmt', '用户管理', 'MENU', 'fa fa-user', '/sys/user', '101', '1', '1');
 INSERT INTO `sys_permission` VALUES ('12', 'user:create', '用户新增', 'FUNC', '', '', '102', '0', '11');
 INSERT INTO `sys_permission` VALUES ('13', 'user:delete', '用户删除', 'FUNC', '', '', '103', '0', '11');
 INSERT INTO `sys_permission` VALUES ('14', 'user:update', '用户修改', 'FUNC', '', '', '104', '0', '11');
 INSERT INTO `sys_permission` VALUES ('15', 'user:search', '用户查询', 'FUNC', '', '', '105', '0', '11');
-INSERT INTO `sys_permission` VALUES ('21', '', '角色管理', 'MENU', 'fa fa-lock', '/sys/role', '201', '1', '1');
+INSERT INTO `sys_permission` VALUES ('21', 'role:mgmt', '角色管理', 'MENU', 'fa fa-lock', '/sys/role', '201', '1', '1');
 INSERT INTO `sys_permission` VALUES ('22', 'role:create', '角色新增', 'FUNC', '', '', '202', '0', '21');
 INSERT INTO `sys_permission` VALUES ('23', 'role:delete', '角色删除', 'FUNC', '', '', '203', '0', '21');
 INSERT INTO `sys_permission` VALUES ('24', 'role:update', '角色修改', 'FUNC', '', '', '204', '0', '21');
 INSERT INTO `sys_permission` VALUES ('25', 'role:search', '角色查询', 'FUNC', '', '', '205', '0', '21');
-INSERT INTO `sys_permission` VALUES ('31', '', '权限管理', 'MENU', 'fa fa-key', '/sys/perm', '301', '1', '1');
+INSERT INTO `sys_permission` VALUES ('31', 'perm:mgmt', '权限管理', 'MENU', 'fa fa-key', '/sys/perm', '301', '1', '1');
 INSERT INTO `sys_permission` VALUES ('32', 'perm:create', '权限新增', 'FUNC', '', '', '302', '0', '31');
 INSERT INTO `sys_permission` VALUES ('33', 'perm:delete', '权限删除', 'FUNC', '', '', '303', '0', '31');
 INSERT INTO `sys_permission` VALUES ('34', 'perm:update', '权限修改', 'FUNC', '', '', '304', '0', '31');
 INSERT INTO `sys_permission` VALUES ('35', 'perm:search', '权限查询', 'FUNC', '', '', '305', '0', '31');
-INSERT INTO `sys_permission` VALUES ('36', null, '测试数据', '', null, null, null, '0', null);
 
 -- ----------------------------
 -- Table structure for `sys_role`
@@ -108,7 +107,6 @@ INSERT INTO `sys_role_permission` VALUES ('10014', '1001', '32');
 INSERT INTO `sys_role_permission` VALUES ('10015', '1001', '33');
 INSERT INTO `sys_role_permission` VALUES ('10016', '1001', '34');
 INSERT INTO `sys_role_permission` VALUES ('10017', '1001', '35');
-INSERT INTO `sys_role_permission` VALUES ('10018', '1001', '36');
 
 -- ----------------------------
 -- Table structure for `sys_user`

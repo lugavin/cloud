@@ -5,9 +5,7 @@ import com.gavin.cloud.common.base.auth.JwtHelper;
 import com.gavin.cloud.common.base.auth.JwtProperties;
 import com.gavin.cloud.common.base.exception.AppException;
 import com.gavin.cloud.common.web.annotation.Logical;
-import com.gavin.cloud.common.web.annotation.RequiresGuest;
 import com.gavin.cloud.common.web.annotation.RequiresPermissions;
-import com.gavin.cloud.common.web.annotation.RequiresUser;
 import com.gavin.cloud.common.web.context.SubjectContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -46,7 +44,7 @@ public class AuthInterceptor extends AbstractInterceptor {
     @Override
     public boolean doPreHandle(HttpServletRequest request, HttpServletResponse response, HandlerMethod handlerMethod) {
         // 判断是否为匿名访问地址(不用登录即可访问)
-        if (handlerMethod.hasMethodAnnotation(RequiresGuest.class)) {
+        if (!handlerMethod.hasMethodAnnotation(RequiresPermissions.class)) {
             return true;
         }
 
@@ -65,19 +63,17 @@ public class AuthInterceptor extends AbstractInterceptor {
         }
 
         // 判断是否为公共访问地址(登录后均可访问)
-        if (handlerMethod.hasMethodAnnotation(RequiresUser.class)) {
+        RequiresPermissions permissions = handlerMethod.getMethodAnnotation(RequiresPermissions.class);
+        if (permissions.value().length == 0) {
             return true;
         }
 
         // 判断是否为授权访问地址(登录后需要授权才可访问)
-        RequiresPermissions permissions = handlerMethod.getMethodAnnotation(RequiresPermissions.class);
-        if (permissions != null) {
-            ActiveUser subject = SubjectContextHolder.getContext().getSubject();
-            if (!isPermitted(subject, permissions.value(), permissions.logical())) {
-                response.setStatus(HttpStatus.FORBIDDEN.value());
-                log.debug("Access Control: filtered denied access on endpoint {}", request.getRequestURI());
-                return false;
-            }
+        ActiveUser subject = SubjectContextHolder.getContext().getSubject();
+        if (!isPermitted(subject, permissions.value(), permissions.logical())) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            log.debug("Access Control: filtered denied access on endpoint {}", request.getRequestURI());
+            return false;
         }
 
         return true;
@@ -90,8 +86,7 @@ public class AuthInterceptor extends AbstractInterceptor {
 
     private boolean isPermitted(ActiveUser subject, String[] permissions, Logical logical) {
         List<String> roles = subject.getRoles();
-        // TODO 通过授权服务接口获取
-        List<String> perms = new ArrayList<>();
+        List<String> perms = new ArrayList<>(); // TODO 通过授权服务接口获取
         return logical == Logical.AND
                 ? perms.containsAll(Arrays.asList(permissions))
                 : Arrays.stream(permissions).anyMatch(perms::contains);

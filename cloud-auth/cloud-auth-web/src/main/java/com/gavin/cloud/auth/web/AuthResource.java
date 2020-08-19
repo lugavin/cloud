@@ -9,7 +9,6 @@ import com.gavin.cloud.common.base.auth.ActiveUser;
 import com.gavin.cloud.common.base.auth.JwtProperties;
 import com.gavin.cloud.common.base.exception.AppException;
 import com.gavin.cloud.common.base.util.Md5Hash;
-import com.gavin.cloud.common.web.annotation.RequiresGuest;
 import com.gavin.cloud.common.web.util.WebUtils;
 import com.gavin.cloud.sys.api.AccountApi;
 import com.gavin.cloud.sys.api.RoleApi;
@@ -67,7 +66,6 @@ public class AuthResource {
      * @param type     {1:USERNAME, 2:PHONE, 3:EMAIL}
      * @return Login user
      */
-    @RequiresGuest
     @PostMapping("/login/{type:" + REGEX_LOGIN_TYPE + "}")
     public ResponseEntity<AuthTokenDTO> login(@Valid @RequestBody LoginDTO loginDTO, @PathVariable int type,
                                               HttpServletRequest request, HttpServletResponse response) {
@@ -88,7 +86,6 @@ public class AuthResource {
         return ResponseEntity.ok(authToken);
     }
 
-    @RequiresGuest
     @GetMapping("/logout")
     public ResponseEntity<Void> logout(@RequestParam String refreshToken, HttpServletRequest request, HttpServletResponse response) {
         authService.rejectRefreshToken(refreshToken);
@@ -123,7 +120,6 @@ public class AuthResource {
         return ResponseEntity.ok(jacksonValue);
     }
 
-    @RequiresGuest
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public void registerAccount(@Valid RegisterDTO registerDTO) {
@@ -136,13 +132,11 @@ public class AuthResource {
         //mailService.sendEmailFromTemplate(MailTemplateEnum.ACCOUNT_ACTIVATION, registerDTO.getEmail(), variables, locale);
     }
 
-    @RequiresGuest
     @GetMapping("/account/activate")
     public void activateAccount(@RequestParam String key) {
         accountApi.activateRegistration(key);
     }
 
-    @RequiresGuest
     @PostMapping("/account/reset-password/init")
     public void requestPasswordReset(@RequestBody String mail) {
         // TODO 通过消息异步通知发送邮件
@@ -154,7 +148,6 @@ public class AuthResource {
         // mailService.sendEmailFromTemplate(MailTemplateEnum.PASSWORD_RESET, mail, variables, locale);
     }
 
-    @RequiresGuest
     @PostMapping("/account/reset-password/finish")
     public void finishPasswordReset(@Valid @RequestBody KeyAndPasswordDTO keyAndPasswordDTO) {
         accountApi.finishPasswordReset(keyAndPasswordDTO.getKey(), keyAndPasswordDTO.getNewPassword());

@@ -1,6 +1,5 @@
 package com.gavin.cloud.sys.web;
 
-import com.gavin.cloud.common.web.annotation.RequiresGuest;
 import com.gavin.cloud.sys.core.service.AccountService;
 import com.gavin.cloud.sys.pojo.User;
 import com.gavin.cloud.sys.pojo.dto.RegisterDTO;
@@ -26,20 +25,17 @@ public class AccountResource {
         this.accountService = accountService;
     }
 
-    @RequiresGuest
     @PostMapping("/register")
     public ResponseEntity<User> registerAccount(@Valid @RequestBody RegisterDTO registerDTO) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(accountService.register(registerDTO));
     }
 
-    @RequiresGuest
     @GetMapping("/activate")
     public ResponseEntity<User> activateRegistration(@RequestParam("key") String key) {
         return ResponseEntity.ok(accountService.activateRegistration(key));
     }
 
-    @RequiresGuest
     @GetMapping("/reset-password/init")
     public ResponseEntity<User> requestPasswordReset(@RequestParam("mail") String mail) {
         return ResponseEntity.ok(accountService.requestPasswordReset(mail));

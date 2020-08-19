@@ -12,16 +12,14 @@ import com.gavin.cloud.sys.core.service.PermissionService;
 import com.gavin.cloud.sys.pojo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -119,27 +117,31 @@ public class PermissionServiceImpl implements PermissionService {
         }
         // 缓存同步
         delRolePermsCache(role.getCode());
-        //applicationEventPublisher.publishEvent(new PublishEvent(role.getCode()));
     }
 
     @Override
     public List<Permission> getPermissions(String role) {
         // 先从缓存中获取, 若缓存不存在则从DB获取
-        return Optional.ofNullable(getRolePermsFromCache(role)).orElseGet(() -> {
-            // 获取互斥锁
-            if (getRoleMutexLock(role)) {
+        List<Permission> permList = getRolePermsFromCache(role);
+        if (!permList.isEmpty()) {
+            return permList;
+        }
+        // 获取互斥锁
+        if (getRoleMutexLock(role)) {
+            try {
                 // 从DB中查询数据
                 List<Permission> perms = permissionExtMapper.getPermsByRole(role);
                 // 将数据回写到缓存中
                 setRolePermsToCache(role, perms);
+                return perms;
+            } finally {
                 // 删除互斥锁
                 delRoleMutexLock(role);
-                return perms;
             }
-            // 休眠500毫秒再重试
-            sleep(DEFAULT_SLEEP_TIME);
-            return getPermissions(role);
-        });
+        }
+        // 休眠500毫秒再重试
+        sleep(DEFAULT_SLEEP_TIME);
+        return getPermissions(role);
     }
 
     @Override
@@ -152,6 +154,51 @@ public class PermissionServiceImpl implements PermissionService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Set<String> getPermissionCodes(String role) {
+        // 先从缓存中获取, 若缓存不存在则从DB获取
+        Set<String> permCodes = getRolePermCodesFromCache(role);
+        if (!permCodes.isEmpty()) {
+            return permCodes;
+        }
+        // 获取互斥锁
+        if (getRoleMutexLock(role)) {
+            try {
+                // 从DB中查询数据
+                List<Permission> perms = permissionExtMapper.getPermsByRole(role);
+                // 将数据回写到缓存中
+                setRolePermsToCache(role, perms);
+                return perms.stream().map(Permission::getCode).collect(Collectors.toSet());
+            } finally {
+                // 删除互斥锁
+                delRoleMutexLock(role);
+            }
+        }
+        // 休眠500毫秒再重试
+        sleep(DEFAULT_SLEEP_TIME);
+        return getPermissionCodes(role);
+    }
+
+    @Override
+    public Set<String> getPermissionCodes(String... roles) {
+        return Arrays.stream(roles)
+                .map(this::getPermissionCodes)
+                .collect(Collectors.toSet())
+                .stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * <pre>{@code
+     *   applicationEventPublisher.publishEvent(new PublishEvent(role.getCode()));
+     *
+     *   @TransactionalEventListener
+     *   public void onPublish(PublishEvent event) {
+     *       // Do something
+     *   }
+     * }</pre>
+     */
     private void delRolePermsCache(String role) {
         try {
             stringRedisTemplate.delete(RedisKey.ROLE_PERMS.getKey(role));
@@ -162,20 +209,33 @@ public class PermissionServiceImpl implements PermissionService {
 
     private List<Permission> getRolePermsFromCache(String role) {
         try {
-            String json = stringRedisTemplate.opsForValue().get(RedisKey.ROLE_PERMS.getKey(role));
-            if (StringUtils.isNotBlank(json)) {
-                return JsonUtils.fromJson(json, List.class, Permission.class);
+            HashOperations<String, String, String> opsForHash = stringRedisTemplate.opsForHash();
+            List<String> perms = opsForHash.values(RedisKey.ROLE_PERMS.getKey(role));
+            if (!CollectionUtils.isEmpty(perms)) {
+                return JsonUtils.fromJson(perms.toString(), List.class, Permission.class);
             }
         } catch (Exception e) {
             // 缓存的添加不能影响正常业务逻辑
             log.warn("从缓存中获取数据失败", e);
         }
-        return null;
+        return Collections.emptyList();
+    }
+
+    private Set<String> getRolePermCodesFromCache(String role) {
+        try {
+            HashOperations<String, String, String> opsForHash = stringRedisTemplate.opsForHash();
+            return opsForHash.keys(RedisKey.ROLE_PERMS.getKey(role));
+        } catch (Exception e) {
+            // 缓存的添加不能影响正常业务逻辑
+            log.warn("从缓存中获取数据失败", e);
+        }
+        return Collections.emptySet();
     }
 
     private void setRolePermsToCache(String role, List<Permission> perms) {
         try {
-            stringRedisTemplate.opsForValue().set(RedisKey.ROLE_PERMS.getKey(role), JsonUtils.toJson(perms));
+            stringRedisTemplate.opsForHash().putAll(RedisKey.ROLE_PERMS.getKey(role),
+                    perms.stream().collect(Collectors.toMap(Permission::getCode, JsonUtils::toJson)));
         } catch (Exception e) {
             log.warn("向缓存中添加数据失败", e);
         }

@@ -4,6 +4,7 @@ import com.gavin.cloud.sys.core.enums.ResourceType;
 import com.gavin.cloud.sys.pojo.Permission;
 
 import java.util.List;
+import java.util.Set;
 
 public interface PermissionService {
 
@@ -32,5 +33,9 @@ public interface PermissionService {
     List<Permission> getPermissions(String role);
 
     List<Permission> getPermissions(String... roles);
+
+    Set<String> getPermissionCodes(String role);
+
+    Set<String> getPermissionCodes(String... roles);
 
 }
