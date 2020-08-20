@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.18.RELEASE</version>
+        <version>2.0.4.RELEASE</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -22,29 +22,25 @@
         <module>cloud-registry</module>
         <module>cloud-config</module>
         <module>cloud-gateway</module>
-        <module>cloud-trace</module>
         <module>cloud-common</module>
         <module>cloud-sys</module>
         <module>cloud-auth</module>
         <module>cloud-mail</module>
+        <module>cloud-search</module>
         <module>cloud-test</module>
     </modules>
 
     <properties>
         <java.version>1.8</java.version>
-        <spring-cloud.version>Dalston.SR5</spring-cloud.version>
-        <javax-validation.version>2.0.1.Final</javax-validation.version>
-        <hibernate-validator.version>6.0.11.Final</hibernate-validator.version>
-        <logback.version>1.2.3</logback.version>
+        <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
+        <mybatis-spring-boot.version>1.3.4</mybatis-spring-boot.version>
+        <mybatis-generator.version>1.3.7</mybatis-generator.version>
+        <swagger.version>2.6.1</swagger.version>
         <guava.version>23.0</guava.version>
-        <commons-lang3.version>3.2.1</commons-lang3.version>
+        <yasson.version>1.0.8</yasson.version>
         <commons-net.version>3.3</commons-net.version>
         <commons-io.version>2.4</commons-io.version>
         <bcprov-jdk15on.version>1.60</bcprov-jdk15on.version>
-        <mybatis-spring-boot.version>1.3.4</mybatis-spring-boot.version>
-        <mybatis-generator.version>1.3.7</mybatis-generator.version>
-        <problem-spring-web.version>0.23.0</problem-spring-web.version>
-        <swagger.version>2.6.1</swagger.version>
         <jjwt.version>0.10.5</jjwt.version>
         <jsch.version>0.1.55</jsch.version>
     </properties>
@@ -57,36 +53,6 @@
                 <version>${spring-cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate.validator</groupId>
-                <artifactId>hibernate-validator</artifactId>
-                <version>${hibernate-validator.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${commons-lang3.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-net</groupId>
-                <artifactId>commons-net</artifactId>
-                <version>${commons-net.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons-io.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.bouncycastle</groupId>
-                <artifactId>bcprov-jdk15on</artifactId>
-                <version>${bcprov-jdk15on.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
@@ -102,6 +68,31 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse</groupId>
+                <artifactId>yasson</artifactId>
+                <version>${yasson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-net</groupId>
+                <artifactId>commons-net</artifactId>
+                <version>${commons-net.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>${bcprov-jdk15on.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.jcraft</groupId>

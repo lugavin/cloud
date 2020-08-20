@@ -26,21 +26,6 @@
             <artifactId>cloud-sys-core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-        <!-- Spring Cloud Sleuth -->
-        <!--
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-sleuth</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-sleuth-stream</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-stream-binder-kafka</artifactId>
-        </dependency>
-        -->
     </dependencies>
 
     <build>

@@ -2,7 +2,6 @@ package com.gavin.cloud.common.web.aop.logging;
 
 import com.gavin.cloud.common.base.util.Constants;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -79,7 +78,7 @@ public class LoggingAspect {
             MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
             String[] parameterNames = methodSignature.getParameterNames();
             log.debug("Enter: {}.{}({}) with argument[s] = {}", methodSignature.getDeclaringTypeName(),
-                    methodSignature.getName(), StringUtils.join(parameterNames, ", "), Arrays.toString(joinPoint.getArgs()));
+                    methodSignature.getName(), String.join(", ", parameterNames), Arrays.toString(joinPoint.getArgs()));
         }
         try {
             Object result = joinPoint.proceed();

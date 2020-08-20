@@ -1,6 +1,7 @@
 package com.gavin.cloud.common.web.interceptor;
 
 import com.gavin.cloud.common.web.context.SubjectContextHolder;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Gavin Lu
  * @see com.netflix.zuul.context.ContextLifecycleFilter
  */
-public class ContextLifecycleInterceptor extends AbstractInterceptor {
+public class ContextLifecycleInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {

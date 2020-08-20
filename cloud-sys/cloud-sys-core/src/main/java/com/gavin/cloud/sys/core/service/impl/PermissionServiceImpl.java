@@ -12,9 +12,11 @@ import com.gavin.cloud.sys.core.service.PermissionService;
 import com.gavin.cloud.sys.pojo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -190,6 +192,7 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     /**
+     * 缓存的添加不能影响正常业务逻辑
      * <pre>{@code
      *   applicationEventPublisher.publishEvent(new PublishEvent(role.getCode()));
      *
@@ -215,7 +218,6 @@ public class PermissionServiceImpl implements PermissionService {
                 return JsonUtils.fromJson(perms.toString(), List.class, Permission.class);
             }
         } catch (Exception e) {
-            // 缓存的添加不能影响正常业务逻辑
             log.warn("从缓存中获取数据失败", e);
         }
         return Collections.emptyList();
@@ -226,7 +228,6 @@ public class PermissionServiceImpl implements PermissionService {
             HashOperations<String, String, String> opsForHash = stringRedisTemplate.opsForHash();
             return opsForHash.keys(RedisKey.ROLE_PERMS.getKey(role));
         } catch (Exception e) {
-            // 缓存的添加不能影响正常业务逻辑
             log.warn("从缓存中获取数据失败", e);
         }
         return Collections.emptySet();
@@ -245,7 +246,8 @@ public class PermissionServiceImpl implements PermissionService {
         try {
             String mutexKey = RedisKey.ROLE_MUTEX.getKey(role);
             long nextTimeMillis = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(DEFAULT_TIMEOUT);
-            boolean flag = stringRedisTemplate.opsForValue().setIfAbsent(mutexKey, Long.toString(nextTimeMillis));
+            ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
+            boolean flag = BooleanUtils.isTrue(opsForValue.setIfAbsent(mutexKey, Long.toString(nextTimeMillis)));
             if (flag) {
                 stringRedisTemplate.expire(mutexKey, DEFAULT_TIMEOUT + (int) (Math.random() * 1000), TimeUnit.MILLISECONDS);
             }

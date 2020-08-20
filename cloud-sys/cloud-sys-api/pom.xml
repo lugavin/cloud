@@ -24,12 +24,12 @@
         <!-- Feign声明式服务调用+客户端负载均衡(Ribbon) -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-feign</artifactId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
         <!-- Hystrix服务熔断处理(只作用在服务消费的一端) -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-hystrix</artifactId>
+            <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
         </dependency>
         <!-- Spring Boot Test -->
         <dependency>

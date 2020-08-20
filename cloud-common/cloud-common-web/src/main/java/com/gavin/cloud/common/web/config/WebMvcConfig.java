@@ -1,10 +1,11 @@
 package com.gavin.cloud.common.web.config;
 
 import com.gavin.cloud.common.base.auth.ActiveUser;
-import com.gavin.cloud.common.base.auth.AuthProperties;
 import com.gavin.cloud.common.base.auth.JwtProperties;
 import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.web.context.SubjectContextHolder;
+import com.gavin.cloud.common.web.interceptor.AuthInterceptor;
+import com.gavin.cloud.common.web.interceptor.ContextLifecycleInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodParameter;
 import org.springframework.format.FormatterRegistry;
@@ -14,7 +15,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -24,13 +25,11 @@ import java.util.List;
  * 注意:当添加@EnableWebMvc注解后, WebMvcAutoConfiguration中的配置就不会生效, 会自动覆盖默认静态资源存放的目录而将静态资源定位在src/main/webapp目录.
  */
 @Configuration
-public class WebMvcConfig extends WebMvcConfigurerAdapter {
+public class WebMvcConfig implements WebMvcConfigurer {
 
-    private final AuthProperties authProperties;
     private final JwtProperties jwtProperties;
 
-    public WebMvcConfig(AuthProperties authProperties, JwtProperties jwtProperties) {
-        this.authProperties = authProperties;
+    public WebMvcConfig(JwtProperties jwtProperties) {
         this.jwtProperties = jwtProperties;
     }
 
@@ -46,8 +45,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        //registry.addInterceptor(new ContextLifecycleInterceptor());
-        //registry.addInterceptor(new AuthInterceptor(jwtProperties));
+        registry.addInterceptor(new ContextLifecycleInterceptor());
+        registry.addInterceptor(new AuthInterceptor(jwtProperties));
     }
 
     /**
@@ -67,7 +66,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
         @Override
         public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-                                      NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+                                      NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
             return SubjectContextHolder.getContext().getSubject();
         }
 

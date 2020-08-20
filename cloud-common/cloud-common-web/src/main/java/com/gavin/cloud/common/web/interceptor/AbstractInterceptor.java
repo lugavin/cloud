@@ -5,12 +5,16 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+/**
+ * {@link HandlerInterceptor#preHandle} 在进入controller方法之前执行(应用场景：用户身份认证、权限校验)
+ * {@link HandlerInterceptor#postHandle} 在进入controller方法之后、返回modelAndView之前执行(应用场景：统一指定公用的模型视图数据, 如菜单导航)
+ * {@link HandlerInterceptor#afterCompletion} 在controller方法执行完成之后执行(应用场景：统一异常处理和日志处理)
+ */
 public abstract class AbstractInterceptor implements HandlerInterceptor {
 
     /**
@@ -31,34 +35,13 @@ public abstract class AbstractInterceptor implements HandlerInterceptor {
         return patterns.stream().anyMatch(p -> pathMatcher.match(p, path));
     }
 
-    protected boolean doPreHandle(HttpServletRequest request, HttpServletResponse response, HandlerMethod handlerMethod) {
-        return true;
-    }
-
-    /**
-     * 进入handler方法之前执行
-     * 应用场景：用户身份认证、权限校验
-     * 返回值：true(放行) false(拦截)
-     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         return !(handler instanceof HandlerMethod) || /*isInvokeInternal(request) ||*/ doPreHandle(request, response, (HandlerMethod) handler);
     }
 
-    /**
-     * 进入handler方法之后、返回modelAndView之前执行
-     * 应用场景：统一指定公用的模型视图数据(如菜单导航)
-     */
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
-    }
-
-    /**
-     * handler方法执行完成之后执行
-     * 应用场景：统一异常处理和日志处理
-     */
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+    protected boolean doPreHandle(HttpServletRequest request, HttpServletResponse response, HandlerMethod handlerMethod) {
+        return true;
     }
 
 }

@@ -30,13 +30,6 @@ spring:
         #git:
         #  uri: file:///${user.dir}/${spring.application.name}/src/main/resources/repo
 
-management:
-  security:
-    enabled: false #全局关闭Actuator安全认证
-#endpoints:
-#  env:
-#    sensitive: false #细粒度的开放Actuator Endpoints
-
 eureka:
   instance:
     prefer-ip-address: true

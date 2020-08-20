@@ -3,6 +3,8 @@ package com.gavin.cloud.common.web.aop;
 import com.gavin.cloud.common.base.exception.Problem;
 import com.gavin.cloud.common.base.exception.ProblemBuilder;
 import com.gavin.cloud.common.base.exception.ThrowableProblem;
+import lombok.Builder;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.gavin.cloud.common.base.exception.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -65,6 +69,18 @@ public interface ProblemAdviceTrait {
             builder.with("message", "error.http." + problem.getStatus().value());
         }
         return new ResponseEntity<>(builder.build(), headers, status);
+    }
+
+    @Data
+    @Builder
+    class Exceptional {
+        private URI type;
+        private int status;
+        private String title;
+        private String detail;
+        private String path;
+        private long timestamp;
+        private Map<String, Object> parameters;
     }
 
 }

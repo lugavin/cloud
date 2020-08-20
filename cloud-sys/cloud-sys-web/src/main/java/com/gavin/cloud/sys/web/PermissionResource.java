@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/perms")
@@ -23,19 +24,27 @@ public class PermissionResource {
     }
 
     /**
+     * GET http://cloud-sys/perms/codes/ROLE_ADMIN,ROLE_USER
+     */
+    @GetMapping("/codes/{roles}")
+    public ResponseEntity<Set<String>> getPermissionCodes(@PathVariable String[] roles) {
+        return ResponseEntity.ok(permissionService.getPermissionCodes(roles));
+    }
+
+    /**
      * GET http://cloud-sys/perms/ROLE_ADMIN,ROLE_USER/roles
      */
-    @GetMapping("/{roles}/roles")
-    public ResponseEntity<List<Permission>> getMenuPerms(@PathVariable String[] roles) {
+    @GetMapping("/roles/{roles}")
+    public ResponseEntity<List<Permission>> getPermissions(@PathVariable String[] roles) {
         return ResponseEntity.ok(permissionService.getPermissions(roles));
     }
 
-    @GetMapping("/{userId}/menus")
+    @GetMapping("/menus/{userId}")
     public ResponseEntity<List<Permission>> getMenuPerms(@PathVariable Long userId) {
         return ResponseEntity.ok(permissionService.getPermissions(userId, ResourceType.MENU));
     }
 
-    @GetMapping("/{userId}/funcs")
+    @GetMapping("/funcs/{userId}")
     public ResponseEntity<List<Permission>> getFuncPerms(@PathVariable Long userId) {
         return ResponseEntity.ok(permissionService.getPermissions(userId, ResourceType.FUNC));
     }
