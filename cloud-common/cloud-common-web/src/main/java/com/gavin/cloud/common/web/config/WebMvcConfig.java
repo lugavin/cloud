@@ -29,12 +29,12 @@ import java.util.List;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    private final JwtProperties jwtProperties;
     private final ObjectProvider<SysApi> sysApiProvider;
+    private final JwtProperties jwtProperties;
 
-    public WebMvcConfig(JwtProperties jwtProperties, ObjectProvider<SysApi> sysApiProvider) {
-        this.jwtProperties = jwtProperties;
+    public WebMvcConfig(ObjectProvider<SysApi> sysApiProvider, JwtProperties jwtProperties) {
         this.sysApiProvider = sysApiProvider;
+        this.jwtProperties = jwtProperties;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new ContextLifecycleInterceptor());
-        registry.addInterceptor(new AuthInterceptor(jwtProperties, sysApiProvider));
+        registry.addInterceptor(new AuthInterceptor(sysApiProvider, jwtProperties));
     }
 
     /**

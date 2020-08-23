@@ -37,12 +37,12 @@ import static com.gavin.cloud.common.base.problem.DefaultProblemType.AUTHENTICAT
 @Slf4j
 public class AuthInterceptor implements HandlerInterceptorExt {
 
+    private final SysApi sysApi;
     private final JwtProperties jwtProperties;
-    private final ObjectProvider<SysApi> sysApiProvider;
 
-    public AuthInterceptor(JwtProperties jwtProperties, ObjectProvider<SysApi> sysApiProvider) {
+    public AuthInterceptor(ObjectProvider<SysApi> sysApiProvider, JwtProperties jwtProperties) {
+        this.sysApi = Objects.requireNonNull(sysApiProvider.getIfAvailable());
         this.jwtProperties = jwtProperties;
-        this.sysApiProvider = sysApiProvider;
     }
 
     @Override
@@ -92,7 +92,6 @@ public class AuthInterceptor implements HandlerInterceptorExt {
     }
 
     private boolean isPermitted(ActiveUser subject, String[] permissions, Logical logical) {
-        SysApi sysApi = Objects.requireNonNull(sysApiProvider.getIfAvailable());
         Set<String> perms = sysApi.getPermissionCodes(subject.getRoles().toArray(new String[0]));
         return logical == Logical.AND ? perms.containsAll(Arrays.asList(permissions)) : Arrays.stream(permissions).anyMatch(perms::contains);
     }
