@@ -8,7 +8,6 @@ import com.gavin.cloud.common.web.context.SubjectContextHolder;
 import com.gavin.cloud.common.web.interceptor.AuthInterceptor;
 import com.gavin.cloud.common.web.interceptor.ContextLifecycleInterceptor;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodParameter;
 import org.springframework.format.FormatterRegistry;
@@ -28,7 +27,6 @@ import java.util.List;
  * 注意:当添加@EnableWebMvc注解后, WebMvcAutoConfiguration中的配置就不会生效, 会自动覆盖默认静态资源存放的目录而将静态资源定位在src/main/webapp目录.
  */
 @Configuration
-@EnableFeignClients
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final JwtProperties jwtProperties;

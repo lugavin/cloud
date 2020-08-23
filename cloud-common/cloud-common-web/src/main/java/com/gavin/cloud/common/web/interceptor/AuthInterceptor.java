@@ -68,7 +68,6 @@ public class AuthInterceptor implements HandlerInterceptorExt {
         }
 
         // 判断是否为公共访问地址(登录后均可访问)
-
         if (permissions.value().length == 0) {
             return true;
         }
