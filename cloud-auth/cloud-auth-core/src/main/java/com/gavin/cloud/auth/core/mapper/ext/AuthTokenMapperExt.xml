@@ -10,7 +10,7 @@
       <where>
         <if test="param!=null">
           <if test="param.uid!=null">
-            AND uid = #{param.uid}
+            AND uid = #{param.uid, jdbcType=BIGINT}
           </if>
         </if>
       </where>

@@ -6,7 +6,7 @@
 
 app:
   jwt:
-    access-token-expires: 300
+    access-token-expires: 1800
     refresh-token-expires: 2592000
     public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn1T9aKvZk0kD3TFX-vq7RQTdWXOnmsIP2w50DMBRFFAsKzgk2l_sYl_qh8NKa-1Ey6jfrOIG_-skih6qa9mcutexXGhkq15PamYVXNWmdXKr793nndMnhseIT8OJ-CMuhW2JmFXo3VmNdtk6iAEewulhASV9GOn6ZONSD0vfIOSDesA-escPcDrfw4IxCB9BuQEprvhPtKx9ag_vH2vgtUFxQcr2ZhN_-J5ijWbu-2mEYUdD0FsrvAL6hbkHhVIfJ8FGMfU-a51ie8XTahjJ9K99N6TZq9CJxzoBunATKpDVqgnIGp0vFXZjksT_ibF5ubCps2bah5TyxCQdHm0grwIDAQAB
     enable-cookie: true

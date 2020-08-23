@@ -6,8 +6,10 @@ import com.gavin.cloud.common.base.auth.JwtProperties;
 import com.gavin.cloud.common.base.problem.AppBizException;
 import com.gavin.cloud.common.web.annotation.Logical;
 import com.gavin.cloud.common.web.annotation.RequiresPermissions;
+import com.gavin.cloud.common.web.api.SysApi;
 import com.gavin.cloud.common.web.context.SubjectContextHolder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.method.HandlerMethod;
 
@@ -15,7 +17,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import static com.gavin.cloud.common.base.problem.DefaultProblemType.AUTHENTICATION_FAILED_TYPE;
@@ -33,12 +35,14 @@ import static com.gavin.cloud.common.base.problem.DefaultProblemType.AUTHENTICAT
  * 解决方案: 通过AOP实现, 在Controller相应方法上添加自定义注解{@link RequiresPermissions}来进行权限验证
  */
 @Slf4j
-public class AuthInterceptor extends AbstractInterceptor {
+public class AuthInterceptor implements HandlerInterceptorExt {
 
     private final JwtProperties jwtProperties;
+    private final ObjectProvider<SysApi> sysApiProvider;
 
-    public AuthInterceptor(JwtProperties jwtProperties) {
+    public AuthInterceptor(JwtProperties jwtProperties, ObjectProvider<SysApi> sysApiProvider) {
         this.jwtProperties = jwtProperties;
+        this.sysApiProvider = sysApiProvider;
     }
 
     @Override
@@ -59,7 +63,7 @@ public class AuthInterceptor extends AbstractInterceptor {
             SubjectContextHolder.getContext().setSubject(activeUser);
         } catch (Exception e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            log.debug("Access Control: filtered unauthorized access on endpoint {}", request.getRequestURI());
+            log.warn("Access Control: filtered unauthorized access on endpoint {}", request.getRequestURI());
             return false;
         }
 
@@ -73,7 +77,7 @@ public class AuthInterceptor extends AbstractInterceptor {
         ActiveUser subject = SubjectContextHolder.getContext().getSubject();
         if (!isPermitted(subject, permissions.value(), permissions.logical())) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
-            log.debug("Access Control: filtered denied access on endpoint {}", request.getRequestURI());
+            log.warn("Access Control: filtered denied access on endpoint {}", request.getRequestURI());
             return false;
         }
 
@@ -89,11 +93,9 @@ public class AuthInterceptor extends AbstractInterceptor {
     }
 
     private boolean isPermitted(ActiveUser subject, String[] permissions, Logical logical) {
-        // Set<String> perms = sysApi.getPermCodes(subject.getRoles().toArray(new String[0]));
-        Set<String> perms = new HashSet<>(); // TODO 从授权服务获取
-        return logical == Logical.AND
-                ? perms.containsAll(Arrays.asList(permissions))
-                : Arrays.stream(permissions).anyMatch(perms::contains);
+        SysApi sysApi = Objects.requireNonNull(sysApiProvider.getIfAvailable());
+        Set<String> perms = sysApi.getPermissionCodes(subject.getRoles().toArray(new String[0]));
+        return logical == Logical.AND ? perms.containsAll(Arrays.asList(permissions)) : Arrays.stream(permissions).anyMatch(perms::contains);
     }
 
 }
