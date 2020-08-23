@@ -139,7 +139,7 @@ CREATE TABLE `sys_user` (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('101', 'admin', '91a11846b148ff2e474847afcc130d48', '管理员', '20190406000000', '16666666666', 'admin@gmail.com', null, null, '', null, null, null, 'system', '2019-01-01 00:00:00', null, '2019-04-15 21:32:42');
+INSERT INTO `sys_user` VALUES ('101', 'admin', MD5(CONCAT('20190406000000','admin')), '管理员', '20190406000000', '16666666666', 'admin@gmail.com', null, null, '', null, null, null, 'system', '2019-01-01 00:00:00', null, '2019-04-15 21:32:42');
 
 -- ----------------------------
 -- Table structure for `sys_user_role`

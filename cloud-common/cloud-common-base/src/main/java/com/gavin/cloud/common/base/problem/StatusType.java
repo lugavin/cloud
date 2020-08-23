@@ -1,4 +1,4 @@
-package com.gavin.cloud.common.web.problem;
+package com.gavin.cloud.common.base.problem;
 
 public interface StatusType {
 

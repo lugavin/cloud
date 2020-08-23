@@ -1,6 +1,6 @@
 package com.gavin.cloud.sys.core.service.impl;
 
-import com.gavin.cloud.common.base.exception.AppException;
+import com.gavin.cloud.common.base.problem.AppBizException;
 import com.gavin.cloud.common.base.util.JsonUtils;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import com.gavin.cloud.sys.core.enums.RedisKey;
@@ -104,7 +104,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Transactional
     public void assignPermissions(Long roleId, Long[] permIds) {
         Role role = Optional.ofNullable(roleExtMapper.selectByPrimaryKey(roleId))
-                .orElseThrow(() -> new AppException(ROLE_NOT_FOUND_TYPE));
+                .orElseThrow(() -> new AppBizException(ROLE_NOT_FOUND_TYPE));
         RolePermissionExample example = new RolePermissionExample();
         example.createCriteria().andRoleIdEqualTo(roleId);
         rolePermissionExtMapper.deleteByExample(example);
@@ -147,8 +147,8 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public List<Permission> getPermissions(String... roles) {
-        return Arrays.stream(roles)
+    public List<Permission> getPermissions(Set<String> roles) {
+        return roles.parallelStream()
                 .map(this::getPermissions)
                 .collect(Collectors.toList())
                 .stream()
@@ -182,8 +182,8 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public Set<String> getPermissionCodes(String... roles) {
-        return Arrays.stream(roles)
+    public Set<String> getPermissionCodes(Set<String> roles) {
+        return roles.parallelStream()
                 .map(this::getPermissionCodes)
                 .collect(Collectors.toSet())
                 .stream()

@@ -1,6 +1,6 @@
 package com.gavin.cloud.sys.core.service.impl;
 
-import com.gavin.cloud.common.base.exception.AppAlertException;
+import com.gavin.cloud.common.base.problem.AppAlertException;
 import com.gavin.cloud.common.base.page.Page;
 import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.base.util.Md5Hash;

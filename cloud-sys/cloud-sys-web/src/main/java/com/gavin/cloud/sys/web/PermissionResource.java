@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -28,7 +30,7 @@ public class PermissionResource {
      */
     @GetMapping("/codes/{roles}")
     public ResponseEntity<Set<String>> getPermissionCodes(@PathVariable String[] roles) {
-        return ResponseEntity.ok(permissionService.getPermissionCodes(roles));
+        return ResponseEntity.ok(permissionService.getPermissionCodes(new HashSet<>(Arrays.asList(roles))));
     }
 
     /**
@@ -36,7 +38,7 @@ public class PermissionResource {
      */
     @GetMapping("/roles/{roles}")
     public ResponseEntity<List<Permission>> getPermissions(@PathVariable String[] roles) {
-        return ResponseEntity.ok(permissionService.getPermissions(roles));
+        return ResponseEntity.ok(permissionService.getPermissions(new HashSet<>(Arrays.asList(roles))));
     }
 
     @GetMapping("/menus/{userId}")

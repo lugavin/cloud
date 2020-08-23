@@ -1,4 +1,4 @@
-package com.gavin.cloud.common.web.problem;
+package com.gavin.cloud.common.base.problem;
 
 import java.net.URI;
 import java.util.Collections;
@@ -25,6 +25,8 @@ import java.util.Map;
  * @see <a href="https://tools.ietf.org/html/rfc7807">RFC 7807: Problem Details for HTTP APIs</a>
  */
 public interface Problem {
+
+    String PROBLEM_BASE_URL = "https://www.lugavin.com/problem";
 
     URI DEFAULT_TYPE = URI.create("about:blank");
 
@@ -57,23 +59,12 @@ public interface Problem {
      */
     String getTitle();
 
-
     /**
      * A human readable explanation specific to this occurrence of the problem.
      *
-     * @return A human readable explaination of this problem
+     * @return A human readable explanation of this problem
      */
     default String getDetail() {
-        return null;
-    }
-
-    /**
-     * An absolute URI that identifies the specific occurrence of the problem.
-     * It may or may not yield further information if dereferenced.
-     *
-     * @return an absolute URI that identifies this specific problem
-     */
-    default URI getInstance() {
         return null;
     }
 

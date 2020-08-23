@@ -1,7 +1,10 @@
-package com.gavin.cloud.common.base.exception;
+package com.gavin.cloud.common.base.problem;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.gavin.cloud.common.base.problem.AlertType.ALERT_KEY_MESSAGE;
+import static com.gavin.cloud.common.base.problem.AlertType.ALERT_KEY_PARAMS;
 
 public class AppAlertException extends AbstractThrowableProblem {
 
@@ -30,8 +33,8 @@ public class AppAlertException extends AbstractThrowableProblem {
 
     private static Map<String, Object> getAlertParameters(AlertType alertType) {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("message", "error." + alertType.getErrorKey());
-        parameters.put("params", alertType.getEntityName());
+        parameters.put(ALERT_KEY_MESSAGE, "error." + alertType.getErrorKey());
+        parameters.put(ALERT_KEY_PARAMS, alertType.getEntityName());
         return parameters;
     }
 

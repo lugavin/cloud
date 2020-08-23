@@ -1,6 +1,6 @@
 package com.gavin.cloud.sys.core.service.impl;
 
-import com.gavin.cloud.common.base.exception.AppException;
+import com.gavin.cloud.common.base.problem.AppBizException;
 import com.gavin.cloud.common.base.util.Md5Hash;
 import com.gavin.cloud.common.base.util.RandomUtils;
 import com.gavin.cloud.sys.core.mapper.ext.UserExtMapper;
@@ -47,7 +47,7 @@ public class AccountServiceImpl implements AccountService {
         example.createCriteria().andActivationKeyEqualTo(key);
         List<User> users = userExtMapper.selectByExample(example);
         if (users.size() < 1) {
-            throw new AppException(USER_NOT_FOUND_TYPE);
+            throw new AppBizException(USER_NOT_FOUND_TYPE);
         }
         User user = users.get(0);
         user.setActivated(true);
@@ -62,7 +62,7 @@ public class AccountServiceImpl implements AccountService {
         example.createCriteria().andEmailEqualTo(mail);
         List<User> users = userExtMapper.selectByExample(example);
         if (users.size() < 1) {
-            throw new AppException(EMAIL_NOT_FOUND_TYPE);
+            throw new AppBizException(EMAIL_NOT_FOUND_TYPE);
         }
         User user = users.get(0);
         user.setResetKey(RandomUtils.randomNumeric());
@@ -77,7 +77,7 @@ public class AccountServiceImpl implements AccountService {
         example.createCriteria().andActivationKeyEqualTo(key);
         List<User> users = userExtMapper.selectByExample(example);
         if (users.size() < 1) {
-            throw new AppException(USER_NOT_FOUND_TYPE);
+            throw new AppBizException(USER_NOT_FOUND_TYPE);
         }
         User user = users.get(0);
         user.setSalt(RandomUtils.randomAlphanumeric());
@@ -90,7 +90,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void changePassword(Long id, String password) {
-        User user = Optional.ofNullable(userExtMapper.selectByPrimaryKey(id)).orElseThrow(() -> new AppException(USER_NOT_FOUND_TYPE));
+        User user = Optional.ofNullable(userExtMapper.selectByPrimaryKey(id)).orElseThrow(() -> new AppBizException(USER_NOT_FOUND_TYPE));
         user.setSalt(RandomUtils.randomAlphanumeric());
         user.setPassword(Md5Hash.hash(user.getPassword(), user.getSalt()));
         user.setUpdatedBy(user.getUsername());

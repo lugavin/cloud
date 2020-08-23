@@ -8,9 +8,9 @@
         INSERT INTO sys_role_permission (id, role_id, permission_id) VALUES
         <foreach collection="list" item="item" separator=",">
             (
-              #{item.id,jdbcType=BIGINT},
-              #{item.roleId,jdbcType=BIGINT},
-              #{item.permissionId,jdbcType=BIGINT}
+              #{item.id, jdbcType=BIGINT},
+              #{item.roleId, jdbcType=BIGINT},
+              #{item.permissionId, jdbcType=BIGINT}
             )
         </foreach>
     </insert>

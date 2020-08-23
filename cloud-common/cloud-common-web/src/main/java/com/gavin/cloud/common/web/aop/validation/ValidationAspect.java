@@ -7,6 +7,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StopWatch;
+import org.springframework.util.StringUtils;
 
 import javax.validation.*;
 import java.lang.annotation.Annotation;
@@ -68,7 +69,7 @@ public class ValidationAspect {
         Method method = methodSignature.getMethod();
         String methodName = method.getName();
 
-        Class[] parameterTypes = methodSignature.getParameterTypes();
+        Class<?>[] parameterTypes = methodSignature.getParameterTypes();
         // String[] parameterNames = parameterNameDiscoverer.getParameterNames(method);
         String[] parameterNames = methodSignature.getParameterNames();
         Object[] parameterValues = joinPoint.getArgs();
@@ -83,10 +84,7 @@ public class ValidationAspect {
         }
 
         // (1)校验方法入参
-        List<String> violations = validationProcessor.validateParameters(target, targetMethod, parameterValues);
-        if (!violations.isEmpty()) {
-            throw new ValidationException(violations.toString());
-        }
+        validationProcessor.validateParameters(target, targetMethod, parameterValues);
 
         // (2)校验方法入参内的属性
         if (parameterValues == null || parameterValues.length < 1) {
@@ -102,12 +100,9 @@ public class ValidationAspect {
                 continue;
             }
             if (parameterValue instanceof Iterable) {
-                violations = validationProcessor.validate((Iterable<?>) parameterValue, validated.value());
+                validationProcessor.validate((Iterable<?>) parameterValue, validated.value());
             } else {
-                violations = validationProcessor.validate(parameterValue, validated.value());
-            }
-            if (!violations.isEmpty()) {
-                throw new ValidationException(violations.toString());
+                validationProcessor.validate(parameterValue, validated.value());
             }
         }
 
@@ -198,43 +193,31 @@ public class ValidationAspect {
             this.validator = validator;
         }
 
-        public <T> List<String> validate(T object, Class<?>... groups) {
-            Set<ConstraintViolation<T>> violations = validator.validate(object, groups);
-            return getErrorMessage(violations);
+        public <T> void validate(T object, Class<?>... groups) {
+            resolveViolations(validator.validate(object, groups));
         }
 
-        public <T> List<String> validate(Iterable<T> iterable, Class<?>... groups) {
-            for (T object : iterable) {
-                List<String> errors = validate(object, groups);
-                if (!errors.isEmpty()) {
-                    return errors;
-                }
+        public <T> void validate(Iterable<T> iterable, Class<?>... groups) {
+            iterable.forEach(obj -> validate(obj, groups));
+        }
+
+        public <T> void validateProperty(T object, String propertyName, Class<?>... groups) {
+            resolveViolations(validator.validateProperty(object, propertyName, groups));
+        }
+
+        public <T> void validateParameters(T object, Method method, Object[] parameterValues, Class<?>... groups) {
+            resolveViolations(validator.forExecutables().validateParameters(object, method, parameterValues, groups));
+        }
+
+        public <T> void validateReturnValue(T object, Method method, Object returnValue, Class<?>... groups) {
+            resolveViolations(validator.forExecutables().validateReturnValue(object, method, returnValue, groups));
+        }
+
+        public <T> void resolveViolations(Set<ConstraintViolation<T>> violations) {
+            String errMsg = violations.stream().map(v -> v.getPropertyPath() + ":" + v.getMessage()).collect(Collectors.joining(", "));
+            if (StringUtils.hasText(errMsg)) {
+                throw new ValidationException(errMsg);
             }
-            return Collections.emptyList();
-        }
-
-        public <T> List<String> validateProperty(T object, String propertyName, Class<?>... groups) {
-            Set<ConstraintViolation<T>> violations = validator.validateProperty(object, propertyName, groups);
-            return getErrorMessage(violations);
-        }
-
-        public <T> List<String> validateParameters(T object, Method method, Object[] parameterValues, Class<?>... groups) {
-            Set<ConstraintViolation<T>> violations = validator.forExecutables().validateParameters(object, method, parameterValues, groups);
-            return getErrorMessage(violations);
-        }
-
-        public <T> List<String> validateReturnValue(T object, Method method, Object returnValue, Class<?>... groups) {
-            Set<ConstraintViolation<T>> violations = validator.forExecutables().validateReturnValue(object, method, returnValue, groups);
-            return getErrorMessage(violations);
-        }
-
-        public <T> List<String> getErrorMessage(Set<ConstraintViolation<T>> violations) {
-            if (violations == null || violations.isEmpty()) {
-                return Collections.emptyList();
-            }
-            return violations.stream()
-                    .map(v -> v.getPropertyPath() + ":" + v.getMessage())
-                    .collect(Collectors.toList());
         }
 
     }

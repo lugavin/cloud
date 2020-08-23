@@ -1,4 +1,4 @@
-package com.gavin.cloud.common.web.problem;
+package com.gavin.cloud.common.base.problem;
 
 /**
  * An extension of the {@link Problem} interface for problems that extend {@link Exception}. Since {@link Exception}
@@ -16,12 +16,5 @@ package com.gavin.cloud.common.web.problem;
 public interface Exceptional extends Problem {
 
     Exceptional getCause();
-
-    /**
-     * @return the current time in milliseconds.
-     */
-    default long getTimestamp() {
-        return System.currentTimeMillis();
-    }
 
 }

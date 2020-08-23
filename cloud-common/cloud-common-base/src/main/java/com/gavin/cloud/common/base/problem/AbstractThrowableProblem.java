@@ -1,4 +1,4 @@
-package com.gavin.cloud.common.web.problem;
+package com.gavin.cloud.common.base.problem;
 
 import java.net.URI;
 import java.util.Collections;
@@ -9,55 +9,43 @@ import java.util.Optional;
 public abstract class AbstractThrowableProblem extends ThrowableProblem {
 
     private final URI type;
-    private final String title;
     private final StatusType status;
+    private final String title;
     private final String detail;
-    private final URI instance;
     private final Map<String, Object> parameters;
 
     protected AbstractThrowableProblem(final URI type,
-                                       final String title,
-                                       final StatusType status) {
-        this(type, title, status, null);
+                                       final StatusType status,
+                                       final String title) {
+        this(type, status, title, null);
     }
 
     protected AbstractThrowableProblem(final URI type,
-                                       final String title,
                                        final StatusType status,
+                                       final String title,
                                        final String detail) {
-        this(type, title, status, detail, null);
+        this(type, status, title, detail, null);
     }
 
     protected AbstractThrowableProblem(final URI type,
-                                       final String title,
                                        final StatusType status,
-                                       final String detail,
-                                       final URI instance) {
-        this(type, title, status, detail, instance, null);
-    }
-
-    protected AbstractThrowableProblem(final URI type,
                                        final String title,
-                                       final StatusType status,
                                        final String detail,
-                                       final URI instance,
                                        final ThrowableProblem cause) {
-        this(type, title, status, detail, instance, cause, null);
+        this(type, status, title, detail, cause, null);
     }
 
     protected AbstractThrowableProblem(final URI type,
-                                       final String title,
                                        final StatusType status,
+                                       final String title,
                                        final String detail,
-                                       final URI instance,
                                        final ThrowableProblem cause,
                                        final Map<String, Object> parameters) {
         super(cause);
-        this.type = Optional.ofNullable(type).orElse(DEFAULT_TYPE);
-        this.title = title;
+        this.type = type;
         this.status = status;
+        this.title = title;
         this.detail = detail;
-        this.instance = instance;
         this.parameters = Optional.ofNullable(parameters).orElseGet(LinkedHashMap::new);
     }
 
@@ -67,23 +55,18 @@ public abstract class AbstractThrowableProblem extends ThrowableProblem {
     }
 
     @Override
-    public String getTitle() {
-        return title;
-    }
-
-    @Override
     public StatusType getStatus() {
         return status;
     }
 
     @Override
-    public String getDetail() {
-        return detail;
+    public String getTitle() {
+        return title;
     }
 
     @Override
-    public URI getInstance() {
-        return instance;
+    public String getDetail() {
+        return detail;
     }
 
     @Override

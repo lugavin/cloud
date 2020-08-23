@@ -1,12 +1,12 @@
 package com.gavin.cloud.auth.core.enums;
 
-import com.gavin.cloud.common.base.exception.HttpStatus;
-import com.gavin.cloud.common.base.exception.Problem;
-import com.gavin.cloud.common.base.exception.ProblemType;
+import com.gavin.cloud.common.base.problem.StatusType;
+import com.gavin.cloud.common.base.problem.Problem;
+import com.gavin.cloud.common.base.problem.ProblemType;
 
 import java.net.URI;
 
-import static com.gavin.cloud.common.base.exception.HttpStatus.BAD_REQUEST;
+import static com.gavin.cloud.common.base.problem.HttpStatus.BAD_REQUEST;
 
 public enum AuthProblemType implements ProblemType {
 
@@ -16,19 +16,19 @@ public enum AuthProblemType implements ProblemType {
 
     private static final String DEFAULT_TYPE = "/problem-with-message";
 
-    private final HttpStatus status;
+    private final StatusType status;
     private final String title;
     private final URI type;
 
-    AuthProblemType(HttpStatus status, String title) {
+    AuthProblemType(StatusType status, String title) {
         this(status, title, DEFAULT_TYPE);
     }
 
-    AuthProblemType(HttpStatus status, String title, String type) {
+    AuthProblemType(StatusType status, String title, String type) {
         this(status, title, URI.create(Problem.PROBLEM_BASE_URL + type));
     }
 
-    AuthProblemType(HttpStatus status, String title, URI type) {
+    AuthProblemType(StatusType status, String title, URI type) {
         this.status = status;
         this.title = title;
         this.type = type;
@@ -40,7 +40,7 @@ public enum AuthProblemType implements ProblemType {
     }
 
     @Override
-    public HttpStatus getStatus() {
+    public StatusType getStatus() {
         return status;
     }
 

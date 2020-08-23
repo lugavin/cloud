@@ -8,9 +8,9 @@
         INSERT INTO sys_user_role (id, user_id, role_id) VALUES
         <foreach collection="list" item="item" separator=",">
             (
-              #{item.id,jdbcType=BIGINT},
-              #{item.userId,jdbcType=BIGINT},
-              #{item.roleId,jdbcType=BIGINT}
+              #{item.id, jdbcType=BIGINT},
+              #{item.userId, jdbcType=BIGINT},
+              #{item.roleId, jdbcType=BIGINT}
             )
         </foreach>
     </insert>

@@ -1,8 +1,8 @@
-package com.gavin.cloud.common.base.exception;
+package com.gavin.cloud.common.base.problem;
 
 import java.net.URI;
 
-import static com.gavin.cloud.common.base.exception.HttpStatus.*;
+import static com.gavin.cloud.common.base.problem.HttpStatus.*;
 
 public enum DefaultProblemType implements ProblemType {
 
@@ -15,23 +15,23 @@ public enum DefaultProblemType implements ProblemType {
 
     private static final String DEFAULT_TYPE = "/problem-with-message";
 
-    private final HttpStatus status;
+    private final StatusType status;
     private final String title;
     private final URI type;
 
-    DefaultProblemType(HttpStatus status) {
-        this(status, status.reason());
+    DefaultProblemType(StatusType status) {
+        this(status, status.getReasonPhrase());
     }
 
-    DefaultProblemType(HttpStatus status, String title) {
+    DefaultProblemType(StatusType status, String title) {
         this(status, title, DEFAULT_TYPE);
     }
 
-    DefaultProblemType(HttpStatus status, String title, String type) {
+    DefaultProblemType(StatusType status, String title, String type) {
         this(status, title, URI.create(Problem.PROBLEM_BASE_URL + type));
     }
 
-    DefaultProblemType(HttpStatus status, String title, URI type) {
+    DefaultProblemType(StatusType status, String title, URI type) {
         this.status = status;
         this.title = title;
         this.type = type;
@@ -43,7 +43,7 @@ public enum DefaultProblemType implements ProblemType {
     }
 
     @Override
-    public HttpStatus getStatus() {
+    public StatusType getStatus() {
         return status;
     }
 

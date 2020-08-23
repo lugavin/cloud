@@ -32,10 +32,10 @@ public interface PermissionService {
 
     List<Permission> getPermissions(String role);
 
-    List<Permission> getPermissions(String... roles);
+    List<Permission> getPermissions(Set<String> roles);
 
     Set<String> getPermissionCodes(String role);
 
-    Set<String> getPermissionCodes(String... roles);
+    Set<String> getPermissionCodes(Set<String> roles);
 
 }

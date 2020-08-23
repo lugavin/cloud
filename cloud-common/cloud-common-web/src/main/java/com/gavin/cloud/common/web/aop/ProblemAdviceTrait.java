@@ -1,10 +1,8 @@
 package com.gavin.cloud.common.web.aop;
 
-import com.gavin.cloud.common.base.exception.Problem;
-import com.gavin.cloud.common.base.exception.ProblemBuilder;
-import com.gavin.cloud.common.base.exception.ThrowableProblem;
-import lombok.Builder;
-import lombok.Data;
+import com.gavin.cloud.common.base.problem.Problem;
+import com.gavin.cloud.common.base.problem.ProblemBuilder;
+import com.gavin.cloud.common.base.problem.ThrowableProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -13,11 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.URI;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
-import static com.gavin.cloud.common.base.exception.HttpStatus.INTERNAL_SERVER_ERROR;
+import static com.gavin.cloud.common.base.problem.AlertType.ALERT_KEY_MESSAGE;
+import static com.gavin.cloud.common.base.problem.HttpStatus.INTERNAL_SERVER_ERROR;
 
 public interface ProblemAdviceTrait {
 
@@ -44,7 +42,7 @@ public interface ProblemAdviceTrait {
                                            final Problem problem,
                                            final NativeWebRequest request,
                                            final HttpHeaders headers) {
-        int statusCode = Optional.ofNullable(problem.getStatus()).orElse(INTERNAL_SERVER_ERROR).value();
+        int statusCode = Optional.ofNullable(problem.getStatus()).orElse(INTERNAL_SERVER_ERROR).getStatusCode();
         HttpStatus status = HttpStatus.valueOf(statusCode);
         if (status.is4xxClientError()) {
             LOG.warn("{}: {}", status.getReasonPhrase(), throwable.getMessage());
@@ -55,32 +53,19 @@ public interface ProblemAdviceTrait {
         if (!(problem instanceof ThrowableProblem)) {
             return new ResponseEntity<>(problem, headers, status);
         }
-
         ProblemBuilder builder = Problem.builder()
                 .withType(problem.getType())
                 .withStatus(problem.getStatus())
                 .withTitle(problem.getTitle())
                 .withDetail(problem.getDetail())
                 .withCause(((ThrowableProblem) problem).getCause())
-                .with("path", request.getNativeRequest(HttpServletRequest.class).getRequestURI())
+                .with("path", ((HttpServletRequest) request.getNativeRequest()).getRequestURI())
                 .with("timestamp", System.currentTimeMillis());
         problem.getParameters().forEach(builder::with);
-        if (!problem.getParameters().containsKey("message") && problem.getStatus() != null) {
-            builder.with("message", "error.http." + problem.getStatus().value());
+        if (!problem.getParameters().containsKey(ALERT_KEY_MESSAGE) && Objects.nonNull(problem.getStatus())) {
+            builder.with(ALERT_KEY_MESSAGE, "error.http." + problem.getStatus().getStatusCode());
         }
         return new ResponseEntity<>(builder.build(), headers, status);
-    }
-
-    @Data
-    @Builder
-    class Exceptional {
-        private URI type;
-        private int status;
-        private String title;
-        private String detail;
-        private String path;
-        private long timestamp;
-        private Map<String, Object> parameters;
     }
 
 }

@@ -16,17 +16,17 @@
           FROM sys_user
           <where>
               <if test="id!=null">
-                  AND id = #{id}
+                  AND id = #{id, jdbcType=BIGINT}
               </if>
               <if test="username!=null and username!=''">
-                  AND username = #{username}
+                  AND username = #{username, jdbcType=VARCHAR}
               </if>
               <if test="nickname!=null and nickname!=''">
                   <if test="_databaseId == 'mysql'">
-                      AND nickname LIKE CONCAT('%',#{nickname},'%')
+                      AND nickname LIKE CONCAT('%',#{nickname, jdbcType=VARCHAR},'%')
                   </if>
                   <if test="_databaseId == 'oracle'">
-                      AND nickname LIKE '%'||#{nickname}||'%'
+                      AND nickname LIKE '%'||#{nickname, jdbcType=VARCHAR}||'%'
                   </if>
               </if>
           </where>
@@ -38,22 +38,22 @@
           <where>
               <if test="param!=null">
                   <if test="param.username!=null and param.username!=''">
-                      AND username = #{param.username}
+                      AND username = #{param.username, jdbcType=VARCHAR}
                   </if>
                   <if test="param.nickname!=null and param.nickname!=''">
-                      AND nickname LIKE CONCAT('%',#{param.nickname},'%')
+                      AND nickname LIKE CONCAT('%',#{param.nickname, jdbcType=VARCHAR},'%')
                   </if>
-                  <if test="param.createStartDate!=null and param.createStartDate!=''">
-                      AND DATE(created_date) >= DATE(#{param.createStartDate})
+                  <if test="param.createdStartDate!=null and param.createdStartDate!=''">
+                      AND DATE(created_at) >= DATE(#{param.createdStartDate, jdbcType=TIMESTAMP})
                   </if>
-                  <if test="param.createEndDate!=null and param.createEndDate!=''">
-                      <![CDATA[ AND DATE(created_date) <= DATE(#{param.createEndDate}) ]]>
+                  <if test="param.createdEndDate!=null and param.createdEndDate!=''">
+                      <![CDATA[ AND DATE(created_at) <= DATE(#{param.createdEndDate, jdbcType=TIMESTAMP}) ]]>
                   </if>
-                  <if test="param.modifyStartDate!=null and param.modifyStartDate!=''">
-                      AND DATE(last_modified_date) >= DATE(#{param.modifyStartDate})
+                  <if test="param.updatedStartDate!=null and param.updatedStartDate!=''">
+                      AND DATE(updated_at) >= DATE(#{param.updatedStartDate, jdbcType=TIMESTAMP})
                   </if>
-                  <if test="param.modifyEndDate!=null and param.modifyEndDate!=''">
-                      <![CDATA[ AND DATE(last_modified_date) <= DATE(#{param.modifyEndDate}) ]]>
+                  <if test="param.updatedEndDate!=null and param.updatedEndDate!=''">
+                      <![CDATA[ AND DATE(updated_at) <= DATE(#{param.updatedEndDate, jdbcType=TIMESTAMP}) ]]>
                   </if>
               </if>
           </where>

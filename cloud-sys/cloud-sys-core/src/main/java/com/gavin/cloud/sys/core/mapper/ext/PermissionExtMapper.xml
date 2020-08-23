@@ -23,7 +23,7 @@
           LEFT JOIN sys_role c ON b.role_id = c.id
          WHERE c.code IN
          <foreach collection="array" item="code" open="(" separator="," close=")">
-             #{code}
+             #{code,jdbcType=VARCHAR}
          </foreach>
     </select>
 
@@ -32,15 +32,15 @@
           FROM sys_permission a
           LEFT JOIN sys_role_permission b ON a.id = b.permission_id
           LEFT JOIN sys_user_role c ON b.role_id = c.role_id
-         WHERE c.user_id = #{uid}
-           AND a.type = #{type}
+         WHERE c.user_id = #{uid, jdbcType=BIGINT}
+           AND a.type = #{type, jdbcType=VARCHAR}
     </select>
 
-    <select id="selectByPrimaryKey" parameterType="long" resultMap="BaseResultExtMap">
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultExtMap">
         SELECT <include refid="Base_Column_List"/>,
                b.name AS parentName
           FROM sys_permission a LEFT JOIN sys_permission b ON a.parent_id = b.id
-         WHERE a.id = #{id}
+         WHERE a.id = #{id, jdbcType=BIGINT}
     </select>
 
 </mapper>

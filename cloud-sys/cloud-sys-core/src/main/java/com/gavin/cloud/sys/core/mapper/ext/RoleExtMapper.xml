@@ -16,17 +16,17 @@
           FROM sys_role
           <where>
               <if test="id!=null">
-                  AND id = #{id}
+                  AND id = #{id, jdbcType=BIGINT}
               </if>
               <if test="code!=null and code!=''">
-                  AND code = #{code}
+                  AND code = #{code, jdbcType=VARCHAR}
               </if>
               <if test="name!=null and name!=''">
                   <if test="_databaseId == 'mysql'">
-                      AND name LIKE CONCAT('%',#{name},'%')
+                      AND name LIKE CONCAT('%',#{name, jdbcType=VARCHAR},'%')
                   </if>
                   <if test="_databaseId == 'oracle'">
-                      AND name LIKE '%'||#{name}||'%'
+                      AND name LIKE '%'||#{name, jdbcType=VARCHAR}||'%'
                   </if>
               </if>
           </where>
@@ -38,24 +38,24 @@
           <where>
               <if test="param!=null">
                   <if test="param.code!=null and param.code!=''">
-                      AND code = #{param.code}
+                      AND code = #{param.code, jdbcType=VARCHAR}
                   </if>
                   <if test="param.name!=null and param.name!=''">
                       <if test="_databaseId == 'mysql'">
-                          AND name LIKE CONCAT('%',#{param.name},'%')
+                          AND name LIKE CONCAT('%',#{param.name, jdbcType=VARCHAR},'%')
                       </if>
                       <if test="_databaseId == 'oracle'">
-                          AND name LIKE '%'||#{param.name}||'%'
+                          AND name LIKE '%'||#{param.name, jdbcType=VARCHAR}||'%'
                       </if>
                   </if>
               </if>
           </where>
     </select>
 
-    <select id="getByUserId" parameterType="string" resultMap="BaseResultMap">
+    <select id="getByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
         SELECT a.id, a.code, a.`name`, a.remark
           FROM sys_role a JOIN sys_user_role b ON a.id = b.role_id
-         WHERE b.user_id = #{userId}
+         WHERE b.user_id = #{userId, jdbcType=BIGINT}
     </select>
 
 </mapper>

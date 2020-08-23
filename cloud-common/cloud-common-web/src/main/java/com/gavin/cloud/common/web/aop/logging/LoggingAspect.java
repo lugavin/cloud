@@ -1,6 +1,5 @@
 package com.gavin.cloud.common.web.aop.logging;
 
-import com.gavin.cloud.common.base.util.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -12,6 +11,8 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.env.Environment;
 
 import java.util.Arrays;
+
+import static com.gavin.cloud.common.base.util.Constants.PROFILE_DEV;
 
 /**
  * Aspect for logging execution of service and repository Spring components.
@@ -56,7 +57,7 @@ public class LoggingAspect {
      */
     @AfterThrowing(pointcut = "applicationPackagePointcut() && springBeanPointcut()", throwing = "e")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
-        if (env.acceptsProfiles(Constants.PROFILE_DEV)) {
+        if (env.acceptsProfiles(PROFILE_DEV)) {
             log.error("Exception in {}.{}() with cause = \'{}\' and exception = \'{}\'", joinPoint.getSignature().getDeclaringTypeName(),
                     joinPoint.getSignature().getName(), e.getCause() != null ? e.getCause() : "NULL", e.getMessage(), e);
         } else {

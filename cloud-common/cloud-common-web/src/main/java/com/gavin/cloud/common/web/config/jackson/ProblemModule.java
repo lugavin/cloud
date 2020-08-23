@@ -9,32 +9,28 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.gavin.cloud.common.web.problem.*;
+import com.gavin.cloud.common.base.problem.Exceptional;
+import com.gavin.cloud.common.base.problem.Problem;
+import com.gavin.cloud.common.base.problem.StatusType;
+import com.gavin.cloud.common.base.problem.ThrowableProblem;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
-public final class ProblemModule extends com.fasterxml.jackson.databind.Module {
+public final class ProblemModule extends Module {
 
     private final boolean stackTraces;
-    private final Map<Integer, StatusType> statuses;
+    private final Map<Integer, StatusType> statusMap;
 
-    public ProblemModule() {
-        this(Boolean.FALSE, new Class[]{Status.class});
-    }
-
-    public <E extends Enum & StatusType> ProblemModule(boolean stackTraces, Class<? extends E>[] types) {
-        this(stackTraces, buildIndex(types));
-    }
-
-    private ProblemModule(boolean stackTraces, Map<Integer, StatusType> statuses) {
+    public <E extends Enum<E> & StatusType> ProblemModule(boolean stackTraces, List<Class<? extends E>> statusTypes) {
         this.stackTraces = stackTraces;
-        this.statuses = statuses;
+        this.statusMap = buildStatusMap(statusTypes);
     }
 
     @Override
@@ -50,30 +46,23 @@ public final class ProblemModule extends com.fasterxml.jackson.databind.Module {
     @Override
     public void setupModule(final SetupContext context) {
         final SimpleModule module = new SimpleModule();
-
-        module.setMixInAnnotation(Exceptional.class, stackTraces ?
-                ExceptionalWithStacktraceMixin.class :
-                ExceptionalMixin.class);
-
+        module.setMixInAnnotation(Exceptional.class, stackTraces ? ExceptionalWithStacktraceMixin.class : ExceptionalMixin.class);
         module.setMixInAnnotation(Problem.class, ProblemMixIn.class);
-
         module.addSerializer(StatusType.class, new StatusTypeSerializer());
-        module.addDeserializer(StatusType.class, new StatusTypeDeserializer(statuses));
-
+        module.addDeserializer(StatusType.class, new StatusTypeDeserializer(statusMap));
         module.setupModule(context);
     }
 
-    private static <E extends Enum & StatusType> Map<Integer, StatusType> buildIndex(Class<? extends E>[] types) {
-        final Map<Integer, StatusType> index = new HashMap<>();
-        for (Class<? extends E> type : types) {
-            for (E status : type.getEnumConstants()) {
-                if (index.containsKey(status.getStatusCode())) {
+    private static <E extends Enum<E> & StatusType> Map<Integer, StatusType> buildStatusMap(List<Class<? extends E>> statusTypes) {
+        final Map<Integer, StatusType> statusMap = new HashMap<>();
+        for (Class<? extends E> statusType : statusTypes) {
+            for (E status : statusType.getEnumConstants()) {
+                if (Objects.nonNull(statusMap.putIfAbsent(status.getStatusCode(), status))) {
                     throw new IllegalArgumentException("Duplicate status codes are not allowed");
                 }
-                index.put(status.getStatusCode(), status);
             }
         }
-        return index;
+        return statusMap;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -114,28 +103,47 @@ public final class ProblemModule extends com.fasterxml.jackson.databind.Module {
 
     }
 
-    private final class StatusTypeSerializer extends JsonSerializer<StatusType> {
+    private static final class StatusTypeSerializer extends JsonSerializer<StatusType> {
 
         @Override
-        public void serialize(final StatusType status, final JsonGenerator json, final SerializerProvider serializers) throws IOException {
+        public void serialize(StatusType status, JsonGenerator json, SerializerProvider serializers) throws IOException {
             json.writeNumber(status.getStatusCode());
         }
 
     }
 
-    private final class StatusTypeDeserializer extends JsonDeserializer<StatusType> {
+    private static final class StatusTypeDeserializer extends JsonDeserializer<StatusType> {
 
-        private final Map<Integer, StatusType> index;
+        private final Map<Integer, StatusType> statusMap;
 
-        StatusTypeDeserializer(final Map<Integer, StatusType> index) {
-            this.index = index;
+        StatusTypeDeserializer(Map<Integer, StatusType> statusMap) {
+            this.statusMap = statusMap;
         }
 
         @Override
-        public StatusType deserialize(final JsonParser json, final DeserializationContext context) throws IOException {
+        public StatusType deserialize(JsonParser json, DeserializationContext context) throws IOException {
             final int statusCode = json.getIntValue();
-            return Optional.ofNullable(index.get(statusCode))
-                    .orElse(new UnknownStatus(statusCode));
+            return statusMap.getOrDefault(statusCode, new UnknownStatus(statusCode));
+        }
+
+    }
+
+    private static final class UnknownStatus implements StatusType {
+
+        private final int statusCode;
+
+        public UnknownStatus(int statusCode) {
+            this.statusCode = statusCode;
+        }
+
+        @Override
+        public int getStatusCode() {
+            return statusCode;
+        }
+
+        @Override
+        public String getReasonPhrase() {
+            return "Unknown";
         }
 
     }

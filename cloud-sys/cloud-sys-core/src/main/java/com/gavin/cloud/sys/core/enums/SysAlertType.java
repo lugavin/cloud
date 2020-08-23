@@ -1,7 +1,7 @@
 package com.gavin.cloud.sys.core.enums;
 
-import com.gavin.cloud.common.base.exception.AlertType;
-import com.gavin.cloud.common.base.exception.Problem;
+import com.gavin.cloud.common.base.problem.AlertType;
+import com.gavin.cloud.common.base.problem.Problem;
 
 import java.net.URI;
 

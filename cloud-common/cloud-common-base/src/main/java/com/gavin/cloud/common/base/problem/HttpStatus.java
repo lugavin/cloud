@@ -1,4 +1,4 @@
-package com.gavin.cloud.common.base.exception;
+package com.gavin.cloud.common.base.problem;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  * @see <a href="http://www.iana.org/assignments/http-status-codes">HTTP Status Code Registry</a>
  * @see <a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes">List of HTTP msgStatus codes - Wikipedia</a>
  */
-public enum HttpStatus {
+public enum HttpStatus implements StatusType {
 
     // --- 1xx Informational ---
 
@@ -89,21 +89,22 @@ public enum HttpStatus {
     NOT_EXTENDED(510, "Not Extended"),
     NETWORK_AUTHENTICATION_REQUIRED(511, "Network Authentication Required");
 
-    private final int value;
+    private final int statusCode;
+    private final String reasonPhrase;
 
-    private final String reason;
-
-    HttpStatus(int value, String reason) {
-        this.value = value;
-        this.reason = reason;
+    HttpStatus(int statusCode, String reasonPhrase) {
+        this.statusCode = statusCode;
+        this.reasonPhrase = reasonPhrase;
     }
 
-    public int value() {
-        return value;
+    @Override
+    public int getStatusCode() {
+        return statusCode;
     }
 
-    public String reason() {
-        return reason;
+    @Override
+    public String getReasonPhrase() {
+        return reasonPhrase;
     }
 
     public Series series() {
@@ -152,14 +153,17 @@ public enum HttpStatus {
                 .collect(Collectors.toMap(Series::value, Function.identity()));
 
         public static Series from(HttpStatus status) {
-            return from(status.value());
+            return Optional.ofNullable(MAP.get(status.statusCode / 100))
+                    .orElseThrow(() -> new IllegalArgumentException("No matching constant for [" + status.statusCode + "]"));
         }
 
-        public static Series from(int statusCode) {
-            return Optional.ofNullable(MAP.get(statusCode / 100))
-                    .orElseThrow(() -> new IllegalArgumentException("No matching constant for [" + statusCode + "]"));
-        }
+    }
 
+    private static final Map<Integer, HttpStatus> MAP = Arrays.stream(HttpStatus.values())
+            .collect(Collectors.toMap(HttpStatus::getStatusCode, Function.identity()));
+
+    public static HttpStatus from(int statusCode) {
+        return MAP.get(statusCode);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.gavin.cloud.common.base.exception;
+package com.gavin.cloud.common.base.problem;
 
 import java.net.URI;
 
@@ -6,7 +6,7 @@ public interface ProblemType {
 
     URI getType();
 
-    HttpStatus getStatus();
+    StatusType getStatus();
 
     String getTitle();
 

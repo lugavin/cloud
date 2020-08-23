@@ -1,9 +1,9 @@
 package com.gavin.cloud.common.web.aop;
 
-import com.gavin.cloud.common.base.exception.AppAlertException;
-import com.gavin.cloud.common.base.exception.DefaultProblemType;
-import com.gavin.cloud.common.base.exception.Problem;
-import com.gavin.cloud.common.base.exception.ThrowableProblem;
+import com.gavin.cloud.common.base.problem.AppAlertException;
+import com.gavin.cloud.common.base.problem.AppBizException;
+import com.gavin.cloud.common.base.problem.Problem;
+import com.gavin.cloud.common.base.problem.ThrowableProblem;
 import com.gavin.cloud.common.web.util.HeaderUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.gavin.cloud.common.base.problem.DefaultProblemType.CONSTRAINT_VIOLATION_TYPE;
 
 /**
  * Controller advice to translate the server side exceptions to client-friendly json structures.
@@ -52,19 +53,8 @@ public class ExceptionTranslator implements ProblemAdviceTrait {
     }
 
     private ResponseEntity<Problem> handleException(Throwable throwable, BindingResult bindingResult, NativeWebRequest request) {
-        List<String> fieldErrors = bindingResult.getFieldErrors().stream()
-                .map(f -> f.getField() + ": " + f.getDefaultMessage())
-                .collect(Collectors.toList());
-        // String errors = String.join(", ", fieldErrors);
-        DefaultProblemType problemType = DefaultProblemType.CONSTRAINT_VIOLATION_TYPE;
-        ThrowableProblem problem = Problem.builder()
-                .withType(problemType.getType())
-                .withStatus(problemType.getStatus())
-                .withTitle(problemType.getTitle())
-                .with("message", "error.validation")
-                .with("fieldErrors", fieldErrors)
-                .build();
-        return create(throwable, problem, request);
+        return create(throwable, new AppBizException(CONSTRAINT_VIOLATION_TYPE, bindingResult.getFieldErrors().stream()
+                .map(f -> f.getField() + ": " + f.getDefaultMessage()).collect(Collectors.joining(", "))), request);
     }
 
 }

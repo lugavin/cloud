@@ -1,10 +1,10 @@
-package com.gavin.cloud.common.base.exception;
+package com.gavin.cloud.common.base.problem;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class ThrowableProblem extends RuntimeException implements Problem {
+public abstract class ThrowableProblem extends RuntimeException implements Exceptional {
 
     protected ThrowableProblem(final ThrowableProblem cause) {
         super(cause);
