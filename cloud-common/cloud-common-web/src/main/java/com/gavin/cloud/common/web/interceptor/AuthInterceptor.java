@@ -3,7 +3,6 @@ package com.gavin.cloud.common.web.interceptor;
 import com.gavin.cloud.common.base.auth.ActiveUser;
 import com.gavin.cloud.common.base.auth.JwtHelper;
 import com.gavin.cloud.common.base.auth.JwtProperties;
-import com.gavin.cloud.common.base.problem.AppBizException;
 import com.gavin.cloud.common.web.annotation.Logical;
 import com.gavin.cloud.common.web.annotation.RequiresPermissions;
 import com.gavin.cloud.common.web.context.SubjectContextHolder;
@@ -14,14 +13,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
-
-import static com.gavin.cloud.common.base.problem.DefaultProblemType.AUTHENTICATION_FAILED_TYPE;
 
 /**
  * 权限设计思路
@@ -73,18 +70,14 @@ public class AuthInterceptor implements HandlerInterceptor {
         // TODO 区分用户鉴权和服务鉴权(每个服务有两个拦截器: MVC拦截器和Feign客户端拦截器)
 
         // 需要登录才可访问
-        try {
-            Cookie cookie = Arrays.stream(request.getCookies())
-                    .filter(c -> jwtProperties.getCookie().getName().equals(c.getName()))
-                    .findFirst()
-                    .orElseThrow(() -> new AppBizException(AUTHENTICATION_FAILED_TYPE));
-            ActiveUser activeUser = JwtHelper.verifyToken(cookie.getValue(), jwtProperties.getPublicKey());
-            SubjectContextHolder.getContext().setSubject(activeUser);
-        } catch (Exception e) {
+        Optional<ActiveUser> optional = resolveSubject(request);
+        if (!optional.isPresent()) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             log.warn("Access Control: filtered unauthorized access on endpoint {}", request.getRequestURI());
             return false;
         }
+        ActiveUser subject = optional.get();
+        SubjectContextHolder.getContext().setSubject(subject);
 
         // 判断是否为公共访问地址(登录后均可访问)
         if (permissions.value().length == 0) {
@@ -92,7 +85,6 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         // 判断是否为授权访问地址(登录后需要授权才可访问)
-        ActiveUser subject = SubjectContextHolder.getContext().getSubject();
         if (!isPermitted(subject, permissions.value(), permissions.logical())) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             log.warn("Access Control: filtered denied access on endpoint {}", request.getRequestURI());
@@ -100,6 +92,20 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         return true;
+    }
+
+    private Optional<ActiveUser> resolveSubject(HttpServletRequest request) {
+        return Arrays.stream(request.getCookies())
+                .filter(c -> jwtProperties.getCookie().getName().equals(c.getName()))
+                .findFirst()
+                .map(c -> {
+                    try {
+                        return JwtHelper.verifyToken(c.getValue(), jwtProperties.getPublicKey());
+                    } catch (Exception e) {
+                        log.error("The token is illegal.", e);
+                        return null;
+                    }
+                });
     }
 
     private boolean isPermitted(ActiveUser subject, String[] permissions, Logical logical) {
