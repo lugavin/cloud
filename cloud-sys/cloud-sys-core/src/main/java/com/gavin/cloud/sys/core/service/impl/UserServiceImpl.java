@@ -4,17 +4,17 @@ import com.gavin.cloud.common.base.problem.AppAlertException;
 import com.gavin.cloud.common.base.page.Page;
 import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.common.base.util.Md5Hash;
-import com.gavin.cloud.common.base.util.RandomUtils;
+import com.gavin.cloud.common.base.util.NanoIdUtils;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import com.gavin.cloud.sys.core.enums.LoginType;
 import com.gavin.cloud.sys.core.mapper.ext.UserExtMapper;
 import com.gavin.cloud.sys.core.service.UserService;
 import com.gavin.cloud.sys.pojo.User;
 import com.gavin.cloud.sys.pojo.UserExample;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.Instant;
 import java.util.*;
@@ -40,17 +40,17 @@ public class UserServiceImpl implements UserService {
         if (isAlreadyUsed(user.getEmail(), LoginType.EMAIL)) {
             throw new AppAlertException(EMAIL_ALREADY_USED_TYPE);
         }
-        if (StringUtils.isNotBlank(user.getPhone()) && isAlreadyUsed(user.getPhone(), LoginType.PHONE)) {
+        if (StringUtils.hasText(user.getPhone()) && isAlreadyUsed(user.getPhone(), LoginType.PHONE)) {
             throw new AppAlertException(PHONE_ALREADY_USED_TYPE);
         }
-        if (StringUtils.isBlank(user.getLangKey())) {
-            user.setLangKey(Constants.DEFAULT_LANGUAGE);
+        if (!StringUtils.hasText(user.getLangKey())) {
+            user.setLangKey(Locale.getDefault().getLanguage());
         }
         user.setId(SnowflakeIdWorker.getInstance().nextId());
-        user.setSalt(RandomUtils.randomAlphanumeric());
+        user.setSalt(NanoIdUtils.randomNanoId());
         user.setPassword(Md5Hash.hash(user.getPassword(), user.getSalt()));
         user.setActivated(Boolean.FALSE);
-        user.setActivationKey(RandomUtils.randomNumeric());
+        user.setActivationKey(NanoIdUtils.randomNanoId());
         user.setCreatedBy(Constants.ACCOUNT_SYSTEM);
         user.setCreatedAt(Calendar.getInstance().getTime());
         userExtMapper.insert(user);

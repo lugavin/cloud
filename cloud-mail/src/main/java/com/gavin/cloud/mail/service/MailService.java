@@ -12,6 +12,7 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.internet.MimeMessage;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Map;
 
@@ -40,7 +41,7 @@ public class MailService {
     public void sendEmail(MailDTO mailDTO) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
-            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, mailDTO.isMultipart(), Constants.CHARSET_UTF_8);
+            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, mailDTO.isMultipart(), StandardCharsets.UTF_8.name());
             message.setFrom(mailDTO.getSendFrom());
             message.setTo(mailDTO.getSendTo());
             message.setSubject(mailDTO.getSubject());

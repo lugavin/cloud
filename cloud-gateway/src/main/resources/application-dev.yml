@@ -23,8 +23,8 @@ eureka:
 
 # RibbonTimeout=(ribbonReadTimeout+ribbonConnectTimeout)*(maxAutoRetries+1)*(maxAutoRetriesNextServer+1)
 ribbon:
-  ReadTimeout: 6000
-  ConnectTimeout: 6000
+  ReadTimeout: 600000
+  ConnectTimeout: 600000
   MaxAutoRetries: 1
   MaxAutoRetriesNextServer: 1
 

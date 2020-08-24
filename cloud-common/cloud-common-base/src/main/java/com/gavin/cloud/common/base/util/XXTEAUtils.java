@@ -1,6 +1,6 @@
 package com.gavin.cloud.common.base.util;
 
-import org.apache.commons.codec.binary.Base64;
+import java.util.Base64;
 
 /**
  * XXTEA encryption algorithm library for Java.
@@ -12,11 +12,11 @@ public abstract class XXTEAUtils {
     private static final int DELTA = 0x9E3779B9;
 
     public static String encrypt(String data, String key) {
-        return new String(Base64.encodeBase64URLSafe(encrypt(data.getBytes(), key.getBytes())));
+        return new String(Base64.getUrlEncoder().encode(encrypt(data.getBytes(), key.getBytes())));
     }
 
     public static String decrypt(String data, String key) {
-        return new String(decrypt(Base64.decodeBase64(data), key.getBytes()));
+        return new String(decrypt(Base64.getUrlDecoder().decode(data), key.getBytes()));
     }
 
     public static byte[] encrypt(byte[] data, byte[] key) {

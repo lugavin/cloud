@@ -24,6 +24,13 @@
             <version>${project.parent.version}</version>
         </dependency>
 
+        <!-- Sys Api -->
+        <dependency>
+            <groupId>com.gavin.cloud</groupId>
+            <artifactId>cloud-sys-api</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
         <!-- Spring Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -3,7 +3,6 @@ package com.gavin.cloud.common.core.plugin;
 import com.gavin.cloud.common.base.page.PageImpl;
 import com.gavin.cloud.common.base.page.Pageable;
 import com.gavin.cloud.common.core.dialect.Dialect;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -15,6 +14,7 @@ import org.apache.ibatis.session.RowBounds;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 
 @Intercepts({@Signature(type = Executor.class, method = "query", args = {
@@ -45,7 +45,7 @@ public class PageInterceptor implements Interceptor {
             int page = pageable.getPage();
             int pageSize = pageable.getPageSize();
             final MappedStatement ms = (MappedStatement) args[MAPPED_STATEMENT_INDEX];
-            final ResultHandler resultHandler = (ResultHandler) args[RESULT_HANDLER_INDEX];
+            final ResultHandler<?> resultHandler = (ResultHandler<?>) args[RESULT_HANDLER_INDEX];
             final BoundSql boundSql = ms.getBoundSql(parameter);
 
             Counter counter = new Counter();
@@ -92,7 +92,7 @@ public class PageInterceptor implements Interceptor {
                 .fetchSize(ms.getFetchSize())
                 .statementType(ms.getStatementType())
                 .keyGenerator(ms.getKeyGenerator())
-                .keyProperty(StringUtils.join(ms.getKeyProperties(), ","))
+                .keyProperty(Objects.nonNull(ms.getKeyProperties()) ? String.join(",", ms.getKeyProperties()) : null)
                 .timeout(ms.getTimeout())
                 .parameterMap(ms.getParameterMap())
                 .resultMaps(resultMaps)

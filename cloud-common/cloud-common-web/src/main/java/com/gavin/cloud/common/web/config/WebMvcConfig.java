@@ -3,10 +3,10 @@ package com.gavin.cloud.common.web.config;
 import com.gavin.cloud.common.base.auth.ActiveUser;
 import com.gavin.cloud.common.base.auth.JwtProperties;
 import com.gavin.cloud.common.base.util.Constants;
-import com.gavin.cloud.common.web.api.SysApi;
 import com.gavin.cloud.common.web.context.SubjectContextHolder;
 import com.gavin.cloud.common.web.interceptor.AuthInterceptor;
 import com.gavin.cloud.common.web.interceptor.ContextLifecycleInterceptor;
+import com.gavin.cloud.sys.api.PermissionApi;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodParameter;
@@ -29,11 +29,11 @@ import java.util.List;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    private final ObjectProvider<SysApi> sysApiProvider;
+    private final ObjectProvider<PermissionApi> permissionProvider;
     private final JwtProperties jwtProperties;
 
-    public WebMvcConfig(ObjectProvider<SysApi> sysApiProvider, JwtProperties jwtProperties) {
-        this.sysApiProvider = sysApiProvider;
+    public WebMvcConfig(ObjectProvider<PermissionApi> permissionProvider, JwtProperties jwtProperties) {
+        this.permissionProvider = permissionProvider;
         this.jwtProperties = jwtProperties;
     }
 
@@ -50,7 +50,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new ContextLifecycleInterceptor());
-        registry.addInterceptor(new AuthInterceptor(sysApiProvider, jwtProperties));
+        registry.addInterceptor(new AuthInterceptor(permissionProvider, jwtProperties));
     }
 
     /**

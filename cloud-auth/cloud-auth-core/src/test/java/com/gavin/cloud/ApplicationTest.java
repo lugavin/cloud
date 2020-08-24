@@ -7,7 +7,6 @@ import com.gavin.cloud.auth.pojo.AuthTokenExample;
 import com.gavin.cloud.common.base.page.Page;
 import com.gavin.cloud.common.base.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.Assert;
@@ -21,9 +20,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.*;
 
 import static com.gavin.cloud.common.base.util.Constants.PROFILE_DEV;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 /**
  * 当在Junit单元测试类中加了{@link SpringBootTest}注解时, 如果你的单元测试方法上加了{@link Transactional}注解,
@@ -90,7 +91,7 @@ public class ApplicationTest {
             AuthTokenMapper mapper1 = sqlSession1.getMapper(AuthTokenMapper.class);
             AuthToken token = mapper1.selectByPrimaryKey(101L); // 发出SQL语句
             log.info("{}", token);
-            token.setExpiredAt(DateUtils.addDays(Calendar.getInstance().getTime(), 7));
+            token.setExpiredAt(Date.from(Instant.now().plus(7, DAYS)));
             mapper1.updateByPrimaryKey(token);
             sqlSession1.commit(); // 当执行了非SELECT语句时整个namespace中的缓存会被清空
             AuthTokenMapper mapper2 = sqlSession2.getMapper(AuthTokenMapper.class);
@@ -103,7 +104,7 @@ public class ApplicationTest {
         Date sysTime = Calendar.getInstance().getTime();
         AuthTokenExample example = new AuthTokenExample();
         AuthTokenExample.Criteria criteria = example.createCriteria();
-        criteria.andCreatedAtBetween(DateUtils.addDays(sysTime, -3), sysTime);
+        criteria.andCreatedAtBetween(Date.from(sysTime.toInstant().minus(3, DAYS)), sysTime);
         List<AuthToken> list = authTokenMapperExt.selectByExample(example);
         log.info(JsonUtils.toJson(list));
     }

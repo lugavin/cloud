@@ -24,12 +24,12 @@
         </dependency>
         <dependency>
             <groupId>com.gavin.cloud</groupId>
-            <artifactId>cloud-sys-api</artifactId>
+            <artifactId>cloud-auth-core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>com.gavin.cloud</groupId>
-            <artifactId>cloud-auth-core</artifactId>
+            <artifactId>cloud-sys-api</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>

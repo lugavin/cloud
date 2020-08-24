@@ -2,7 +2,7 @@ package com.gavin.cloud.sys.core.service.impl;
 
 import com.gavin.cloud.common.base.problem.AppBizException;
 import com.gavin.cloud.common.base.util.Md5Hash;
-import com.gavin.cloud.common.base.util.RandomUtils;
+import com.gavin.cloud.common.base.util.NanoIdUtils;
 import com.gavin.cloud.sys.core.mapper.ext.UserExtMapper;
 import com.gavin.cloud.sys.core.service.AccountService;
 import com.gavin.cloud.sys.core.service.UserService;
@@ -65,7 +65,7 @@ public class AccountServiceImpl implements AccountService {
             throw new AppBizException(EMAIL_NOT_FOUND_TYPE);
         }
         User user = users.get(0);
-        user.setResetKey(RandomUtils.randomNumeric());
+        user.setResetKey(NanoIdUtils.randomNanoId());
         user.setResetDate(Date.from(Instant.now()));
         userExtMapper.updateByPrimaryKey(user);
         return user;
@@ -80,7 +80,7 @@ public class AccountServiceImpl implements AccountService {
             throw new AppBizException(USER_NOT_FOUND_TYPE);
         }
         User user = users.get(0);
-        user.setSalt(RandomUtils.randomAlphanumeric());
+        user.setSalt(NanoIdUtils.randomNanoId());
         user.setPassword(Md5Hash.hash(user.getPassword(), user.getSalt()));
         user.setResetKey(null);
         user.setResetDate(null);
@@ -91,7 +91,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void changePassword(Long id, String password) {
         User user = Optional.ofNullable(userExtMapper.selectByPrimaryKey(id)).orElseThrow(() -> new AppBizException(USER_NOT_FOUND_TYPE));
-        user.setSalt(RandomUtils.randomAlphanumeric());
+        user.setSalt(NanoIdUtils.randomNanoId());
         user.setPassword(Md5Hash.hash(user.getPassword(), user.getSalt()));
         user.setUpdatedBy(user.getUsername());
         user.setUpdatedAt(Date.from(Instant.now()));

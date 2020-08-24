@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `sys_auth_token` (
   `id` bigint(20) NOT NULL COMMENT '主键',
   `uid` bigint(20) NOT NULL COMMENT '登录ID',
   `client_ip` varchar(32) NOT NULL COMMENT '登录IP',
-  `refresh_token` varchar(36) NOT NULL COMMENT '刷新令牌',
+  `refresh_token` varchar(32) NOT NULL COMMENT '刷新令牌',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
   `expired_at` timestamp NOT NULL COMMENT '失效日期',
   PRIMARY KEY (`id`),

@@ -7,6 +7,8 @@ import com.google.gson.reflect.TypeToken;
 import java.io.Reader;
 import java.lang.reflect.Type;
 
+import static com.gavin.cloud.common.base.util.Constants.FORMATTER_DATETIME;
+
 /**
  * @see com.google.gson.reflect.TypeToken
  * @see com.google.gson.internal.$Gson$Types.ParameterizedTypeImpl
@@ -14,7 +16,7 @@ import java.lang.reflect.Type;
 public abstract class JsonUtils {
 
     private static Gson gson = new GsonBuilder()
-            .setDateFormat(Constants.FORMATTER_DATETIME)
+            .setDateFormat(FORMATTER_DATETIME)
             .create();
 
     public static String toJson(Object src) {

@@ -16,11 +16,10 @@ import com.gavin.cloud.sys.api.UserApi;
 import com.gavin.cloud.sys.pojo.Role;
 import com.gavin.cloud.sys.pojo.User;
 import com.gavin.cloud.sys.pojo.dto.RegisterDTO;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.CookieGenerator;
 
@@ -74,7 +73,7 @@ public class AuthResource {
         if (!Md5Hash.hash(loginDTO.getPassword(), user.getSalt()).equals(user.getPassword())) {
             throw new AppBizException(INVALID_PASSWORD_TYPE);
         }
-        if (!BooleanUtils.isTrue(user.getActivated())) {
+        if (!Boolean.TRUE.equals(user.getActivated())) {
             throw new AppBizException(ACCOUNT_NOT_ACTIVATED_TYPE);
         }
         List<String> roles = roleApi.getRoles(user.getId()).stream().map(Role::getCode).collect(Collectors.toList());
@@ -112,7 +111,7 @@ public class AuthResource {
     @GetMapping("/account/{accessToken}")
     public ResponseEntity<?> getAccount(@PathVariable String accessToken, @RequestParam(required = false) String jsonpCallback) {
         ActiveUser activeUser = authService.verifyAccessToken(accessToken);
-        if (StringUtils.isEmpty(jsonpCallback)) {
+        if (!StringUtils.hasText(jsonpCallback)) {
             return ResponseEntity.ok(activeUser);
         }
         MappingJacksonValue jacksonValue = new MappingJacksonValue(activeUser);
@@ -170,11 +169,8 @@ public class AuthResource {
         JwtProperties.Cookie cookie = jwtProperties.getCookie();
         cookieGenerator.setCookieName(cookie.getName());
         cookieGenerator.setCookiePath(cookie.getPath());
-        String cookieDomain = cookie.getDomain();
-        if (StringUtils.isEmpty(cookieDomain)) {
-            cookieDomain = WebUtils.getCookieDomain(request);
-        }
-        if (StringUtils.isNotEmpty(cookieDomain)) {
+        String cookieDomain = StringUtils.hasText(cookie.getDomain()) ? cookie.getDomain() : WebUtils.getCookieDomain(request);
+        if (StringUtils.hasText(cookieDomain)) {
             cookieGenerator.setCookieDomain(cookieDomain);
         }
         cookieGenerator.setCookieHttpOnly(cookie.isHttpOnly());

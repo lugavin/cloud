@@ -29,6 +29,7 @@ public class PermissionResource {
      * GET http://cloud-sys/perms/codes/ROLE_ADMIN,ROLE_USER
      */
     @GetMapping("/codes/{roles}")
+    @RequiresPermissions("permission:search")
     public ResponseEntity<Set<String>> getPermissionCodes(@PathVariable String[] roles) {
         return ResponseEntity.ok(permissionService.getPermissionCodes(new HashSet<>(Arrays.asList(roles))));
     }
@@ -37,16 +38,19 @@ public class PermissionResource {
      * GET http://cloud-sys/perms/ROLE_ADMIN,ROLE_USER/roles
      */
     @GetMapping("/roles/{roles}")
+    @RequiresPermissions("permission:search")
     public ResponseEntity<List<Permission>> getPermissions(@PathVariable String[] roles) {
         return ResponseEntity.ok(permissionService.getPermissions(new HashSet<>(Arrays.asList(roles))));
     }
 
     @GetMapping("/menus/{userId}")
+    @RequiresPermissions("permission:search")
     public ResponseEntity<List<Permission>> getMenuPerms(@PathVariable Long userId) {
         return ResponseEntity.ok(permissionService.getPermissions(userId, ResourceType.MENU));
     }
 
     @GetMapping("/funcs/{userId}")
+    @RequiresPermissions("permission:search")
     public ResponseEntity<List<Permission>> getFuncPerms(@PathVariable Long userId) {
         return ResponseEntity.ok(permissionService.getPermissions(userId, ResourceType.FUNC));
     }

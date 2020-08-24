@@ -11,8 +11,6 @@ import com.gavin.cloud.sys.core.mapper.ext.RolePermissionExtMapper;
 import com.gavin.cloud.sys.core.service.PermissionService;
 import com.gavin.cloud.sys.pojo.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -21,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -108,7 +107,7 @@ public class PermissionServiceImpl implements PermissionService {
         RolePermissionExample example = new RolePermissionExample();
         example.createCriteria().andRoleIdEqualTo(roleId);
         rolePermissionExtMapper.deleteByExample(example);
-        if (ArrayUtils.isNotEmpty(permIds)) {
+        if (Array.getLength(permIds) > 0) {
             rolePermissionExtMapper.insertBatch(Arrays.stream(permIds).map(permId -> {
                 RolePermission rolePermission = new RolePermission();
                 rolePermission.setId(SnowflakeIdWorker.getInstance().nextId());
@@ -247,7 +246,7 @@ public class PermissionServiceImpl implements PermissionService {
             String mutexKey = RedisKey.ROLE_MUTEX.getKey(role);
             long nextTimeMillis = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(DEFAULT_TIMEOUT);
             ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
-            boolean flag = BooleanUtils.isTrue(opsForValue.setIfAbsent(mutexKey, Long.toString(nextTimeMillis)));
+            boolean flag = Boolean.TRUE.equals(opsForValue.setIfAbsent(mutexKey, Long.toString(nextTimeMillis)));
             if (flag) {
                 stringRedisTemplate.expire(mutexKey, DEFAULT_TIMEOUT + (int) (Math.random() * 1000), TimeUnit.MILLISECONDS);
             }

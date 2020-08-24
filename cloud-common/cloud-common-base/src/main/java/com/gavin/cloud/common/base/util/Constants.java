@@ -16,19 +16,11 @@ public interface Constants {
     String SEPARATOR_SEMICOLON = ";";
     String SEPARATOR_UNDERSCORE = "_";
 
-    String REGEX_LOGIN_NAME = "^[_.@A-Za-z0-9-]*$";
-    String REGEX_LOGIN_TYPE = "1|2|3";
-
-    String ROLE_USER = "ROLE_USER";
-    String ROLE_ADMIN = "ROLE_ADMIN";
-    String ROLE_ANONYMOUS = "ROLE_ANONYMOUS";
-    String ROLE_MANAGEMENT = "ROLE_MANAGEMENT";
-
     String EMPTY = "";
     String SPACE = " ";
 
-    String CHARSET_UTF_8 = "UTF-8";
-    String DEFAULT_LANGUAGE = "zh-cn";
+    String REGEX_LOGIN_NAME = "^[_.@A-Za-z0-9-]*$";
+    String REGEX_LOGIN_TYPE = "1|2|3";
 
     String ACCOUNT_SYSTEM = "system";
 

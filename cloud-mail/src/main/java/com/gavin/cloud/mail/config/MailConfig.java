@@ -1,6 +1,5 @@
 package com.gavin.cloud.mail.config;
 
-import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.mail.config.properties.MailProperties;
 import com.gavin.cloud.mail.service.MailService;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -11,6 +10,8 @@ import org.springframework.context.annotation.Description;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class MailConfig {
@@ -35,7 +36,7 @@ public class MailConfig {
         emailTemplateResolver.setPrefix("mails/");
         emailTemplateResolver.setSuffix(".html");
         emailTemplateResolver.setTemplateMode("HTML5");
-        emailTemplateResolver.setCharacterEncoding(Constants.CHARSET_UTF_8);
+        emailTemplateResolver.setCharacterEncoding(StandardCharsets.UTF_8.name());
         emailTemplateResolver.setOrder(1);
         return emailTemplateResolver;
     }

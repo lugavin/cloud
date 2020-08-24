@@ -10,11 +10,11 @@ import com.gavin.cloud.sys.pojo.Role;
 import com.gavin.cloud.sys.pojo.RoleExample;
 import com.gavin.cloud.sys.pojo.UserRole;
 import com.gavin.cloud.sys.pojo.UserRoleExample;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -75,7 +75,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void assignRoles(Long uid, Long[] roleIds) {
-        if (ArrayUtils.isEmpty(roleIds)) {
+        if (Array.getLength(roleIds) < 1) {
             UserRoleExample example = new UserRoleExample();
             example.createCriteria().andUserIdEqualTo(uid);
             userRoleExtMapper.deleteByExample(example);
