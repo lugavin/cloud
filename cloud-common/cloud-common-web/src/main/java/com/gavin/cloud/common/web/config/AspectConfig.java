@@ -11,17 +11,17 @@ import static com.gavin.cloud.common.base.util.Constants.PROFILE_DEV;
 
 @Configuration
 @EnableAspectJAutoProxy
-public class AspectConfig {
+class AspectConfig {
 
     @Bean
     @Profile(PROFILE_DEV)
-    public LoggingAspect loggingAspect(Environment env) {
+    LoggingAspect loggingAspect(Environment env) {
         return new LoggingAspect(env);
     }
 
     // @Bean
     // @Profile(PROFILE_DEV)
-    // public ValidationAspect validationAspect() {
+    // ValidationAspect validationAspect() {
     //     return new ValidationAspect();
     // }
 

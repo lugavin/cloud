@@ -7,12 +7,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 @Configuration
-public class AuthCoreConfig {
+class AuthCoreConfig {
 
     @Bean
     @Primary
     @ConfigurationProperties(prefix = "app.jwt", ignoreUnknownFields = false)
-    public JwtExtProperties jwtProperties() {
+    JwtExtProperties jwtProperties() {
         return new JwtExtProperties();
     }
 

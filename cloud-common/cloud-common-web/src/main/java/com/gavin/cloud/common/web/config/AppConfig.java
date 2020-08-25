@@ -8,28 +8,28 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class AppConfig {
+class AppConfig {
 
     @Bean
     @ConditionalOnMissingBean
     @ConfigurationProperties(prefix = "app.auth", ignoreUnknownFields = false)
-    public AuthProperties authProperties() {
+    AuthProperties authProperties() {
         return new AuthProperties();
     }
 
     @Bean
     @ConditionalOnMissingBean
     @ConfigurationProperties(prefix = "app.jwt", ignoreUnknownFields = false)
-    public JwtProperties jwtProperties() {
+    JwtProperties jwtProperties() {
         return new JwtProperties();
     }
 
-    //@Bean
-    //@ConfigurationProperties("app.task")
-    //public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
-    //    ThreadPoolTaskExecutor pool = new ThreadPoolTaskExecutor();
-    //    pool.setRejectedExecutionHandler(new java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy());
-    //    return pool;
-    //}
+    // @Bean
+    // @ConfigurationProperties("app.task")
+    // ThreadPoolTaskExecutor threadPoolTaskExecutor() {
+    //     ThreadPoolTaskExecutor pool = new ThreadPoolTaskExecutor();
+    //     pool.setRejectedExecutionHandler(new java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy());
+    //     return pool;
+    // }
 
 }

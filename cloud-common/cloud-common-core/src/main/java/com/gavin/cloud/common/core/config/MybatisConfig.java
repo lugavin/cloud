@@ -30,7 +30,7 @@ public class MybatisConfig {
      */
     @Bean
     @ConditionalOnMissingBean
-    public DatabaseIdProvider databaseIdProvider() {
+    DatabaseIdProvider databaseIdProvider() {
         Map<String, String> productNames = Arrays.stream(Database.values())
                 .collect(Collectors.toMap(Database::getType, Database::getAlias));
         Properties p = new Properties();
@@ -42,7 +42,7 @@ public class MybatisConfig {
 
     @Bean
     @ConditionalOnMissingBean
-    public Interceptor pageInterceptor() {
+    Interceptor pageInterceptor() {
         return new PageInterceptor(new MySQLDialect());
     }
 

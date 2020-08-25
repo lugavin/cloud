@@ -27,12 +27,12 @@ import java.util.List;
  * 注意:当添加@EnableWebMvc注解后, WebMvcAutoConfiguration中的配置就不会生效, 会自动覆盖默认静态资源存放的目录而将静态资源定位在src/main/webapp目录.
  */
 @Configuration
-public class WebMvcConfig implements WebMvcConfigurer {
+class WebMvcConfig implements WebMvcConfigurer {
 
     private final ObjectProvider<PermissionApi> permissionProvider;
     private final JwtProperties jwtProperties;
 
-    public WebMvcConfig(ObjectProvider<PermissionApi> permissionProvider, JwtProperties jwtProperties) {
+    WebMvcConfig(ObjectProvider<PermissionApi> permissionProvider, JwtProperties jwtProperties) {
         this.permissionProvider = permissionProvider;
         this.jwtProperties = jwtProperties;
     }

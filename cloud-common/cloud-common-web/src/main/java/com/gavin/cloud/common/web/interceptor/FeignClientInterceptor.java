@@ -6,6 +6,9 @@ import feign.RequestTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+/**
+ * @see org.springframework.cloud.openfeign.encoding.BaseRequestInterceptor
+ */
 @Slf4j
 @Component
 public class FeignClientInterceptor implements RequestInterceptor {

@@ -22,7 +22,7 @@ import java.util.List;
 @Primary
 @Component
 @Profile(Constants.PROFILE_SWAGGER)
-public class SwaggerConfig implements SwaggerResourcesProvider {
+class SwaggerConfig implements SwaggerResourcesProvider {
 
     private final RouteLocator routeLocator;
     private final DiscoveryClient discoveryClient;

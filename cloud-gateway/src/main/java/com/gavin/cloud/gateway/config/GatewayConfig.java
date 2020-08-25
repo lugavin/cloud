@@ -8,19 +8,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 @Configuration
-public class GatewayConfig {
+class GatewayConfig {
 
     @Bean
     @Primary
     @ConfigurationProperties(prefix = "app.auth", ignoreUnknownFields = false)
-    public AuthProperties authProperties() {
+    AuthProperties authProperties() {
         return new AuthProperties();
     }
 
     @Bean
     @Primary
     @ConfigurationProperties(prefix = "app.jwt", ignoreUnknownFields = false)
-    public JwtProperties jwtProperties() {
+    JwtProperties jwtProperties() {
         return new JwtProperties();
     }
 

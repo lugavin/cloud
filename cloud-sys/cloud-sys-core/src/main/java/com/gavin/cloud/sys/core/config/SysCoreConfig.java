@@ -7,17 +7,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class SysCoreConfig {
+class SysCoreConfig {
 
     @Bean
     @ConfigurationProperties("ftp")
-    public SftpProperties sftpProperties() {
+    SftpProperties sftpProperties() {
         return new SftpProperties();
     }
 
     @Bean
     @ConfigurationProperties("oss")
-    public OssProperties ossProperties() {
+    OssProperties ossProperties() {
         return new OssProperties();
     }
 

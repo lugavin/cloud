@@ -14,24 +14,24 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import java.nio.charset.StandardCharsets;
 
 @Configuration
-public class MailConfig {
+class MailConfig {
 
     @Bean
     @ConfigurationProperties(prefix = "app.mail", ignoreUnknownFields = false)
-    public MailProperties mailProperties() {
+    MailProperties mailProperties() {
         return new MailProperties();
     }
 
     @Bean
-    public MailService mailService(JavaMailSender javaMailSender,
-                                   MessageSource messageSource,
-                                   SpringTemplateEngine templateEngine) {
+    MailService mailService(JavaMailSender javaMailSender,
+                            MessageSource messageSource,
+                            SpringTemplateEngine templateEngine) {
         return new MailService(mailProperties(), javaMailSender, messageSource, templateEngine);
     }
 
     @Bean
     @Description("Thymeleaf template resolver serving HTML 5 emails")
-    public ClassLoaderTemplateResolver emailTemplateResolver() {
+    ClassLoaderTemplateResolver emailTemplateResolver() {
         ClassLoaderTemplateResolver emailTemplateResolver = new ClassLoaderTemplateResolver();
         emailTemplateResolver.setPrefix("mails/");
         emailTemplateResolver.setSuffix(".html");

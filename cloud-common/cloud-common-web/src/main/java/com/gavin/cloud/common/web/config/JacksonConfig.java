@@ -11,11 +11,11 @@ import java.util.Collections;
 import static com.gavin.cloud.common.base.util.Constants.PROFILE_DEV;
 
 @Configuration
-public class JacksonConfig {
+class JacksonConfig {
 
     private final Environment env;
 
-    public JacksonConfig(Environment env) {
+    JacksonConfig(Environment env) {
         this.env = env;
     }
 
@@ -23,7 +23,7 @@ public class JacksonConfig {
      * Module for serialization/deserialization of RFC7807 Problem.
      */
     @Bean
-    public ProblemModule problemModule() {
+    ProblemModule problemModule() {
         return new ProblemModule(env.acceptsProfiles(PROFILE_DEV), Collections.singletonList(HttpStatus.class));
     }
 

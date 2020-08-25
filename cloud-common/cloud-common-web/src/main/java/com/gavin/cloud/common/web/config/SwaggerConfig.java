@@ -30,7 +30,7 @@ import static springfox.documentation.builders.PathSelectors.ant;
 @Configuration
 @EnableSwagger2
 @Profile(PROFILE_SWAGGER)
-public class SwaggerConfig {
+class SwaggerConfig {
 
     /**
      * Springfox configuration for the API Swagger docs.
@@ -38,7 +38,7 @@ public class SwaggerConfig {
      * @return the Swagger Springfox configuration
      */
     @Bean
-    public Docket swaggerSpringfoxApiDocket() {
+    Docket swaggerSpringfoxApiDocket() {
         log.debug("Starting Swagger");
         StopWatch watch = new StopWatch();
         watch.start();
@@ -78,7 +78,7 @@ public class SwaggerConfig {
 
     @Bean
     @ConfigurationProperties(prefix = "app.swagger", ignoreUnknownFields = false)
-    public SwaggerProperties swaggerProperties() {
+    SwaggerProperties swaggerProperties() {
         return new SwaggerProperties();
     }
 
