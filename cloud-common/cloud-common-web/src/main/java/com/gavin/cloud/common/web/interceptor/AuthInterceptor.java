@@ -61,15 +61,12 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     protected boolean doPreHandle(HttpServletRequest request, HttpServletResponse response, HandlerMethod handlerMethod) {
-        // 判断是否为匿名访问地址(不用登录即可访问)
         RequiresPermissions permissions = handlerMethod.getMethodAnnotation(RequiresPermissions.class);
         if (permissions == null) {
+            // 匿名访问地址
             return true;
         }
-
         // TODO 区分用户鉴权和服务鉴权(每个服务有两个拦截器: MVC拦截器和Feign客户端拦截器)
-
-        // 需要登录才可访问
         Optional<ActiveUser> optional = resolveSubject(request);
         if (!optional.isPresent()) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -78,19 +75,15 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
         ActiveUser subject = optional.get();
         SubjectContextHolder.getContext().setSubject(subject);
-
-        // 判断是否为公共访问地址(登录后均可访问)
-        if (permissions.value().length == 0) {
-            return true;
+        if (permissions.value().length > 0) {
+            // 授权访问地址
+            if (!isPermitted(subject, permissions.value(), permissions.logical())) {
+                response.setStatus(HttpStatus.FORBIDDEN.value());
+                log.warn("Access Control: filtered denied access on endpoint {}", request.getRequestURI());
+                return false;
+            }
         }
-
-        // 判断是否为授权访问地址(登录后需要授权才可访问)
-        if (!isPermitted(subject, permissions.value(), permissions.logical())) {
-            response.setStatus(HttpStatus.FORBIDDEN.value());
-            log.warn("Access Control: filtered denied access on endpoint {}", request.getRequestURI());
-            return false;
-        }
-
+        // 公共访问地址
         return true;
     }
 

@@ -1,9 +1,9 @@
 package com.gavin.cloud.gateway.filter;
 
+import com.gavin.cloud.common.base.auth.ActiveUser;
 import com.gavin.cloud.common.base.auth.AuthProperties;
 import com.gavin.cloud.common.base.auth.JwtHelper;
 import com.gavin.cloud.common.base.auth.JwtProperties;
-import com.gavin.cloud.common.base.problem.AppBizException;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import lombok.extern.slf4j.Slf4j;
@@ -13,11 +13,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
-import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
-
-import static com.gavin.cloud.common.base.problem.DefaultProblemType.AUTHENTICATION_FAILED_TYPE;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -45,29 +44,41 @@ public class AuthFilter extends ZuulFilter {
 
     @Override
     public boolean shouldFilter() {
-        // (1)判断是否为匿名访问地址(不用登录即可访问)
         return !isAnonUrl(RequestContext.getCurrentContext().getRequest().getRequestURI());
     }
 
     @Override
     public Object run() {
-        // (2)判断Token是否有效
         RequestContext ctx = RequestContext.getCurrentContext();
-
-        try {
-            Cookie cookie = Arrays.stream(ctx.getRequest().getCookies())
-                    .filter(c -> jwtProperties.getCookie().getName().equals(c.getName()))
-                    .findFirst()
-                    .orElseThrow(() -> new AppBizException(AUTHENTICATION_FAILED_TYPE));
-            return JwtHelper.verifyToken(cookie.getValue(), jwtProperties.getPublicKey());
-            // (3)判断是否为公共访问地址(登录后均可访问)
-            // (4)判断是否为授权访问地址(登录后需要授权才可访问)
-        } catch (Exception e) {
+        HttpServletRequest request = ctx.getRequest();
+        String requestURI = request.getRequestURI();
+        Optional<ActiveUser> optional = resolveSubject(request);
+        if (!optional.isPresent()) {
             ctx.setResponseStatusCode(HttpStatus.UNAUTHORIZED.value());
             ctx.setSendZuulResponse(Boolean.FALSE);
-            log.debug("Access Control: filtered unauthorized access on endpoint {}", ctx.getRequest().getRequestURI());
+            log.debug("Access Control: filtered unauthorized access on endpoint {}", requestURI);
+            return null;
         }
-        return null;
+        ActiveUser activeUser = optional.get();
+        if (!isUserUrl(requestURI)) {
+            // TODO 授权访问地址
+        }
+        // 公共访问地址
+        return activeUser;
+    }
+
+    private Optional<ActiveUser> resolveSubject(HttpServletRequest request) {
+        return Arrays.stream(request.getCookies())
+                .filter(c -> jwtProperties.getCookie().getName().equals(c.getName()))
+                .findFirst()
+                .map(c -> {
+                    try {
+                        return JwtHelper.verifyToken(c.getValue(), jwtProperties.getPublicKey());
+                    } catch (Exception e) {
+                        log.error("The token is illegal.", e);
+                        return null;
+                    }
+                });
     }
 
     private boolean isAnonUrl(String url) {
