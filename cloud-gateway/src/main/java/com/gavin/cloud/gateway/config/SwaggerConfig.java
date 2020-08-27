@@ -2,7 +2,6 @@ package com.gavin.cloud.gateway.config;
 
 import com.gavin.cloud.common.base.util.Constants;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.cloud.netflix.zuul.filters.Route;
 import org.springframework.cloud.netflix.zuul.filters.RouteLocator;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
@@ -10,8 +9,8 @@ import org.springframework.stereotype.Component;
 import springfox.documentation.swagger.web.SwaggerResource;
 import springfox.documentation.swagger.web.SwaggerResourcesProvider;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Retrieves all registered microservices Swagger resources.
@@ -34,17 +33,16 @@ class SwaggerConfig implements SwaggerResourcesProvider {
 
     @Override
     public List<SwaggerResource> get() {
-
-        List<SwaggerResource> resources = new ArrayList<>();
-
-        // Add the default swagger resource that correspond to the gateway's own swagger doc
-        resources.add(swaggerResource("default", "/v2/api-docs"));
-
-        // Add the registered microservices swagger docs as additional swagger resources
-        List<Route> routes = routeLocator.getRoutes();
-        routes.forEach(r -> resources.add(swaggerResource(r.getId(), r.getFullPath().replace("**", "v2/api-docs"))));
-
-        return resources;
+        return routeLocator.getRoutes().stream()
+                // Add the registered microservices swagger docs as additional swagger resources
+                .map(r -> swaggerResource(r.getId(), r.getFullPath().replace("**", "v2/api-docs")))
+                .collect(
+                        Collectors.collectingAndThen(Collectors.toList(), c -> {
+                            // Add the default swagger resource that correspond to the gateway's own swagger doc
+                            c.add(swaggerResource("default", "/v2/api-docs"));
+                            return c;
+                        })
+                );
     }
 
     private SwaggerResource swaggerResource(String name, String location) {
