@@ -1,7 +1,8 @@
 package com.gavin.cloud.sys.pojo;
 
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 @Data
 public class Role implements Serializable {

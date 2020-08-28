@@ -14,7 +14,6 @@ spring:
       ## 为了获得最佳性能, 建议不要设置minimumIdle值, 而是允许HikariCP充当固定大小的连接池(默认值与maximumPoolSize相同)
       #minimum-idle: 20
       maximum-pool-size: 20
-      max-lifetime: 30000
 
 logging:
   level:

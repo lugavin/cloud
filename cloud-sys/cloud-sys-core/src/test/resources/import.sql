@@ -18,15 +18,15 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 -- Table structure for `sys_permission`
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_permission`;
 CREATE TABLE `sys_permission` (
   `id` bigint(20) NOT NULL COMMENT '主键',
   `code` varchar(128) NOT NULL COMMENT '资源代码',
   `name` varchar(128) NOT NULL COMMENT '资源名称',
   `type` varchar(32) NOT NULL COMMENT '资源类型(菜单|功能)',
-  `icon` varchar(32) DEFAULT NULL COMMENT '资源图标',
   `url` varchar(128) DEFAULT NULL COMMENT '资源路径',
+  `method` varchar(10) DEFAULT NULL COMMENT '资源请求类型',
   `seq` smallint(6) DEFAULT NULL COMMENT '排序号',
+  `icon` varchar(32) DEFAULT NULL COMMENT '资源图标',
   `is_parent` tinyint(1) DEFAULT NULL COMMENT '是否叶子节点',
   `parent_id` bigint(20) DEFAULT NULL COMMENT '父结点ID',
   PRIMARY KEY (`id`),
@@ -37,22 +37,23 @@ CREATE TABLE `sys_permission` (
 -- ----------------------------
 -- Records of sys_permission
 -- ----------------------------
-INSERT INTO `sys_permission` VALUES ('1', 'sys:mgmt', '系统管理', 'MENU', 'fa fa-desktop', '', '1', '1', null);
-INSERT INTO `sys_permission` VALUES ('11', 'user:mgmt', '用户管理', 'MENU', 'fa fa-user', '/sys/user', '101', '1', '1');
-INSERT INTO `sys_permission` VALUES ('12', 'user:create', '用户新增', 'FUNC', '', '', '102', '0', '11');
-INSERT INTO `sys_permission` VALUES ('13', 'user:delete', '用户删除', 'FUNC', '', '', '103', '0', '11');
-INSERT INTO `sys_permission` VALUES ('14', 'user:update', '用户修改', 'FUNC', '', '', '104', '0', '11');
-INSERT INTO `sys_permission` VALUES ('15', 'user:search', '用户查询', 'FUNC', '', '', '105', '0', '11');
-INSERT INTO `sys_permission` VALUES ('21', 'role:mgmt', '角色管理', 'MENU', 'fa fa-lock', '/sys/role', '201', '1', '1');
-INSERT INTO `sys_permission` VALUES ('22', 'role:create', '角色新增', 'FUNC', '', '', '202', '0', '21');
-INSERT INTO `sys_permission` VALUES ('23', 'role:delete', '角色删除', 'FUNC', '', '', '203', '0', '21');
-INSERT INTO `sys_permission` VALUES ('24', 'role:update', '角色修改', 'FUNC', '', '', '204', '0', '21');
-INSERT INTO `sys_permission` VALUES ('25', 'role:search', '角色查询', 'FUNC', '', '', '205', '0', '21');
-INSERT INTO `sys_permission` VALUES ('31', 'perm:mgmt', '权限管理', 'MENU', 'fa fa-key', '/sys/perm', '301', '1', '1');
-INSERT INTO `sys_permission` VALUES ('32', 'perm:create', '权限新增', 'FUNC', '', '', '302', '0', '31');
-INSERT INTO `sys_permission` VALUES ('33', 'perm:delete', '权限删除', 'FUNC', '', '', '303', '0', '31');
-INSERT INTO `sys_permission` VALUES ('34', 'perm:update', '权限修改', 'FUNC', '', '', '304', '0', '31');
-INSERT INTO `sys_permission` VALUES ('35', 'perm:search', '权限查询', 'FUNC', '', '', '305', '0', '31');
+INSERT INTO `sys_permission` VALUES
+('1', 'sys:mgmt', '系统管理', 'MENU', '/sys', 'GET', '1', 'fa fa-desktop', '1', null);
+('11', 'user:mgmt', '用户管理', 'MENU', '/sys/users', 'GET', '101', 'fa fa-user', '1', '1');
+('12', 'user:create', '用户新增', 'FUNC', '/sys/users', 'POST', '102', '', '0', '11');
+('13', 'user:delete', '用户删除', 'FUNC', '/sys/users/{id}', 'DELETE', '103', '', '0', '11');
+('14', 'user:update', '用户修改', 'FUNC', '/sys/users/{id}', 'PUT', '104', '', '0', '11');
+('15', 'user:search', '用户查询', 'FUNC', '/sys/users/{id}', 'GET', '105', '', '0', '11');
+('21', 'role:mgmt', '角色管理', 'MENU', '/sys/roles', 'GET', '201', 'fa fa-lock', '1', '1');
+('22', 'role:create', '角色新增', 'FUNC', '/sys/roles/{id}', 'POST', '202', '', '0', '21');
+('23', 'role:delete', '角色删除', 'FUNC', '/sys/roles/{id}', 'DELETE', '203', '', '0', '21');
+('24', 'role:update', '角色修改', 'FUNC', '/sys/roles/{id}', 'PUT', '204', '', '0', '21');
+('25', 'role:search', '角色查询', 'FUNC', '/sys/roles/{id}', 'GET', '205', '', '0', '21');
+('31', 'perm:mgmt', '权限管理', 'MENU', '/sys/perms', 'GET', '301', 'fa fa-key', '1', '1');
+('32', 'perm:create', '权限新增', 'FUNC', '/sys/perms/{id}', 'POST', '302', '', '0', '31');
+('33', 'perm:delete', '权限删除', 'FUNC', '/sys/perms/{id}', 'DELETE', '303', '', '0', '31');
+('34', 'perm:update', '权限修改', 'FUNC', '/sys/perms/{id}', 'PUT', '304', '', '0', '31');
+('35', 'perm:search', '权限查询', 'FUNC', '/sys/perms/{id}', 'GET', '305', '', '0', '31');
 
 -- ----------------------------
 -- Table structure for `sys_role`
@@ -90,23 +91,23 @@ CREATE TABLE `sys_role_permission` (
 -- ----------------------------
 -- Records of sys_role_permission
 -- ----------------------------
-INSERT INTO `sys_role_permission` VALUES ('10001', '1001', '1');
-INSERT INTO `sys_role_permission` VALUES ('10007', '1001', '2');
-INSERT INTO `sys_role_permission` VALUES ('10002', '1001', '11');
-INSERT INTO `sys_role_permission` VALUES ('10003', '1001', '12');
-INSERT INTO `sys_role_permission` VALUES ('10004', '1001', '13');
-INSERT INTO `sys_role_permission` VALUES ('10005', '1001', '14');
-INSERT INTO `sys_role_permission` VALUES ('10006', '1001', '15');
-INSERT INTO `sys_role_permission` VALUES ('10008', '1001', '21');
-INSERT INTO `sys_role_permission` VALUES ('10009', '1001', '22');
-INSERT INTO `sys_role_permission` VALUES ('10010', '1001', '23');
-INSERT INTO `sys_role_permission` VALUES ('10011', '1001', '24');
-INSERT INTO `sys_role_permission` VALUES ('10012', '1001', '25');
-INSERT INTO `sys_role_permission` VALUES ('10013', '1001', '31');
-INSERT INTO `sys_role_permission` VALUES ('10014', '1001', '32');
-INSERT INTO `sys_role_permission` VALUES ('10015', '1001', '33');
-INSERT INTO `sys_role_permission` VALUES ('10016', '1001', '34');
-INSERT INTO `sys_role_permission` VALUES ('10017', '1001', '35');
+INSERT INTO `sys_role_permission` (`id`, `role_id`, `permission_id`) VALUES
+(10001, 1001, 1),
+(10002, 1001, 11),
+(10003, 1001, 12),
+(10004, 1001, 13),
+(10005, 1001, 14),
+(10006, 1001, 15),
+(10008, 1001, 21),
+(10009, 1001, 22),
+(10010, 1001, 23),
+(10011, 1001, 24),
+(10012, 1001, 25),
+(10013, 1001, 31),
+(10014, 1001, 32),
+(10015, 1001, 33),
+(10016, 1001, 34),
+(10017, 1001, 35);
 
 -- ----------------------------
 -- Table structure for `sys_user`
@@ -159,4 +160,5 @@ CREATE TABLE `sys_user_role` (
 -- ----------------------------
 -- Records of sys_user_role
 -- ----------------------------
-INSERT INTO `sys_user_role` VALUES ('10001', '101', '1001');
+INSERT INTO `sys_user_role` VALUES
+(10001, 101, 1001);

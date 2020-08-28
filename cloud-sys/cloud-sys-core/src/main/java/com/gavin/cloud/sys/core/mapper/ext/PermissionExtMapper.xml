@@ -13,7 +13,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        a.id, a.code, a.`name`, a.`type`, a.icon, a.url, a.seq, a.is_parent, a.parent_id
+        a.id, a.code, a.`name`, a.`type`, a.url, a.method, a.seq, a.icon, a.is_parent, a.parent_id
     </sql>
 
     <select id="getPermsByRole" parameterType="string" resultMap="BaseResultMap">

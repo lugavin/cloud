@@ -57,7 +57,7 @@
             <!-- 从数据库返回的值被清理前后的空格 -->
             <property name="trimStrings" value="false"/>
             <!-- rootClass : 给生成的model添加一个父类 -->
-            <property name="rootClass" value="com.gavin.cloud.common.base.pojo.AbstractModel"/>
+            <!--<property name="rootClass" value="com.gavin.cloud.common.base.pojo.AbstractModel"/>-->
         </javaModelGenerator>
 
         <!-- targetPackage: 生成mapper映射文件的位置 -->

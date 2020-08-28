@@ -1,7 +1,8 @@
 package com.gavin.cloud.sys.pojo;
 
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 @Data
 public class Permission implements Serializable {
@@ -13,11 +14,13 @@ public class Permission implements Serializable {
 
     private String type;
 
-    private String icon;
-
     private String url;
 
+    private String method;
+
     private Short seq;
+
+    private String icon;
 
     private Boolean isParent;
 
