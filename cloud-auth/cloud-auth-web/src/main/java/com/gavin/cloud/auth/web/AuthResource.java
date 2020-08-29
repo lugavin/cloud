@@ -87,10 +87,10 @@ public class AuthResource {
 
     @GetMapping("/logout")
     public ResponseEntity<Void> logout(@RequestParam String refreshToken, HttpServletRequest request, HttpServletResponse response) {
-        authService.rejectRefreshToken(refreshToken);
         if (jwtProperties.isEnableCookie()) {
             clearCookie(request, response);
         }
+        authService.rejectRefreshToken(refreshToken);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

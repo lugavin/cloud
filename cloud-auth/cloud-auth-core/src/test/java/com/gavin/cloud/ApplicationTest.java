@@ -123,7 +123,7 @@ public class ApplicationTest {
      */
     @Test
     public void testPageInterceptor() {
-        Page<AuthToken> page = authTokenMapperExt.getPage(Collections.singletonMap("uid", 111L), 1, 10);
+        Page<AuthToken> page = authTokenMapperExt.getPage(Collections.emptyMap(), 1, 10);
         log.info("====== {} ======", JsonUtils.toJson(page));
     }
 

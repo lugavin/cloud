@@ -17,18 +17,8 @@ server:
 spring:
   application:
     name: cloud-config
-  # To use the native profile just launch the Config Server with "spring.profiles.active=native".
   profiles:
-    active: native
-  cloud:
-    config:
-      server:
-        # File System Backend
-        native:
-          search-locations: classpath:/repo
-        # Git Backend
-        #git:
-        #  uri: file:///${user.dir}/${spring.application.name}/src/main/resources/repo
+    active: @profile.active@
 
 eureka:
   instance:

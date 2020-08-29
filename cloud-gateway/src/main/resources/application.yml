@@ -17,6 +17,8 @@ server:
 spring:
   application:
     name: cloud-gateway
+  profiles:
+    active: @profile.active@
 
 logging:
   level:

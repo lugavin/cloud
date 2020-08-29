@@ -14,6 +14,8 @@
 spring:
   application:
     name: cloud-test
+  profiles:
+    active: @profile.active@
   redis:
     host: 127.0.0.1
     port: 6379

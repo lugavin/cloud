@@ -17,6 +17,8 @@ server:
 spring:
   application:
     name: cloud-registry
+  profiles:
+    active: @profile.active@
 
 eureka:
   client:

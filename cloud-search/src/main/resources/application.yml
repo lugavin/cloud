@@ -17,6 +17,8 @@ server:
 spring:
   application:
     name: cloud-search
+  profiles:
+    active: @profile.active@
   data:
     elasticsearch:
       cluster-name: elasticsearch

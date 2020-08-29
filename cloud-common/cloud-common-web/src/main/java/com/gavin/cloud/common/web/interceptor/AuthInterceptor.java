@@ -44,14 +44,6 @@ public class AuthInterceptor implements HandlerInterceptor {
         this.jwtProperties = jwtProperties;
     }
 
-    /**
-     * 由于所有的Servlet容器(如Tomcat)都采用了线程池, 因此, 在请求处理完成后, 需要将ThreadLocal保存的数据清空, 否则可能出现意想不到的情况.
-     */
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        SubjectContext.getContext().clearContext();
-    }
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         return !(handler instanceof HandlerMethod) || doPreHandle(request, response, (HandlerMethod) handler);

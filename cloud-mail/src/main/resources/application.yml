@@ -17,6 +17,8 @@ server:
 spring:
   application:
     name: cloud-mail
+  profiles:
+    active: @profile.active@
   mail:
     host: smtp.qq.com
     username: lu774374302@qq.com

@@ -17,6 +17,8 @@ server:
 spring:
   application:
     name: cloud-auth
+  profiles:
+    active: @profile.active@
 
 #ribbon:
 #  eureka:
