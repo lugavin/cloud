@@ -22,6 +22,11 @@
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.gavin.cloud</groupId>
+            <artifactId>cloud-sys-api</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
         </dependency>

@@ -22,38 +22,39 @@ CREATE TABLE `sys_permission` (
   `id` bigint(20) NOT NULL COMMENT '主键',
   `code` varchar(128) NOT NULL COMMENT '资源代码',
   `name` varchar(128) NOT NULL COMMENT '资源名称',
-  `type` varchar(32) NOT NULL COMMENT '资源类型(菜单|功能)',
-  `url` varchar(128) DEFAULT NULL COMMENT '资源路径',
-  `method` varchar(10) DEFAULT NULL COMMENT '资源请求类型',
+  `type` varchar(10) NOT NULL COMMENT '资源类型(菜单|功能)',
+  `url` varchar(128) NOT NULL COMMENT '资源路径',
+  `method` varchar(10) NOT NULL COMMENT '资源请求类型',
   `seq` smallint(6) DEFAULT NULL COMMENT '排序号',
   `icon` varchar(32) DEFAULT NULL COMMENT '资源图标',
   `is_parent` tinyint(1) DEFAULT NULL COMMENT '是否叶子节点',
   `parent_id` bigint(20) DEFAULT NULL COMMENT '父结点ID',
   PRIMARY KEY (`id`),
-  KEY `SYS_PERMISSION_FK` (`parent_id`) USING BTREE,
+  UNIQUE KEY `sys_permission_url_method_uk` (`url`, `method`) USING BTREE,
+  KEY `sys_permission_parent_id_fk` (`parent_id`) USING BTREE,
   CONSTRAINT `sys_permission_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `sys_permission` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='权限表';
 
 -- ----------------------------
 -- Records of sys_permission
 -- ----------------------------
-INSERT INTO `sys_permission` VALUES
-('1', 'sys:mgmt', '系统管理', 'MENU', '/sys', 'GET', '1', 'fa fa-desktop', '1', null);
-('11', 'user:mgmt', '用户管理', 'MENU', '/sys/users', 'GET', '101', 'fa fa-user', '1', '1');
-('12', 'user:create', '用户新增', 'FUNC', '/sys/users', 'POST', '102', '', '0', '11');
-('13', 'user:delete', '用户删除', 'FUNC', '/sys/users/{id}', 'DELETE', '103', '', '0', '11');
-('14', 'user:update', '用户修改', 'FUNC', '/sys/users/{id}', 'PUT', '104', '', '0', '11');
-('15', 'user:search', '用户查询', 'FUNC', '/sys/users/{id}', 'GET', '105', '', '0', '11');
-('21', 'role:mgmt', '角色管理', 'MENU', '/sys/roles', 'GET', '201', 'fa fa-lock', '1', '1');
-('22', 'role:create', '角色新增', 'FUNC', '/sys/roles/{id}', 'POST', '202', '', '0', '21');
-('23', 'role:delete', '角色删除', 'FUNC', '/sys/roles/{id}', 'DELETE', '203', '', '0', '21');
-('24', 'role:update', '角色修改', 'FUNC', '/sys/roles/{id}', 'PUT', '204', '', '0', '21');
-('25', 'role:search', '角色查询', 'FUNC', '/sys/roles/{id}', 'GET', '205', '', '0', '21');
-('31', 'perm:mgmt', '权限管理', 'MENU', '/sys/perms', 'GET', '301', 'fa fa-key', '1', '1');
-('32', 'perm:create', '权限新增', 'FUNC', '/sys/perms/{id}', 'POST', '302', '', '0', '31');
-('33', 'perm:delete', '权限删除', 'FUNC', '/sys/perms/{id}', 'DELETE', '303', '', '0', '31');
-('34', 'perm:update', '权限修改', 'FUNC', '/sys/perms/{id}', 'PUT', '304', '', '0', '31');
-('35', 'perm:search', '权限查询', 'FUNC', '/sys/perms/{id}', 'GET', '305', '', '0', '31');
+INSERT INTO `sys_permission` (`id`, `code`, `name`, `type`, `url`, `method`, `seq`, `icon`, `is_parent`, `parent_id`) VALUES
+('1', 'sys:mgmt', '系统管理', 'MENU', '/rest/sys', 'GET', '1', 'fa fa-desktop', '1', NULL),
+('11', 'user:mgmt', '用户管理', 'MENU', '/rest/sys/users', 'GET', '101', 'fa fa-user', '1', '1'),
+('12', 'user:create', '用户新增', 'FUNC', '/rest/sys/users', 'POST', '102', '', '0', '11'),
+('13', 'user:delete', '用户删除', 'FUNC', '/rest/sys/users/{id}', 'DELETE', '103', '', '0', '11'),
+('14', 'user:update', '用户修改', 'FUNC', '/rest/sys/users/{id}', 'PUT', '104', '', '0', '11'),
+('15', 'user:search', '用户查询', 'FUNC', '/rest/sys/users/{id}', 'GET', '105', '', '0', '11'),
+('21', 'role:mgmt', '角色管理', 'MENU', '/rest/sys/roles', 'GET', '201', 'fa fa-lock', '1', '1'),
+('22', 'role:create', '角色新增', 'FUNC', '/rest/sys/roles/{id}', 'POST', '202', '', '0', '21'),
+('23', 'role:delete', '角色删除', 'FUNC', '/rest/sys/roles/{id}', 'DELETE', '203', '', '0', '21'),
+('24', 'role:update', '角色修改', 'FUNC', '/rest/sys/roles/{id}', 'PUT', '204', '', '0', '21'),
+('25', 'role:search', '角色查询', 'FUNC', '/rest/sys/roles/{id}', 'GET', '205', '', '0', '21'),
+('31', 'perm:mgmt', '权限管理', 'MENU', '/rest/sys/perms', 'GET', '301', 'fa fa-key', '1', '1'),
+('32', 'perm:create', '权限新增', 'FUNC', '/rest/sys/perms/{id}', 'POST', '302', '', '0', '31'),
+('33', 'perm:delete', '权限删除', 'FUNC', '/rest/sys/perms/{id}', 'DELETE', '303', '', '0', '31'),
+('34', 'perm:update', '权限修改', 'FUNC', '/rest/sys/perms/{id}', 'PUT', '304', '', '0', '31'),
+('35', 'perm:search', '权限查询', 'FUNC', '/rest/sys/perms/{id}', 'GET', '305', '', '0', '31');
 
 -- ----------------------------
 -- Table structure for `sys_role`
@@ -140,7 +141,7 @@ CREATE TABLE `sys_user` (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('101', 'admin', MD5(CONCAT('20190406000000','admin')), '管理员', '20190406000000', '16666666666', 'admin@gmail.com', null, null, '', null, null, null, 'system', '2019-01-01 00:00:00', null, '2019-04-15 21:32:42');
+INSERT INTO `sys_user` VALUES ('101', 'admin', MD5(CONCAT('tpsTiktG8VcFWD4dvhhGq','P@ssw0rd')), '管理员', 'tpsTiktG8VcFWD4dvhhGq', '16666666666', 'admin@gmail.com', null, null, '', null, null, null, 'system', '2019-01-01 00:00:00', null, '2019-04-15 21:32:42');
 
 -- ----------------------------
 -- Table structure for `sys_user_role`

@@ -1,6 +1,6 @@
 package com.gavin.cloud.gateway.config;
 
-import com.gavin.cloud.common.base.auth.AuthProperties;
+import com.gavin.cloud.common.base.auth.AclProperties;
 import com.gavin.cloud.common.base.auth.JwtProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -12,9 +12,9 @@ class GatewayConfig {
 
     @Bean
     @Primary
-    @ConfigurationProperties(prefix = "app.auth", ignoreUnknownFields = false)
-    AuthProperties authProperties() {
-        return new AuthProperties();
+    @ConfigurationProperties(prefix = "app.acl", ignoreUnknownFields = false)
+    AclProperties aclProperties() {
+        return new AclProperties();
     }
 
     @Bean

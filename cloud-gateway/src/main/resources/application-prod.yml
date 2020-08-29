@@ -20,8 +20,8 @@ eureka:
 ribbon:
   ReadTimeout: 30000
   ConnectTimeout: 30000
-  MaxAutoRetries: 1
-  MaxAutoRetriesNextServer: 1
+  MaxAutoRetries: 0
+  MaxAutoRetriesNextServer: 0
 
 # See https://github.com/Netflix/Hystrix/wiki/Configuration
 hystrix:

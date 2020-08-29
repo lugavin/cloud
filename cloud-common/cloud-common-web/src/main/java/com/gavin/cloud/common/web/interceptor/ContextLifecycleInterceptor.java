@@ -1,6 +1,6 @@
 package com.gavin.cloud.common.web.interceptor;
 
-import com.gavin.cloud.common.web.context.SubjectContextHolder;
+import com.gavin.cloud.common.web.context.SubjectContext;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +16,7 @@ public class ContextLifecycleInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        SubjectContextHolder.getContext().clearContext();
+        SubjectContext.getContext().clearContext();
     }
 
 }

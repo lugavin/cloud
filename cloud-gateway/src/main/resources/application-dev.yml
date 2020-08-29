@@ -25,8 +25,8 @@ eureka:
 ribbon:
   ReadTimeout: 600000
   ConnectTimeout: 600000
-  MaxAutoRetries: 1
-  MaxAutoRetriesNextServer: 1
+  MaxAutoRetries: 0
+  MaxAutoRetriesNextServer: 0
 
 # See https://github.com/Netflix/Hystrix/wiki/Configuration
 # Feign和Ribbon在整合了Hystrix后可能会出现首次调用失败的问题, 造成该问题的原因是Hystrix默认的超时时间是1秒,
@@ -41,4 +41,4 @@ hystrix:
       execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 60000
+            timeoutInMilliseconds: 600000

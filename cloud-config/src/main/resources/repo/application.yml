@@ -13,20 +13,20 @@ app:
     cookie:
       path: /
       name: accessToken
-      domain:           # 顶级域名(domain.com)
-      max-age: -1       # 若设置的值不大于0则关闭浏览器失效
+      domain:          # 顶级域名(domain.com)
+      max-age: -1      # 若设置的值不大于0则关闭浏览器失效
       http-only: true  # 若设置为true则通过JS脚本将无法读取到Cookie信息(防止XSS跨站脚本攻击)
       secure: false    # 若设置为true则只能在Https连接中被浏览器传递到服务端
-  auth:
+  acl:
     anonUrls:
       - /**/v2/api-docs/**
       - /**/swagger-resources/**
       - /**/webjars/springfox-swagger-ui/**
       - /**/swagger-ui.html
-      - /rest/auth/login/**
-      - /rest/auth/register/**
+      - /auth/login/**
+      - /auth/register/**
     userUrls:
-      - /rest/auth/logout/**
+      - /auth/logout/**
     authUrls:
-      - /rest/sys/**
-      - /rest/auth/**
+      - /sys/**
+      - /auth/**

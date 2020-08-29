@@ -1,13 +1,8 @@
 package com.gavin.cloud.common.web.config;
 
 import com.gavin.cloud.common.base.auth.ActiveUser;
-import com.gavin.cloud.common.base.auth.JwtProperties;
 import com.gavin.cloud.common.base.util.Constants;
-import com.gavin.cloud.common.web.context.SubjectContextHolder;
-import com.gavin.cloud.common.web.interceptor.AuthInterceptor;
-import com.gavin.cloud.common.web.interceptor.ContextLifecycleInterceptor;
-import com.gavin.cloud.sys.api.PermissionApi;
-import org.springframework.beans.factory.ObjectProvider;
+import com.gavin.cloud.common.web.context.SubjectContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodParameter;
 import org.springframework.format.FormatterRegistry;
@@ -29,14 +24,6 @@ import java.util.List;
 @Configuration
 class WebMvcConfig implements WebMvcConfigurer {
 
-    private final ObjectProvider<PermissionApi> permissionProvider;
-    private final JwtProperties jwtProperties;
-
-    WebMvcConfig(ObjectProvider<PermissionApi> permissionProvider, JwtProperties jwtProperties) {
-        this.permissionProvider = permissionProvider;
-        this.jwtProperties = jwtProperties;
-    }
-
     @Override
     public void addFormatters(FormatterRegistry registry) {
         DateTimeFormatterRegistrar registrar = new DateTimeFormatterRegistrar();
@@ -49,8 +36,8 @@ class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new ContextLifecycleInterceptor());
-        registry.addInterceptor(new AuthInterceptor(permissionProvider, jwtProperties));
+        // registry.addInterceptor(new ContextLifecycleInterceptor());
+        // registry.addInterceptor(new AuthInterceptor(permissionProvider, jwtProperties));
     }
 
     /**
@@ -71,7 +58,7 @@ class WebMvcConfig implements WebMvcConfigurer {
         @Override
         public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                       NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-            return SubjectContextHolder.getContext().getSubject();
+            return SubjectContext.getContext().getSubject();
         }
 
     }

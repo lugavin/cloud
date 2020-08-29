@@ -1,6 +1,6 @@
 package com.gavin.cloud.common.web.config;
 
-import com.gavin.cloud.common.base.auth.AuthProperties;
+import com.gavin.cloud.common.base.auth.AclProperties;
 import com.gavin.cloud.common.base.auth.JwtProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,9 +12,9 @@ class AppConfig {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConfigurationProperties(prefix = "app.auth", ignoreUnknownFields = false)
-    AuthProperties authProperties() {
-        return new AuthProperties();
+    @ConfigurationProperties(prefix = "app.acl", ignoreUnknownFields = false)
+    AclProperties aclProperties() {
+        return new AclProperties();
     }
 
     @Bean
