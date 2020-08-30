@@ -1,8 +1,3 @@
-# ======================================================================================================================================
-# Spring Cloud Config bootstrap configuration for the "default" profile
-# In the specified profile, properties will be overwriten from the default bootstrap.yml by the ones defined in bootstrap-[profile].yml
-# ======================================================================================================================================
-
 spring:
   cloud:
     config:
@@ -11,6 +6,6 @@ spring:
         enabled: true
         serviceId: cloud-config
       #uri: http://localhost:8000/
-      name: zuul, app
+      name: app, zuul
       label: master
       profile: @profile.active@

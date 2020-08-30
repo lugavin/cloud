@@ -1,14 +1,6 @@
 # ===================================================================
-# Spring Boot configuration.
-#
-# This configuration will be overridden by the Spring profile you use,
-# for example application-dev.yml if you use the "dev" profile.
-# ===================================================================
-
-# ===================================================================
-# Standard Spring Boot properties.
-# Full reference is available at:
-# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# Spring Boot configuration for the "prod" profile.
+# This configuration overrides the application.yml file.
 # ===================================================================
 
 spring:
@@ -17,13 +9,6 @@ spring:
     port: 6379
     timeout: 10000
     password: #secret#
-
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/, http://localhost:8762/eureka/
 
 logging:
   level:

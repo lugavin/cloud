@@ -1,9 +1,15 @@
 spring:
-  # To use the native profile just launch the Config Server with "spring.profiles.active=native".
   profiles:
-    include: native
+    include: native # To use the native profile just launch the Config Server with "spring.profiles.include=native"
   cloud:
     config:
       server:
         native:
           search-locations: classpath:/repo
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

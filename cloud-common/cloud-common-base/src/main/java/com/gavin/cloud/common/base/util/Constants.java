@@ -4,7 +4,6 @@ public interface Constants {
 
     String PROFILE_DEV = "dev";
     String PROFILE_PROD = "prod";
-    String PROFILE_SWAGGER = "swagger";
 
     String FORMATTER_DATE = "yyyy-MM-dd";
     String FORMATTER_TIME = "HH:mm:ss";

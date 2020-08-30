@@ -1,7 +1,8 @@
-# ======================================================================================================================================
-# Spring Cloud Config bootstrap configuration for the "default" profile
-# In the specified profile, properties will be overwriten from the default bootstrap.yml by the ones defined in bootstrap-[profile].yml
-# ======================================================================================================================================
+# ===================================================================
+# Spring Boot bootstrap configuration for the "default" profile.
+# This configuration will be overridden by the Spring profile you use,
+# for example bootstrap-dev.yml if you use the "dev" profile.
+# ===================================================================
 
 spring:
   cloud:
@@ -14,5 +15,3 @@ spring:
       name: app
       label: master
       profile: @profile.active@
-
-

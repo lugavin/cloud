@@ -1,6 +1,5 @@
 # ===================================================================
-# Spring Boot configuration.
-#
+# Spring Boot configuration for the "default" profile.
 # This configuration will be overridden by the Spring profile you use,
 # for example application-dev.yml if you use the "dev" profile.
 # ===================================================================

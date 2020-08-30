@@ -5,6 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.config.server.EnableConfigServer;
 
+/**
+ * Config服务端修改配置信息后, Config客户端需要手动刷新(http://ip:port/refresh)才能生效
+ */
 @EnableConfigServer
 @EnableDiscoveryClient
 @SpringBootApplication

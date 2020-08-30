@@ -1,8 +1,3 @@
-# ===================================================================
-# Mybatis properties.
-# Full reference is available at:
-# {@link org.mybatis.spring.boot.autoconfigure.MybatisProperties}
-# ===================================================================
 mybatis:
   #type-aliases-package: com.gavin.cloud.sys.pojo
   #type-aliases-super-type: com.gavin.cloud.common.base.pojo.AbstractModel

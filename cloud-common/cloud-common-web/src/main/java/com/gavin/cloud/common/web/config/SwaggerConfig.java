@@ -20,7 +20,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import static com.gavin.cloud.common.base.util.Constants.PROFILE_SWAGGER;
+import static com.gavin.cloud.common.base.util.Constants.PROFILE_DEV;
 import static springfox.documentation.builders.PathSelectors.ant;
 
 /**
@@ -29,7 +29,7 @@ import static springfox.documentation.builders.PathSelectors.ant;
 @Slf4j
 @Configuration
 @EnableSwagger2
-@Profile(PROFILE_SWAGGER)
+@Profile(PROFILE_DEV)
 class SwaggerConfig {
 
     /**

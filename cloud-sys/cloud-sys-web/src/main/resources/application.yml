@@ -4,5 +4,3 @@ server:
 spring:
   application:
     name: cloud-sys
-  profiles:
-    active: @profile.active@

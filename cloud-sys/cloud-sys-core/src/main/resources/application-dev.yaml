@@ -15,10 +15,6 @@ spring:
       #minimum-idle: 20
       maximum-pool-size: 20
 
-logging:
-  level:
-    com.gavin.cloud: DEBUG
-
 sftp:
   username: ftpuser
   password: ftpuser

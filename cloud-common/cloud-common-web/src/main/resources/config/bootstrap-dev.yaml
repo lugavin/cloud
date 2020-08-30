@@ -1,4 +1,11 @@
+# ===================================================================
+# Spring Boot bootstrap configuration for the "dev" profile.
+# This configuration overrides the bootstrap.yml file.
+# ===================================================================
+
 eureka:
+  instance:
+    prefer-ip-address: true
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
