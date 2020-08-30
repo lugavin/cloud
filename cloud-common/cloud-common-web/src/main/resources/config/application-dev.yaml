@@ -36,3 +36,16 @@ eureka:
 logging:
   level:
     com.gavin.cloud: DEBUG
+
+app:
+  swagger:
+    title: Cloud App RESTful API
+    description: Cloud App API documentation
+    termsOfServiceUrl: https://lugavin.github.io
+    contactName: lugavin
+    contactUrl: https://github.com/lugavin
+    contactEmail: lugavin@outlook.com
+    basePackage: com.gavin.cloud
+    default-include-pattern: /**
+    protocols: http, https
+    version: 0.1.0

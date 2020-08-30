@@ -1,12 +1,7 @@
-# ===================================================================
-# Spring Cloud Config bootstrap configuration for the "dev" profile
-# In prod profile, properties will be overwriten by the ones defined in bootstrap-prod.yml
-# ===================================================================
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
+# ======================================================================================================================================
+# Spring Cloud Config bootstrap configuration for the "default" profile
+# In the specified profile, properties will be overwriten from the default bootstrap.yml by the ones defined in bootstrap-[profile].yml
+# ======================================================================================================================================
 
 spring:
   cloud:
@@ -16,8 +11,8 @@ spring:
         enabled: true
         serviceId: cloud-config
       #uri: http://localhost:8000/
+      name: app
       label: master
-      profile: default
-      name: application
+      profile: @profile.active@
 
 

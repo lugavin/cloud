@@ -167,33 +167,33 @@
         </plugins>
         <resources>
             <resource>
-                <directory>${basedir}/src/main/java</directory>
-                <includes>
-                    <include>**/*.xml</include>
-                </includes>
-            </resource>
-            <resource>
                 <directory>${basedir}/src/main/resources</directory>
                 <excludes>
-                    <exclude>application*.yml</exclude>
-                    <exclude>application*.yaml</exclude>
-                    <exclude>config/application*.yml</exclude>
-                    <exclude>config/application*.yaml</exclude>
+                    <exclude>**/bootstrap*.yml</exclude>
+                    <exclude>**/bootstrap*.yaml</exclude>
+                    <exclude>**/bootstrap*.properties</exclude>
+                    <exclude>**/application*.yml</exclude>
+                    <exclude>**/application*.yaml</exclude>
+                    <exclude>**/application*.properties</exclude>
                 </excludes>
             </resource>
             <resource>
-                <directory>${basedir}/src/main/resources</directory>
                 <!-- 开启filtering(将配置文件引用的@variable@替换为profile中定义的变量) -->
                 <filtering>true</filtering>
+                <directory>${basedir}/src/main/resources</directory>
                 <includes>
-                    <include>application.yml</include>
-                    <include>application.yaml</include>
-                    <include>application-${profile.active}.yml</include>
-                    <include>application-${profile.active}.yaml</include>
-                    <include>config/application.yml</include>
-                    <include>config/application.yaml</include>
-                    <include>config/application-${profile.active}.yml</include>
-                    <include>config/application-${profile.active}.yaml</include>
+                    <include>**/bootstrap.yml</include>
+                    <include>**/bootstrap.yaml</include>
+                    <include>**/bootstrap.properties</include>
+                    <include>**/bootstrap-${profile.active}.yml</include>
+                    <include>**/bootstrap-${profile.active}.yaml</include>
+                    <include>**/bootstrap-${profile.active}.properties</include>
+                    <include>**/application.yml</include>
+                    <include>**/application.yaml</include>
+                    <include>**/application.properties</include>
+                    <include>**/application-${profile.active}.yml</include>
+                    <include>**/application-${profile.active}.yaml</include>
+                    <include>**/application-${profile.active}.properties</include>
                 </includes>
             </resource>
         </resources>

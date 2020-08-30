@@ -1,8 +1,3 @@
-# ===================================================================
-# Mybatis properties.
-# Full reference is available at:
-# {@link org.mybatis.spring.boot.autoconfigure.MybatisProperties}
-# ===================================================================
 mybatis:
   #type-aliases-package: com.gavin.cloud.sys.pojo
   #type-aliases-super-type: com.gavin.cloud.common.base.pojo.AbstractModel
@@ -17,14 +12,3 @@ mybatis:
     # 禁用二级缓存
     cache-enabled: false
     #database-id: mysql
-
-sftp:
-  username: ftpuser
-  password: ftpuser
-  host: 192.168.8.99
-  port: 22
-  timeout: 30000
-  basePath: /home/ftpuser/www/images
-
-oss:
-  baseURL: http://192.168.8.99/images

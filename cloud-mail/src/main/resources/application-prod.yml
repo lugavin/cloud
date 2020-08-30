@@ -1,0 +1,14 @@
+spring:
+  mail:
+    host: smtp.qq.com
+    username: lu774374302@qq.com
+    password: fbxthbgaymolbegf
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
+
+app:
+  mail:
+    from: ${spring.mail.username}
+    base-url: http://127.0.0.1

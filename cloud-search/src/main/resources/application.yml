@@ -19,10 +19,6 @@ spring:
     name: cloud-search
   profiles:
     active: @profile.active@
-  data:
-    elasticsearch:
-      cluster-name: elasticsearch
-      cluster-nodes: 127.0.0.1:9300  # HTTP协议(9200) TCP协议(9300)
 
 management:
   security:

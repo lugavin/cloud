@@ -18,3 +18,14 @@ spring:
 logging:
   level:
     com.gavin.cloud: DEBUG
+
+sftp:
+  username: ftpuser
+  password: ftpuser
+  host: 192.168.8.99
+  port: 22
+  timeout: 30000
+  basePath: /home/ftpuser/www/images
+
+oss:
+  baseURL: http://192.168.8.99/images

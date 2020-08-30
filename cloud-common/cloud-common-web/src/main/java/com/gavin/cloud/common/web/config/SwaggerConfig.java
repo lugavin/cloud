@@ -77,7 +77,7 @@ class SwaggerConfig {
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "app.swagger", ignoreUnknownFields = false)
+    @ConfigurationProperties("app.swagger")
     SwaggerProperties swaggerProperties() {
         return new SwaggerProperties();
     }
