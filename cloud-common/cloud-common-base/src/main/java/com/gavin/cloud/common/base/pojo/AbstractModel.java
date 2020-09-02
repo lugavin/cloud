@@ -4,8 +4,9 @@ import java.io.Serializable;
 
 public abstract class AbstractModel implements Model {
 
-    private Serializable id;
+    protected Serializable id;
 
+    @Override
     public Serializable getId() {
         return id;
     }

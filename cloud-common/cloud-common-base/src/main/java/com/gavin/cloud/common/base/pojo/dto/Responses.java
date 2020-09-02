@@ -16,13 +16,16 @@ import java.io.Serializable;
  * }</pre>
  */
 @Data
-@Deprecated
 public class Responses<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer retCode; // 状态码
-    private String retMsg;   // 提示消息
-    private T body;          // 返回的业务数据
+    private final Integer retCode; // 状态码(可对HTTP状态码进行扩展, 如400101)
+    private final String retMsg;   // 提示消息
+    private final T retData;       // 返回的业务数据
+
+    // public static <T> Responses<T> ok(T retData) {
+    //     return new Responses<>(HttpStatus.OK.getStatusCode(), HttpStatus.OK.getReasonPhrase(), retData);
+    // }
 
 }

@@ -4,7 +4,6 @@ import com.gavin.cloud.common.base.problem.AppBizException;
 import com.gavin.cloud.common.base.util.JsonUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import lombok.NonNull;
 
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -28,9 +27,9 @@ public abstract class JwtHelper {
         return createToken(activeUser, createPrivateKey(privateKeyEncoded), validityInSeconds);
     }
 
-    public static String createToken(@NonNull ActiveUser activeUser,
-                                     @NonNull Key privateKey,
-                                     @NonNull Long validityInSeconds) {
+    public static String createToken(ActiveUser activeUser,
+                                     Key privateKey,
+                                     Long validityInSeconds) {
         return Jwts.builder()
                 .serializeToJsonWith(map -> JsonUtils.toJson(map).getBytes(UTF_8))
                 .setIssuedAt(Date.from(Instant.now()))
@@ -48,7 +47,7 @@ public abstract class JwtHelper {
     }
 
     @SuppressWarnings("unchecked")
-    public static ActiveUser verifyToken(@NonNull String token, @NonNull Key publicKey) {
+    public static ActiveUser verifyToken(String token, Key publicKey) {
         try {
             Claims claims = Jwts.parser()
                     .deserializeJsonWith(bytes -> JsonUtils.fromJson(new String(bytes, UTF_8), Map.class, String.class, Object.class))
