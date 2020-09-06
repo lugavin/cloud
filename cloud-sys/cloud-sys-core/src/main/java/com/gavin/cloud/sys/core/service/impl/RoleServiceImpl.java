@@ -38,8 +38,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role createRole(Role role) {
         RoleExample example = new RoleExample();
-        RoleExample.Criteria criteria = example.createCriteria();
-        criteria.andCodeEqualTo(role.getCode());
+        example.createCriteria().andCodeEqualTo(role.getCode());
         long rows = roleExtMapper.countByExample(example);
         if (rows > 0) {
             throw new AppAlertException(ROLE_ALREADY_USED_TYPE);

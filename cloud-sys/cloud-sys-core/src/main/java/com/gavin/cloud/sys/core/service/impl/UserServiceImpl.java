@@ -34,13 +34,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
-        if (isAlreadyUsed(user.getUsername(), LoginType.USERNAME)) {
+        if (Objects.nonNull(userExtMapper.getByLogin(user.getUsername(), LoginType.USERNAME))) {
             throw new AppAlertException(LOGIN_ALREADY_USED_TYPE);
         }
-        if (isAlreadyUsed(user.getEmail(), LoginType.EMAIL)) {
+        if (Objects.nonNull(userExtMapper.getByLogin(user.getEmail(), LoginType.EMAIL))) {
             throw new AppAlertException(EMAIL_ALREADY_USED_TYPE);
         }
-        if (StringUtils.hasText(user.getPhone()) && isAlreadyUsed(user.getPhone(), LoginType.PHONE)) {
+        if (StringUtils.hasText(user.getPhone()) && Objects.nonNull(userExtMapper.getByLogin(user.getPhone(), LoginType.PHONE))) {
             throw new AppAlertException(PHONE_ALREADY_USED_TYPE);
         }
         if (!StringUtils.hasText(user.getLangKey())) {
@@ -72,8 +72,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUsers(Long[] ids) {
         UserExample example = new UserExample();
-        UserExample.Criteria criteria = example.createCriteria();
-        criteria.andIdIn(Arrays.asList(ids));
+        example.createCriteria().andIdIn(Arrays.asList(ids));
         userExtMapper.deleteByExample(example);
     }
 
@@ -85,9 +84,8 @@ public class UserServiceImpl implements UserService {
     @Scheduled(cron = "0 0 1 * * ?")
     public void deleteNotActivatedUsers() {
         UserExample example = new UserExample();
-        UserExample.Criteria criteria = example.createCriteria();
-        criteria.andActivatedNotEqualTo(Boolean.TRUE);
-        criteria.andCreatedAtNotBetween(Date.from(Instant.now().minus(3, DAYS)), Date.from(Instant.now()));
+        example.createCriteria().andActivatedNotEqualTo(Boolean.TRUE)
+                .andCreatedAtNotBetween(Date.from(Instant.now().minus(3, DAYS)), Date.from(Instant.now()));
         userExtMapper.deleteByExample(example);
     }
 
@@ -100,17 +98,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public User getUser(String account, LoginType loginType) {
-        UserExample example = new UserExample();
-        UserExample.Criteria criteria = example.createCriteria();
-        if (loginType == LoginType.USERNAME) {
-            criteria.andUsernameEqualTo(account);
-        } else if (loginType == LoginType.PHONE) {
-            criteria.andPhoneEqualTo(account);
-        } else {
-            criteria.andEmailEqualTo(account);
-        }
-        List<User> list = userExtMapper.selectByExample(example);
-        return !list.isEmpty() ? list.get(0) : null;
+        return userExtMapper.getByLogin(account, loginType);
     }
 
     @Override
@@ -123,26 +111,6 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public Page<User> getUsers(Map<String, Object> param, int page, int pageSize) {
         return userExtMapper.getPage(param, page, pageSize);
-    }
-
-    /**
-     * Check if the account is already used
-     *
-     * @param login User account
-     * @param type  {1:USERNAME, 2:PHONE, 3:EMAIL}
-     * @return If used return true else false
-     */
-    private boolean isAlreadyUsed(String login, LoginType type) {
-        UserExample example = new UserExample();
-        UserExample.Criteria criteria = example.createCriteria();
-        if (type == LoginType.USERNAME) {
-            criteria.andUsernameEqualTo(login);
-        } else if (type == LoginType.PHONE) {
-            criteria.andPhoneEqualTo(login);
-        } else {
-            criteria.andEmailEqualTo(login);
-        }
-        return userExtMapper.countByExample(example) > 0;
     }
 
 }

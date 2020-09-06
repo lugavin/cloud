@@ -20,9 +20,6 @@ import java.util.List;
 
 import static com.gavin.cloud.common.base.problem.DefaultProblemType.AUTHENTICATION_FAILED_TYPE;
 
-/**
- * @see <a href="https://solidgeargroup.com/en/refresh-token-with-jwt-authentication-node-js/">Auth with JWT Refresh Token</a>
- */
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -54,8 +51,7 @@ public class AuthServiceImpl implements AuthService {
     @Transactional(readOnly = true)
     public AuthTokenDTO createAuthToken(ActiveUser activeUser, String refreshToken) {
         AuthTokenExample example = new AuthTokenExample();
-        AuthTokenExample.Criteria criteria = example.createCriteria();
-        criteria.andRefreshTokenEqualTo(refreshToken);
+        example.createCriteria().andRefreshTokenEqualTo(refreshToken);
         List<AuthToken> authTokens = authTokenMapperExt.selectByExample(example);
         if (!authTokens.isEmpty()) {
             AuthToken authToken = authTokens.get(0);
@@ -76,8 +72,7 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public void rejectRefreshToken(String refreshToken) {
         AuthTokenExample example = new AuthTokenExample();
-        AuthTokenExample.Criteria criteria = example.createCriteria();
-        criteria.andRefreshTokenEqualTo(refreshToken);
+        example.createCriteria().andRefreshTokenEqualTo(refreshToken);
         authTokenMapperExt.deleteByExample(example);
     }
 

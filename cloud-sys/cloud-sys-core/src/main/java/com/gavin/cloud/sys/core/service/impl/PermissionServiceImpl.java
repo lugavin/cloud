@@ -79,6 +79,7 @@ public class PermissionServiceImpl implements PermissionService {
         RolePermissionExample rolePermExample = new RolePermissionExample();
         rolePermExample.createCriteria().andPermissionIdIn(Arrays.asList(ids));
         rolePermissionExtMapper.deleteByExample(rolePermExample);
+
         PermissionExample example = new PermissionExample();
         example.createCriteria().andIdIn(Arrays.asList(ids));
         permissionExtMapper.deleteByExample(example);
