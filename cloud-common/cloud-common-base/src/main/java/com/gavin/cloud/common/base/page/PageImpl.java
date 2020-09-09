@@ -27,7 +27,7 @@ public class PageImpl<T> implements Page<T> {
      * totalItems: 总记录数
      */
     private final List<T> items;
-    private final int totalItems;
+    private final long totalItems;
 
     /**
      * {@code PageImpl}.
@@ -37,7 +37,7 @@ public class PageImpl<T> implements Page<T> {
      * @param items      the content of this page.
      * @param totalItems the total amount of elements available.
      */
-    public PageImpl(int page, int pageSize, List<T> items, int totalItems) {
+    public PageImpl(int page, int pageSize, List<T> items, long totalItems) {
         this.page = Math.max(page, 1);
         this.pageSize = Math.max(pageSize, 1);
         this.items = Optional.ofNullable(items).orElseGet(ArrayList::new);
@@ -60,7 +60,7 @@ public class PageImpl<T> implements Page<T> {
     }
 
     @Override
-    public int getTotalItems() {
+    public long getTotalItems() {
         return totalItems;
     }
 

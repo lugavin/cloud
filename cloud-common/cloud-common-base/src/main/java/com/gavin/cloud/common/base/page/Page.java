@@ -36,14 +36,14 @@ public interface Page<T> extends Iterable<T> {
      *
      * @return the total amount of elements
      */
-    int getTotalItems();
+    long getTotalItems();
 
     /**
      * Returns the number of total pages.
      *
      * @return the number of total pages
      */
-    default int getTotalPages() {
+    default long getTotalPages() {
         return (getTotalItems() + getPageSize() - 1) / getPageSize();
     }
 
