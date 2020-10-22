@@ -28,7 +28,7 @@ public final class PaginationUtils {
             link += "<" + generateUri(baseUrl, page.getPage() - 1, page.getPageSize()) + ">; rel=\"prev\",";
         }
         // last and first link
-        int lastPage = 0;
+        long lastPage = 0;
         if (page.getTotalPages() > 0) {
             lastPage = page.getTotalPages() - 1;
         }
@@ -38,7 +38,7 @@ public final class PaginationUtils {
         return headers;
     }
 
-    private static String generateUri(String baseUrl, int page, int size) {
+    private static String generateUri(String baseUrl, long page, int size) {
         return UriComponentsBuilder.fromUriString(baseUrl).queryParam("page", page).queryParam("size", size).toUriString();
     }
 }
