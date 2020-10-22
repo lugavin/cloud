@@ -27,9 +27,7 @@ public abstract class JwtHelper {
         return createToken(activeUser, createPrivateKey(privateKeyEncoded), validityInSeconds);
     }
 
-    public static String createToken(ActiveUser activeUser,
-                                     Key privateKey,
-                                     Long validityInSeconds) {
+    public static String createToken(ActiveUser activeUser, Key privateKey, Long validityInSeconds) {
         return Jwts.builder()
                 .serializeToJsonWith(map -> JsonUtils.toJson(map).getBytes(UTF_8))
                 .setIssuedAt(Date.from(Instant.now()))
