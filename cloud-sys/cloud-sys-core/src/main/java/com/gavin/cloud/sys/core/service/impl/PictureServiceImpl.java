@@ -1,7 +1,6 @@
 package com.gavin.cloud.sys.core.service.impl;
 
-import com.gavin.cloud.common.base.problem.AppBizException;
-import com.gavin.cloud.common.base.util.SftpUtils;
+import com.gavin.cloud.common.base.util.SftpHelper;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import com.gavin.cloud.sys.core.config.properties.OssProperties;
 import com.gavin.cloud.sys.core.config.properties.SftpProperties;
@@ -12,8 +11,6 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
-
-import static com.gavin.cloud.common.base.problem.DefaultProblemType.INTERNAL_SERVER_ERROR_TYPE;
 
 @Service
 public class PictureServiceImpl implements PictureService {
@@ -41,24 +38,21 @@ public class PictureServiceImpl implements PictureService {
 
     @Override
     public String upload(InputStream local) {
-        SftpUtils sftpUtils = null;
+        SftpHelper sftpHelper = new SftpHelper(
+                sftpProperties.getUsername(),
+                sftpProperties.getPassword(),
+                sftpProperties.getHost(),
+                sftpProperties.getPort(),
+                sftpProperties.getTimeout()
+        );
         try {
-            sftpUtils = new SftpUtils(
-                    sftpProperties.getUsername(),
-                    sftpProperties.getPassword(),
-                    sftpProperties.getHost(),
-                    sftpProperties.getPort(),
-                    sftpProperties.getTimeout()
-            );
-            if (!sftpUtils.login()) {
-                throw new AppBizException(INTERNAL_SERVER_ERROR_TYPE, "Ftp service is not available.");
-            }
+            sftpHelper.login();
             String filePath = LocalDate.now().format(DateTimeFormatter.ofPattern("/yyyy/MM/dd/"));
             String filename = Long.toString(SnowflakeIdWorker.getInstance().nextId());
-            sftpUtils.upload(sftpProperties.getBasePath() + filePath, filename, local);
+            sftpHelper.upload(sftpProperties.getBasePath() + filePath, filename, local);
             return ossProperties.getBaseURL() + filePath + filename;
         } finally {
-            Optional.ofNullable(sftpUtils).ifPresent(SftpUtils::logout);
+            sftpHelper.logout();
         }
     }
 
