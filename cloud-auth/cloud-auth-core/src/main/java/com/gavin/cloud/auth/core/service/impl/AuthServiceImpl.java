@@ -20,6 +20,11 @@ import java.util.List;
 
 import static com.gavin.cloud.common.base.problem.DefaultProblemType.AUTHENTICATION_FAILED_TYPE;
 
+/**
+ * JWT无法作废未过期的TOKEN解决方案:
+ * 1. 借助Redis来实现: 登录时将JWT(exp=24h)的失效时间设置到Redis(exp=900), 校验JWT时刷新Redis的失效时间
+ * 2. 生成AccessToken(有效期短)的同时生成RefreshToken(有效期长)
+ */
 @Service
 public class AuthServiceImpl implements AuthService {
 

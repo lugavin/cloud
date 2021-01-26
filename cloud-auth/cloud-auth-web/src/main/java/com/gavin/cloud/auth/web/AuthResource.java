@@ -95,7 +95,7 @@ public class AuthResource {
     }
 
     @GetMapping("/token/{refreshToken}")
-    public ResponseEntity<String> getNewAccessToken(@PathVariable String refreshToken, @RequestParam Long uid,
+    public ResponseEntity<String> renewAccessToken(@PathVariable String refreshToken, @RequestParam Long uid,
                                                     HttpServletRequest request, HttpServletResponse response) {
         User user = Optional.ofNullable(userApi.getUser(uid))
                 .orElseThrow(() -> new AppBizException(ACCOUNT_NOT_FOUND_TYPE));
