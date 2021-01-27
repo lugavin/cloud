@@ -15,6 +15,11 @@ import java.util.*;
 import static com.gavin.cloud.common.base.problem.DefaultProblemType.AUTHENTICATION_FAILED_TYPE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * JWT无法作废未过期的TOKEN解决方案:
+ * (1)RefreshToken(推荐): 生成AccessToken(有效期短)的同时生成RefreshToken(有效期长)
+ * (2)Redis(不推荐): 登录时将JWT(exp=24h)的失效时间设置到Redis(expire=600s), 校验JWT时刷新Redis的失效时间
+ */
 public abstract class JwtHelper {
 
     private static final String ALGORITHM_RSA = "RSA";
