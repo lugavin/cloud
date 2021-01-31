@@ -39,7 +39,6 @@ public class AuthFilter extends ZuulFilter {
         this.jwtProperties = jwtProperties;
         this.aclProperties = aclProperties;
         this.zuulProperties = zuulProperties;
-
     }
 
     @Override

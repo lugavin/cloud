@@ -18,7 +18,6 @@ import com.gavin.cloud.sys.pojo.User;
 import com.gavin.cloud.sys.pojo.dto.RegisterDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.CookieGenerator;
@@ -96,7 +95,7 @@ public class AuthResource {
 
     @GetMapping("/token/{refreshToken}")
     public ResponseEntity<String> renewAccessToken(@PathVariable String refreshToken, @RequestParam Long uid,
-                                                    HttpServletRequest request, HttpServletResponse response) {
+                                                   HttpServletRequest request, HttpServletResponse response) {
         User user = Optional.ofNullable(userApi.getUser(uid))
                 .orElseThrow(() -> new AppBizException(ACCOUNT_NOT_FOUND_TYPE));
         List<String> roles = roleApi.getRoles(user.getId()).stream().map(Role::getCode).collect(Collectors.toList());
@@ -109,14 +108,8 @@ public class AuthResource {
     }
 
     @GetMapping("/account/{accessToken}")
-    public ResponseEntity<?> getAccount(@PathVariable String accessToken, @RequestParam(required = false) String jsonpCallback) {
-        ActiveUser activeUser = authService.verifyAccessToken(accessToken);
-        if (!StringUtils.hasText(jsonpCallback)) {
-            return ResponseEntity.ok(activeUser);
-        }
-        MappingJacksonValue jacksonValue = new MappingJacksonValue(activeUser);
-        jacksonValue.setJsonpFunction(jsonpCallback);
-        return ResponseEntity.ok(jacksonValue);
+    public ResponseEntity<ActiveUser> getAccount(@PathVariable String accessToken) {
+        return ResponseEntity.ok(authService.verifyAccessToken(accessToken));
     }
 
     @PostMapping("/register")

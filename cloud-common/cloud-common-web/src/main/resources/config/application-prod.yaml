@@ -13,3 +13,7 @@ spring:
 logging:
   level:
     com.gavin.cloud: INFO
+
+springfox:
+  documentation:
+    enabled: false

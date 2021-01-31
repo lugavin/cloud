@@ -1,12 +1,11 @@
 package com.gavin.cloud.search.core.repository;
 
 import com.gavin.cloud.search.core.model.Item;
-import org.springframework.data.elasticsearch.repository.ElasticsearchCrudRepository;
+import org.springframework.data.elasticsearch.repository.ReactiveElasticsearchRepository;
+import reactor.core.publisher.Flux;
 
-import java.util.List;
+public interface ItemRepository extends ReactiveElasticsearchRepository<Item, Long> {
 
-public interface ItemRepository extends ElasticsearchCrudRepository<Item, Long> {
-
-    List<Item> findByPriceBetween(double from, double to);
+    Flux<Item> findByPriceBetween(double from, double to);
 
 }
