@@ -51,10 +51,4 @@ public class ApplicationTest {
         flux.toIterable(10).forEach(System.out::println);
     }
 
-    @Test
-    public void testFindBy() {
-        Flux<Item> flux = itemRepository.findByPriceBetween(4000d, 5000d);
-        flux.toIterable(10).forEach(System.out::println);
-    }
-
 }
