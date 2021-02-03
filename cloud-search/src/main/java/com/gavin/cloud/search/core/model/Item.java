@@ -19,7 +19,8 @@ public class Item {
     @Id
     private Long id;
 
-    @Field(type = FieldType.Text, analyzer = "ik_smart")
+    @Field(type = FieldType.Text)
+    // @Field(type = FieldType.Text, analyzer = "ik_smart")
     private String title;    //标题
 
     @Field(type = FieldType.Keyword)
