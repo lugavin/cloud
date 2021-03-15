@@ -48,6 +48,13 @@
             <artifactId>spring-cloud-starter-config</artifactId>
         </dependency>
 
+        <!-- Spring Cloud Feign -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- Spring Boot Actuator -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
