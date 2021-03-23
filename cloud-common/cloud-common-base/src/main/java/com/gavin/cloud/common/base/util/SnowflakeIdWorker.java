@@ -9,6 +9,10 @@ import java.net.NetworkInterface;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.IntStream;
 
 /**
  * Twitter的Snowflake算法(用于分布式自增长ID), 其原理结构如下(每部分用-分开):
@@ -20,6 +24,7 @@ import java.time.format.DateTimeFormatter;
  * Snowflake的优点是: 整体上按照时间自增排序, 并且整个分布式系统内不会产生ID碰撞(由数据中心ID和机器ID作区分), 并且效率较高, 经测试, SnowFlake每秒能够产生26万ID左右.
  *
  * @see <a href="https://github.com/twitter/snowflake">Snowflake</a>
+ * @see <a href="https://github.com/apache/shardingsphere/blob/master/shardingsphere-features/shardingsphere-sharding/shardingsphere-sharding-common/src/main/java/org/apache/shardingsphere/sharding/algorithm/keygen/SnowflakeKeyGenerateAlgorithm.java">SnowflakeKeyGenerateAlgorithm</a>
  */
 @Slf4j
 public class SnowflakeIdWorker {
@@ -180,20 +185,20 @@ public class SnowflakeIdWorker {
         static final SnowflakeIdWorker INSTANCE = new SnowflakeIdWorker();
     }
 
-    //public static void main(String[] args) {
-    //    Set<Long> ids = new HashSet<>();
-    //    // 多个线程使用同一个对象(单例)
-    //    //SnowflakeIdWorker idWorker = new SnowflakeIdWorker();
-    //    IntStream.range(0, 1000).forEach(i -> CompletableFuture.runAsync(() -> {
-    //        // 每个线程都新建一个对象, 那么每个线程的取时间戳可以同时进行, 序列自增也是, 所以才会产生相同的id
-    //        SnowflakeIdWorker idWorker = new SnowflakeIdWorker();
-    //        Long id = idWorker.nextId();
-    //        if (!ids.add(id)) {
-    //            System.err.println("存在重复ID >> " + id);
-    //        } else {
-    //            System.out.println("ID >> " + id);
-    //        }
-    //    }));
-    //}
+    public static void main(String[] args) {
+        Set<Long> ids = new HashSet<>();
+        // 多个线程使用同一个对象(单例)
+        final SnowflakeIdWorker idWorker = SnowflakeIdWorker.getInstance();
+        IntStream.range(0, 1000).forEach(i -> CompletableFuture.runAsync(() -> {
+            // 每个线程都新建一个对象, 那么每个线程的取时间戳可以同时进行, 序列自增也是, 所以才会产生相同的id
+            // SnowflakeIdWorker idWorker = SnowflakeIdWorker.getInstance();
+            Long id = idWorker.nextId();
+            if (!ids.add(id)) {
+                System.err.println("存在重复ID >> " + id);
+            } else {
+                System.out.println("ID >> " + id);
+            }
+        }));
+    }
 
 }
