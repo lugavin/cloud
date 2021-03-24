@@ -3,7 +3,6 @@ package com.gavin.cloud.common.core.plugin;
 import com.gavin.cloud.common.base.page.PageImpl;
 import com.gavin.cloud.common.base.page.Pageable;
 import com.gavin.cloud.common.core.dialect.Dialect;
-import lombok.Data;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -17,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Intercepts({@Signature(type = Executor.class, method = "query", args = {
