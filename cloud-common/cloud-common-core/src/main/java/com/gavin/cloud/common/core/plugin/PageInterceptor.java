@@ -3,6 +3,7 @@ package com.gavin.cloud.common.core.plugin;
 import com.gavin.cloud.common.base.page.PageImpl;
 import com.gavin.cloud.common.base.page.Pageable;
 import com.gavin.cloud.common.core.dialect.Dialect;
+import lombok.Data;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -16,6 +17,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Intercepts({@Signature(type = Executor.class, method = "query", args = {
         MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class})
@@ -48,10 +51,10 @@ public class PageInterceptor implements Interceptor {
             final ResultHandler<?> resultHandler = (ResultHandler<?>) args[RESULT_HANDLER_INDEX];
             final BoundSql boundSql = ms.getBoundSql(parameter);
 
-            Counter counter = new Counter();
+            final AtomicLong counter = new AtomicLong(0);
             String countSql = dialect.getCountString(boundSql.getSql());
             MappedStatement countStatement = newCountMappedStatement(ms, boundSql, countSql);
-            executor.query(countStatement, boundSql.getParameterObject(), RowBounds.DEFAULT, rc -> counter.value = (long) rc.getResultObject());
+            executor.query(countStatement, boundSql.getParameterObject(), RowBounds.DEFAULT, rc -> counter.getAndAdd((long) rc.getResultObject()));
 
             String limitSql = dialect.getLimitString(boundSql.getSql(), (page - 1) * pageSize, pageSize);
             MappedStatement limitStatement = newLimitMappedStatement(ms, boundSql, limitSql);
@@ -62,7 +65,7 @@ public class PageInterceptor implements Interceptor {
             //args[MAPPED_STATEMENT_INDEX] = newLimitMappedStatement(ms, boundSql, limitSql);
             //List<?> items = (List<?>) invocation.proceed();
 
-            return Collections.singletonList(new PageImpl<>(page, pageSize, items, counter.value));
+            return Collections.singletonList(new PageImpl<>(page, pageSize, items, counter.get()));
         }
         return invocation.proceed();
     }
@@ -110,10 +113,6 @@ public class PageInterceptor implements Interceptor {
                 .filter(boundSql::hasAdditionalParameter)
                 .forEach(p -> newBoundSql.setAdditionalParameter(p, boundSql.getAdditionalParameter(p)));
         return newBoundSql;
-    }
-
-    private static class Counter {
-        private long value;
     }
 
 }
