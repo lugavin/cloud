@@ -54,7 +54,7 @@ public class PageInterceptor implements Interceptor {
             final AtomicLong counter = new AtomicLong(0);
             String countSql = dialect.getCountString(boundSql.getSql());
             MappedStatement countStatement = newCountMappedStatement(ms, boundSql, countSql);
-            executor.query(countStatement, boundSql.getParameterObject(), RowBounds.DEFAULT, rc -> counter.getAndAdd((long) rc.getResultObject()));
+            executor.query(countStatement, boundSql.getParameterObject(), RowBounds.DEFAULT, rc -> counter.getAndSet((long) rc.getResultObject()));
 
             String limitSql = dialect.getLimitString(boundSql.getSql(), (page - 1) * pageSize, pageSize);
             MappedStatement limitStatement = newLimitMappedStatement(ms, boundSql, limitSql);
