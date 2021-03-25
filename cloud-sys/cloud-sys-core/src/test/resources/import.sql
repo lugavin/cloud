@@ -84,7 +84,7 @@ CREATE TABLE `sys_role_permission` (
   `permission_id` bigint(20) NOT NULL COMMENT '权限ID',
   PRIMARY KEY (`id`),
   UNIQUE KEY `SYS_ROLE_PERMISSION_UK` (`role_id`,`permission_id`) USING BTREE,
-  KEY `SYS_ROLE_PERMISSION_FK_2` (`permission_id`) USING BTREE,
+  KEY `SYS_ROLE_PERMISSION_FK` (`permission_id`) USING BTREE,
   CONSTRAINT `sys_role_permission_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `sys_role` (`id`),
   CONSTRAINT `sys_role_permission_ibfk_2` FOREIGN KEY (`permission_id`) REFERENCES `sys_permission` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色-权限中间表';
@@ -133,15 +133,15 @@ CREATE TABLE `sys_user` (
   `updated_by` varchar(32) DEFAULT NULL COMMENT '最后修改人',
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改日期',
   PRIMARY KEY (`id`),
-  KEY `SYS_USER_USERNAME_UK` (`username`),
-  KEY `SYS_USER_PHONE_UK` (`phone`),
-  KEY `SYS_USER_EMAIL_UK` (`email`)
+  UNIQUE KEY `SYS_USER_USERNAME_UK` (`username`),
+  UNIQUE KEY `SYS_USER_PHONE_UK` (`phone`),
+  UNIQUE KEY `SYS_USER_EMAIL_UK` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('101', 'admin', MD5(CONCAT('tpsTiktG8VcFWD4dvhhGq','P@ssw0rd')), '管理员', 'tpsTiktG8VcFWD4dvhhGq', '16666666666', 'admin@gmail.com', null, null, '', null, null, null, 'system', '2019-01-01 00:00:00', null, '2019-04-15 21:32:42');
+INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `salt`, `phone`, `email`, `avatar`, `lang_key`, `activated`, `activation_key`, `reset_key`, `reset_date`, `created_by`, `created_at`, `updated_by`, `updated_at`) VALUES (101, 'admin', MD5(CONCAT('tpsTiktG8VcFWD4dvhhGq','P@ssw0rd')), '管理员', 'tpsTiktG8VcFWD4dvhhGq', '16666666666', 'admin@gmail.com', NULL, NULL, 1, NULL, NULL, NULL, 'system', '2019-01-01 00:00:00', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for `sys_user_role`
@@ -153,7 +153,7 @@ CREATE TABLE `sys_user_role` (
   `role_id` bigint(20) NOT NULL COMMENT '角色ID',
   PRIMARY KEY (`id`),
   UNIQUE KEY `SYS_USER_ROLE_UK` (`user_id`,`role_id`) USING BTREE,
-  KEY `SYS_USER_ROLE_FK_2` (`role_id`) USING BTREE,
+  KEY `SYS_USER_ROLE_FK` (`role_id`) USING BTREE,
   CONSTRAINT `sys_user_role_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `sys_user` (`id`),
   CONSTRAINT `sys_user_role_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `sys_role` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户-角色中间表';
