@@ -2,7 +2,7 @@ package com.gavin.cloud.auth.core.service.impl;
 
 import com.gavin.cloud.auth.core.config.properties.JwtExtProperties;
 import com.gavin.cloud.auth.core.dto.AuthTokenDTO;
-import com.gavin.cloud.auth.core.mapper.ext.AuthTokenMapperExt;
+import com.gavin.cloud.auth.core.dao.ext.AuthTokenExtDao;
 import com.gavin.cloud.auth.core.service.AuthService;
 import com.gavin.cloud.auth.pojo.AuthToken;
 import com.gavin.cloud.auth.pojo.AuthTokenExample;
@@ -49,7 +49,7 @@ import static com.gavin.cloud.common.base.problem.DefaultProblemType.AUTHENTICAT
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final AuthTokenMapperExt authTokenMapperExt;
+    private final AuthTokenExtDao authTokenMapperExt;
     private final JwtExtProperties jwtProperties;
 
     @Override

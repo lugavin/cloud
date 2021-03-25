@@ -1,4 +1,4 @@
-package com.gavin.cloud.auth.core.mapper;
+package com.gavin.cloud.auth.core.dao;
 
 import com.gavin.cloud.auth.pojo.AuthToken;
 import com.gavin.cloud.auth.pojo.AuthTokenExample;
@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 @Mapper
-public interface AuthTokenMapper {
+public interface AuthTokenDao {
     long countByExample(AuthTokenExample example);
 
     int deleteByExample(AuthTokenExample example);

@@ -61,13 +61,13 @@
         </javaModelGenerator>
 
         <!-- targetPackage: 生成mapper映射文件的位置 -->
-        <sqlMapGenerator targetPackage="com.gavin.cloud.auth.core.mapper" targetProject="src/main/java">
+        <sqlMapGenerator targetPackage="com.gavin.cloud.auth.core.dao" targetProject="src/main/java">
             <!-- enableSubPackages: 是否让schema作为包的后缀 -->
             <property name="enableSubPackages" value="false"/>
         </sqlMapGenerator>
 
         <!-- targetPackage: 生成mapper接口的位置 -->
-        <javaClientGenerator targetPackage="com.gavin.cloud.auth.core.mapper" targetProject="src/main/java"
+        <javaClientGenerator targetPackage="com.gavin.cloud.auth.core.dao" targetProject="src/main/java"
                              type="XMLMAPPER">
             <!-- enableSubPackages: 是否让schema作为包的后缀 -->
             <property name="enableSubPackages" value="false"/>

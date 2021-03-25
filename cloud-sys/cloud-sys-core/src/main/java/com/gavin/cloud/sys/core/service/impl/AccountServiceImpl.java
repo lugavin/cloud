@@ -3,7 +3,7 @@ package com.gavin.cloud.sys.core.service.impl;
 import com.gavin.cloud.common.base.problem.AppBizException;
 import com.gavin.cloud.common.base.util.Md5Hash;
 import com.gavin.cloud.common.base.util.NanoIdUtils;
-import com.gavin.cloud.sys.core.mapper.ext.UserExtMapper;
+import com.gavin.cloud.sys.core.dao.ext.UserExtDao;
 import com.gavin.cloud.sys.core.service.AccountService;
 import com.gavin.cloud.sys.core.service.UserService;
 import com.gavin.cloud.sys.pojo.User;
@@ -26,7 +26,7 @@ import static com.gavin.cloud.sys.core.enums.SysProblemType.USER_NOT_FOUND_TYPE;
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
 
-    private final UserExtMapper userExtMapper;
+    private final UserExtDao userExtMapper;
     private final UserService userService;
 
     @Override

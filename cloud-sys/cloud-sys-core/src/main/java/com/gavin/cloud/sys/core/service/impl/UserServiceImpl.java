@@ -7,7 +7,7 @@ import com.gavin.cloud.common.base.util.Md5Hash;
 import com.gavin.cloud.common.base.util.NanoIdUtils;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import com.gavin.cloud.sys.core.enums.LoginType;
-import com.gavin.cloud.sys.core.mapper.ext.UserExtMapper;
+import com.gavin.cloud.sys.core.dao.ext.UserExtDao;
 import com.gavin.cloud.sys.core.service.UserService;
 import com.gavin.cloud.sys.pojo.User;
 import com.gavin.cloud.sys.pojo.UserExample;
@@ -28,7 +28,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserExtMapper userExtMapper;
+    private final UserExtDao userExtMapper;
 
     @Override
     public User createUser(User user) {

@@ -1,7 +1,7 @@
-package com.gavin.cloud.sys.core.mapper.ext;
+package com.gavin.cloud.sys.core.dao.ext;
 
 import com.gavin.cloud.sys.core.enums.ResourceType;
-import com.gavin.cloud.sys.core.mapper.PermissionMapper;
+import com.gavin.cloud.sys.core.dao.PermissionDao;
 import com.gavin.cloud.sys.pojo.Permission;
 import com.gavin.cloud.sys.pojo.vo.PermissionVO;
 import org.apache.ibatis.annotations.Mapper;
@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 @Mapper
-public interface PermissionExtMapper extends PermissionMapper {
+public interface PermissionExtDao extends PermissionDao {
 
     List<Permission> getPermsByRole(String... role);
 

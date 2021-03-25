@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.gavin.cloud.sys.core.mapper.ext.RolePermissionExtMapper">
+<mapper namespace="com.gavin.cloud.sys.core.dao.ext.RolePermissionExtDao">
 
     <insert id="insertBatch" parameterType="com.gavin.cloud.sys.pojo.RolePermission" databaseId="mysql">
         INSERT INTO sys_role_permission (id, role_id, permission_id) VALUES

@@ -2,10 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="com.gavin.cloud.auth.core.mapper.ext.AuthTokenMapperExt">
+<mapper namespace="com.gavin.cloud.auth.core.dao.ext.AuthTokenExtDao">
 
   <select id="getPage" parameterType="com.gavin.cloud.common.base.page.Pageable" resultType="com.gavin.cloud.auth.pojo.AuthToken" databaseId="mysql">
-    SELECT <include refid="com.gavin.cloud.auth.core.mapper.AuthTokenMapper.Base_Column_List"/>
+    SELECT <include refid="com.gavin.cloud.auth.core.dao.AuthTokenDao.Base_Column_List"/>
       FROM sys_auth_token
       <where>
         <if test="param!=null">

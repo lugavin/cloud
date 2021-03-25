@@ -1,4 +1,4 @@
-package com.gavin.cloud.sys.core.mapper;
+package com.gavin.cloud.sys.core.dao;
 
 import com.gavin.cloud.sys.pojo.Role;
 import com.gavin.cloud.sys.pojo.RoleExample;
@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 @Mapper
-public interface RoleMapper {
+public interface RoleDao {
     long countByExample(RoleExample example);
 
     int deleteByExample(RoleExample example);

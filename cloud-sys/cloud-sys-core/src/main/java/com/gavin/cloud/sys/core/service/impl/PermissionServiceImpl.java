@@ -5,9 +5,9 @@ import com.gavin.cloud.common.base.util.JsonUtils;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import com.gavin.cloud.sys.core.enums.RedisKey;
 import com.gavin.cloud.sys.core.enums.ResourceType;
-import com.gavin.cloud.sys.core.mapper.ext.PermissionExtMapper;
-import com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper;
-import com.gavin.cloud.sys.core.mapper.ext.RolePermissionExtMapper;
+import com.gavin.cloud.sys.core.dao.ext.PermissionExtDao;
+import com.gavin.cloud.sys.core.dao.ext.RoleExtDao;
+import com.gavin.cloud.sys.core.dao.ext.RolePermissionExtDao;
 import com.gavin.cloud.sys.core.service.PermissionService;
 import com.gavin.cloud.sys.pojo.*;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +34,9 @@ public class PermissionServiceImpl implements PermissionService {
     private static final long DEFAULT_TIMEOUT = TimeUnit.SECONDS.toMillis(60);
     private static final long DEFAULT_SLEEP_TIME = 500L;
 
-    private final RoleExtMapper roleExtMapper;
-    private final PermissionExtMapper permissionExtMapper;
-    private final RolePermissionExtMapper rolePermissionExtMapper;
+    private final RoleExtDao roleExtMapper;
+    private final PermissionExtDao permissionExtMapper;
+    private final RolePermissionExtDao rolePermissionExtMapper;
     private final StringRedisTemplate stringRedisTemplate;
 
     @Override

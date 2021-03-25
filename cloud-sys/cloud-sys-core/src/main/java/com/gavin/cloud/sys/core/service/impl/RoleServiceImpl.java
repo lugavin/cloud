@@ -3,8 +3,8 @@ package com.gavin.cloud.sys.core.service.impl;
 import com.gavin.cloud.common.base.problem.AppAlertException;
 import com.gavin.cloud.common.base.page.Page;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
-import com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper;
-import com.gavin.cloud.sys.core.mapper.ext.UserRoleExtMapper;
+import com.gavin.cloud.sys.core.dao.ext.RoleExtDao;
+import com.gavin.cloud.sys.core.dao.ext.UserRoleExtDao;
 import com.gavin.cloud.sys.core.service.RoleService;
 import com.gavin.cloud.sys.pojo.Role;
 import com.gavin.cloud.sys.pojo.RoleExample;
@@ -29,8 +29,8 @@ import static com.gavin.cloud.sys.core.enums.SysAlertType.ROLE_ALREADY_USED_TYPE
 @RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
 
-    private final RoleExtMapper roleExtMapper;
-    private final UserRoleExtMapper userRoleExtMapper;
+    private final RoleExtDao roleExtMapper;
+    private final UserRoleExtDao userRoleExtMapper;
 
     @Override
     public Role createRole(Role role) {

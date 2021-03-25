@@ -1,7 +1,7 @@
 package com.gavin.cloud;
 
 import com.gavin.cloud.common.base.util.JsonUtils;
-import com.gavin.cloud.sys.core.mapper.ext.PermissionExtMapper;
+import com.gavin.cloud.sys.core.dao.ext.PermissionExtDao;
 import com.gavin.cloud.sys.core.service.PermissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
@@ -37,7 +37,7 @@ public class ApplicationTest {
     private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
-    private PermissionExtMapper permissionExtMapper;
+    private PermissionExtDao permissionExtMapper;
 
     @Autowired
     private PermissionService permissionService;

@@ -3,10 +3,10 @@
         "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="com.gavin.cloud.sys.core.mapper.ext.PermissionExtMapper">
+<mapper namespace="com.gavin.cloud.sys.core.dao.ext.PermissionExtDao">
 
     <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.pojo.Permission"
-               extends="com.gavin.cloud.sys.core.mapper.PermissionMapper.BaseResultMap"/>
+               extends="com.gavin.cloud.sys.core.dao.PermissionDao.BaseResultMap"/>
 
     <resultMap id="BaseResultExtMap" type="com.gavin.cloud.sys.pojo.vo.PermissionVO" extends="BaseResultMap">
         <result column="parent_name" jdbcType="VARCHAR" property="parentName"/>

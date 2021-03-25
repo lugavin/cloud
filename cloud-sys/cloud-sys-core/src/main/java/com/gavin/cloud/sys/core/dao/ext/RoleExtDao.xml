@@ -2,13 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper">
+<mapper namespace="com.gavin.cloud.sys.core.dao.ext.RoleExtDao">
 
     <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.pojo.Role"
-               extends="com.gavin.cloud.sys.core.mapper.RoleMapper.BaseResultMap"/>
+               extends="com.gavin.cloud.sys.core.dao.RoleDao.BaseResultMap"/>
 
     <sql id="Base_Column_List">
-        <include refid="com.gavin.cloud.sys.core.mapper.RoleMapper.Base_Column_List"/>
+        <include refid="com.gavin.cloud.sys.core.dao.RoleDao.Base_Column_List"/>
     </sql>
 
     <select id="getList" parameterType="map" resultMap="BaseResultMap">

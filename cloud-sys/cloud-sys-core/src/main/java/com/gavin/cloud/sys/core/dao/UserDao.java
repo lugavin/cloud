@@ -1,4 +1,4 @@
-package com.gavin.cloud.sys.core.mapper;
+package com.gavin.cloud.sys.core.dao;
 
 import com.gavin.cloud.sys.pojo.User;
 import com.gavin.cloud.sys.pojo.UserExample;
@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 @Mapper
-public interface UserMapper {
+public interface UserDao {
     long countByExample(UserExample example);
 
     int deleteByExample(UserExample example);

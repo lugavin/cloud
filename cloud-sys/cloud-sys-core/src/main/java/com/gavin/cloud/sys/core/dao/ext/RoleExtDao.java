@@ -1,9 +1,9 @@
-package com.gavin.cloud.sys.core.mapper.ext;
+package com.gavin.cloud.sys.core.dao.ext;
 
 import com.gavin.cloud.common.base.page.Page;
 import com.gavin.cloud.common.base.page.PageRequest;
 import com.gavin.cloud.common.base.page.Pageable;
-import com.gavin.cloud.sys.core.mapper.RoleMapper;
+import com.gavin.cloud.sys.core.dao.RoleDao;
 import com.gavin.cloud.sys.pojo.Role;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper
-public interface RoleExtMapper extends RoleMapper {
+public interface RoleExtDao extends RoleDao {
 
     List<Role> getByUserId(Long userId);
 

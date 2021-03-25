@@ -1,4 +1,4 @@
-package com.gavin.cloud.sys.core.mapper;
+package com.gavin.cloud.sys.core.dao;
 
 import com.gavin.cloud.sys.pojo.UserRole;
 import com.gavin.cloud.sys.pojo.UserRoleExample;
@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 @Mapper
-public interface UserRoleMapper {
+public interface UserRoleDao {
     long countByExample(UserRoleExample example);
 
     int deleteByExample(UserRoleExample example);

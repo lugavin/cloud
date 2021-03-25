@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.gavin.cloud.sys.core.mapper.PermissionMapper">
-  <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.pojo.Permission">
+<mapper namespace="com.gavin.cloud.sys.core.dao.RoleDao">
+  <resultMap id="BaseResultMap" type="com.gavin.cloud.sys.pojo.Role">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="type" jdbcType="VARCHAR" property="type" />
-    <result column="url" jdbcType="VARCHAR" property="url" />
-    <result column="method" jdbcType="VARCHAR" property="method" />
-    <result column="seq" jdbcType="SMALLINT" property="seq" />
-    <result column="icon" jdbcType="VARCHAR" property="icon" />
-    <result column="is_parent" jdbcType="BIT" property="isParent" />
-    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -72,15 +66,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, code, `name`, `type`, url, `method`, seq, icon, is_parent, parent_id
+    id, code, `name`, remark
   </sql>
-  <select id="selectByExample" parameterType="com.gavin.cloud.sys.pojo.PermissionExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.gavin.cloud.sys.pojo.RoleExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from sys_permission
+    from sys_role
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -91,31 +85,27 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from sys_permission
+    from sys_role
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from sys_permission
+    delete from sys_role
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.gavin.cloud.sys.pojo.PermissionExample">
-    delete from sys_permission
+  <delete id="deleteByExample" parameterType="com.gavin.cloud.sys.pojo.RoleExample">
+    delete from sys_role
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.gavin.cloud.sys.pojo.Permission">
-    insert into sys_permission (id, code, `name`, 
-      `type`, url, `method`, 
-      seq, icon, is_parent, parent_id
-      )
+  <insert id="insert" parameterType="com.gavin.cloud.sys.pojo.Role">
+    insert into sys_role (id, code, `name`, 
+      remark)
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{type,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{method,jdbcType=VARCHAR}, 
-      #{seq,jdbcType=SMALLINT}, #{icon,jdbcType=VARCHAR}, #{isParent,jdbcType=BIT}, #{parentId,jdbcType=BIGINT}
-      )
+      #{remark,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.gavin.cloud.sys.pojo.Permission">
-    insert into sys_permission
+  <insert id="insertSelective" parameterType="com.gavin.cloud.sys.pojo.Role">
+    insert into sys_role
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -126,26 +116,8 @@
       <if test="name != null">
         `name`,
       </if>
-      <if test="type != null">
-        `type`,
-      </if>
-      <if test="url != null">
-        url,
-      </if>
-      <if test="method != null">
-        `method`,
-      </if>
-      <if test="seq != null">
-        seq,
-      </if>
-      <if test="icon != null">
-        icon,
-      </if>
-      <if test="isParent != null">
-        is_parent,
-      </if>
-      <if test="parentId != null">
-        parent_id,
+      <if test="remark != null">
+        remark,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -158,37 +130,19 @@
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
-      <if test="type != null">
-        #{type,jdbcType=VARCHAR},
-      </if>
-      <if test="url != null">
-        #{url,jdbcType=VARCHAR},
-      </if>
-      <if test="method != null">
-        #{method,jdbcType=VARCHAR},
-      </if>
-      <if test="seq != null">
-        #{seq,jdbcType=SMALLINT},
-      </if>
-      <if test="icon != null">
-        #{icon,jdbcType=VARCHAR},
-      </if>
-      <if test="isParent != null">
-        #{isParent,jdbcType=BIT},
-      </if>
-      <if test="parentId != null">
-        #{parentId,jdbcType=BIGINT},
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.gavin.cloud.sys.pojo.PermissionExample" resultType="java.lang.Long">
-    select count(*) from sys_permission
+  <select id="countByExample" parameterType="com.gavin.cloud.sys.pojo.RoleExample" resultType="java.lang.Long">
+    select count(*) from sys_role
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update sys_permission
+    update sys_role
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
@@ -199,26 +153,8 @@
       <if test="record.name != null">
         `name` = #{record.name,jdbcType=VARCHAR},
       </if>
-      <if test="record.type != null">
-        `type` = #{record.type,jdbcType=VARCHAR},
-      </if>
-      <if test="record.url != null">
-        url = #{record.url,jdbcType=VARCHAR},
-      </if>
-      <if test="record.method != null">
-        `method` = #{record.method,jdbcType=VARCHAR},
-      </if>
-      <if test="record.seq != null">
-        seq = #{record.seq,jdbcType=SMALLINT},
-      </if>
-      <if test="record.icon != null">
-        icon = #{record.icon,jdbcType=VARCHAR},
-      </if>
-      <if test="record.isParent != null">
-        is_parent = #{record.isParent,jdbcType=BIT},
-      </if>
-      <if test="record.parentId != null">
-        parent_id = #{record.parentId,jdbcType=BIGINT},
+      <if test="record.remark != null">
+        remark = #{record.remark,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -226,23 +162,17 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update sys_permission
+    update sys_role
     set id = #{record.id,jdbcType=BIGINT},
       code = #{record.code,jdbcType=VARCHAR},
       `name` = #{record.name,jdbcType=VARCHAR},
-      `type` = #{record.type,jdbcType=VARCHAR},
-      url = #{record.url,jdbcType=VARCHAR},
-      `method` = #{record.method,jdbcType=VARCHAR},
-      seq = #{record.seq,jdbcType=SMALLINT},
-      icon = #{record.icon,jdbcType=VARCHAR},
-      is_parent = #{record.isParent,jdbcType=BIT},
-      parent_id = #{record.parentId,jdbcType=BIGINT}
+      remark = #{record.remark,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.gavin.cloud.sys.pojo.Permission">
-    update sys_permission
+  <update id="updateByPrimaryKeySelective" parameterType="com.gavin.cloud.sys.pojo.Role">
+    update sys_role
     <set>
       <if test="code != null">
         code = #{code,jdbcType=VARCHAR},
@@ -250,41 +180,17 @@
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="type != null">
-        `type` = #{type,jdbcType=VARCHAR},
-      </if>
-      <if test="url != null">
-        url = #{url,jdbcType=VARCHAR},
-      </if>
-      <if test="method != null">
-        `method` = #{method,jdbcType=VARCHAR},
-      </if>
-      <if test="seq != null">
-        seq = #{seq,jdbcType=SMALLINT},
-      </if>
-      <if test="icon != null">
-        icon = #{icon,jdbcType=VARCHAR},
-      </if>
-      <if test="isParent != null">
-        is_parent = #{isParent,jdbcType=BIT},
-      </if>
-      <if test="parentId != null">
-        parent_id = #{parentId,jdbcType=BIGINT},
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.gavin.cloud.sys.pojo.Permission">
-    update sys_permission
+  <update id="updateByPrimaryKey" parameterType="com.gavin.cloud.sys.pojo.Role">
+    update sys_role
     set code = #{code,jdbcType=VARCHAR},
       `name` = #{name,jdbcType=VARCHAR},
-      `type` = #{type,jdbcType=VARCHAR},
-      url = #{url,jdbcType=VARCHAR},
-      `method` = #{method,jdbcType=VARCHAR},
-      seq = #{seq,jdbcType=SMALLINT},
-      icon = #{icon,jdbcType=VARCHAR},
-      is_parent = #{isParent,jdbcType=BIT},
-      parent_id = #{parentId,jdbcType=BIGINT}
+      remark = #{remark,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

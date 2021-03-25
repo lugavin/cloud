@@ -1,4 +1,4 @@
-package com.gavin.cloud.sys.core.mapper;
+package com.gavin.cloud.sys.core.dao;
 
 import com.gavin.cloud.sys.pojo.RolePermission;
 import com.gavin.cloud.sys.pojo.RolePermissionExample;
@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 @Mapper
-public interface RolePermissionMapper {
+public interface RolePermissionDao {
     long countByExample(RolePermissionExample example);
 
     int deleteByExample(RolePermissionExample example);

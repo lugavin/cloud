@@ -1,7 +1,7 @@
 package com.gavin.cloud;
 
-import com.gavin.cloud.auth.core.mapper.AuthTokenMapper;
-import com.gavin.cloud.auth.core.mapper.ext.AuthTokenMapperExt;
+import com.gavin.cloud.auth.core.dao.AuthTokenDao;
+import com.gavin.cloud.auth.core.dao.ext.AuthTokenExtDao;
 import com.gavin.cloud.auth.pojo.AuthToken;
 import com.gavin.cloud.auth.pojo.AuthTokenExample;
 import com.gavin.cloud.common.base.page.Page;
@@ -40,7 +40,7 @@ public class ApplicationTest {
     private SqlSessionFactory sqlSessionFactory;
 
     @Autowired
-    private AuthTokenMapperExt authTokenMapperExt;
+    private AuthTokenExtDao authTokenMapperExt;
 
     @Before
     public void setUp() {
@@ -53,7 +53,7 @@ public class ApplicationTest {
     @Test
     public void testPrimaryCache1() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            AuthTokenMapper mapper = sqlSession.getMapper(AuthTokenMapper.class);
+            AuthTokenDao mapper = sqlSession.getMapper(AuthTokenDao.class);
             log.info("{}", mapper.selectByPrimaryKey(101L)); // 发出SQL语句
             log.info("{}", mapper.selectByPrimaryKey(101L)); // 不发出SQL语句
         }
@@ -62,7 +62,7 @@ public class ApplicationTest {
     @Test
     public void testPrimaryCache2() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            AuthTokenMapper mapper = sqlSession.getMapper(AuthTokenMapper.class);
+            AuthTokenDao mapper = sqlSession.getMapper(AuthTokenDao.class);
             log.info("{}", mapper.selectByPrimaryKey(101L)); // 发出SQL语句
             sqlSession.commit(); // 清空一级缓存
             log.info("{}", mapper.selectByPrimaryKey(101L)); // 发出SQL语句
@@ -76,10 +76,10 @@ public class ApplicationTest {
     public void testSecondaryCache1() {
         try (SqlSession sqlSession1 = sqlSessionFactory.openSession();
              SqlSession sqlSession2 = sqlSessionFactory.openSession()) {
-            AuthTokenMapper mapper1 = sqlSession1.getMapper(AuthTokenMapper.class);
+            AuthTokenDao mapper1 = sqlSession1.getMapper(AuthTokenDao.class);
             log.info("{}", mapper1.selectByPrimaryKey(101L)); // 发出SQL语句
             sqlSession1.commit(); // 执行SELECT的commit操作会将SqlSession中的数据存入二级缓存区域
-            AuthTokenMapper mapper2 = sqlSession2.getMapper(AuthTokenMapper.class);
+            AuthTokenDao mapper2 = sqlSession2.getMapper(AuthTokenDao.class);
             log.info("{}", mapper2.selectByPrimaryKey(101L)); // 不发出SQL语句
         }
     }
@@ -88,13 +88,13 @@ public class ApplicationTest {
     public void testSecondaryCache2() {
         try (SqlSession sqlSession1 = sqlSessionFactory.openSession();
              SqlSession sqlSession2 = sqlSessionFactory.openSession()) {
-            AuthTokenMapper mapper1 = sqlSession1.getMapper(AuthTokenMapper.class);
+            AuthTokenDao mapper1 = sqlSession1.getMapper(AuthTokenDao.class);
             AuthToken token = mapper1.selectByPrimaryKey(101L); // 发出SQL语句
             log.info("{}", token);
             token.setExpiredAt(Date.from(Instant.now().plus(7, DAYS)));
             mapper1.updateByPrimaryKey(token);
             sqlSession1.commit(); // 当执行了非SELECT语句时整个namespace中的缓存会被清空
-            AuthTokenMapper mapper2 = sqlSession2.getMapper(AuthTokenMapper.class);
+            AuthTokenDao mapper2 = sqlSession2.getMapper(AuthTokenDao.class);
             log.info("{}", mapper2.selectByPrimaryKey(101L)); // 发出SQL语句
         }
     }
