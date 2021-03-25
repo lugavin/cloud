@@ -1,13 +1,14 @@
 package com.gavin.cloud.mail.service;
 
-import com.gavin.cloud.common.base.util.Constants;
 import com.gavin.cloud.mail.config.properties.MailProperties;
 import com.gavin.cloud.mail.dto.MailDTO;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
@@ -17,25 +18,14 @@ import java.util.Locale;
 import java.util.Map;
 
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class MailService {
 
     private final MailProperties mailProperties;
-
     private final JavaMailSender javaMailSender;
-
     private final MessageSource messageSource;
-
     private final SpringTemplateEngine templateEngine;
-
-    public MailService(MailProperties mailProperties,
-                       JavaMailSender javaMailSender,
-                       MessageSource messageSource,
-                       SpringTemplateEngine templateEngine) {
-        this.mailProperties = mailProperties;
-        this.javaMailSender = javaMailSender;
-        this.messageSource = messageSource;
-        this.templateEngine = templateEngine;
-    }
 
     @Async
     public void sendEmail(MailDTO mailDTO) {

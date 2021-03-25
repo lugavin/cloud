@@ -2,6 +2,7 @@ package com.gavin.cloud.search.web;
 
 import com.gavin.cloud.search.core.model.Item;
 import com.gavin.cloud.search.core.repository.ItemRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,13 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class ItemResource {
 
     private final ItemRepository itemRepository;
-
-    public ItemResource(ItemRepository itemRepository) {
-        this.itemRepository = itemRepository;
-    }
 
     /**
      * {@code SEARCH /_search/items/:query} : search for the Item corresponding to the query.

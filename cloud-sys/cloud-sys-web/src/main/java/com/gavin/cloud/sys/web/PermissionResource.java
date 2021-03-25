@@ -4,6 +4,7 @@ import com.gavin.cloud.sys.core.enums.ResourceType;
 import com.gavin.cloud.common.web.annotation.RequiresPermissions;
 import com.gavin.cloud.sys.core.service.PermissionService;
 import com.gavin.cloud.sys.pojo.Permission;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,14 +17,11 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/perms")
 public class PermissionResource {
 
     private final PermissionService permissionService;
-
-    public PermissionResource(PermissionService permissionService) {
-        this.permissionService = permissionService;
-    }
 
     /**
      * GET http://cloud-sys/perms/codes/ROLE_ADMIN,ROLE_USER

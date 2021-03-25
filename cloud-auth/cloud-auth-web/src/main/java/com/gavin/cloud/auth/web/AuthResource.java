@@ -16,6 +16,7 @@ import com.gavin.cloud.sys.api.UserApi;
 import com.gavin.cloud.sys.pojo.Role;
 import com.gavin.cloud.sys.pojo.User;
 import com.gavin.cloud.sys.pojo.dto.RegisterDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -33,6 +34,7 @@ import static com.gavin.cloud.auth.core.enums.AuthProblemType.*;
 import static com.gavin.cloud.common.base.util.Constants.REGEX_LOGIN_TYPE;
 
 @RestController
+@RequiredArgsConstructor
 public class AuthResource {
 
     private static final String USER = "user";
@@ -44,18 +46,6 @@ public class AuthResource {
     private final AccountApi accountApi;
     private final UserApi userApi;
     private final RoleApi roleApi;
-
-    public AuthResource(JwtExtProperties jwtProperties,
-                        AuthService authService,
-                        AccountApi accountApi,
-                        UserApi userApi,
-                        RoleApi roleApi) {
-        this.jwtProperties = jwtProperties;
-        this.authService = authService;
-        this.accountApi = accountApi;
-        this.userApi = userApi;
-        this.roleApi = roleApi;
-    }
 
     /**
      * POST  /login/{type} : User login.

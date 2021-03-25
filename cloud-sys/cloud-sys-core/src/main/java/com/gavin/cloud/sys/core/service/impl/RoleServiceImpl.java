@@ -10,6 +10,7 @@ import com.gavin.cloud.sys.pojo.Role;
 import com.gavin.cloud.sys.pojo.RoleExample;
 import com.gavin.cloud.sys.pojo.UserRole;
 import com.gavin.cloud.sys.pojo.UserRoleExample;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -25,15 +26,11 @@ import static com.gavin.cloud.sys.core.enums.SysAlertType.ROLE_ALREADY_USED_TYPE
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
 
-    private RoleExtMapper roleExtMapper;
-    private UserRoleExtMapper userRoleExtMapper;
-
-    public RoleServiceImpl(RoleExtMapper roleExtMapper, UserRoleExtMapper userRoleExtMapper) {
-        this.roleExtMapper = roleExtMapper;
-        this.userRoleExtMapper = userRoleExtMapper;
-    }
+    private final RoleExtMapper roleExtMapper;
+    private final UserRoleExtMapper userRoleExtMapper;
 
     @Override
     public Role createRole(Role role) {

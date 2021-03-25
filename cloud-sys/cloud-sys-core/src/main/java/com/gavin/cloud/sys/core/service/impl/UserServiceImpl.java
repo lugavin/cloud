@@ -11,6 +11,7 @@ import com.gavin.cloud.sys.core.mapper.ext.UserExtMapper;
 import com.gavin.cloud.sys.core.service.UserService;
 import com.gavin.cloud.sys.pojo.User;
 import com.gavin.cloud.sys.pojo.UserExample;
+import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,13 +25,10 @@ import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserExtMapper userExtMapper;
-
-    public UserServiceImpl(UserExtMapper userExtMapper) {
-        this.userExtMapper = userExtMapper;
-    }
 
     @Override
     public User createUser(User user) {

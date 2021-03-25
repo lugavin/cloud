@@ -6,6 +6,7 @@ import com.gavin.cloud.common.web.util.HeaderUtils;
 import com.gavin.cloud.sys.core.enums.LoginType;
 import com.gavin.cloud.sys.core.service.UserService;
 import com.gavin.cloud.sys.pojo.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,14 +18,11 @@ import static com.gavin.cloud.common.base.util.Constants.REGEX_LOGIN_NAME;
 import static com.gavin.cloud.common.base.util.Constants.REGEX_LOGIN_TYPE;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserResource {
 
     private final UserService userService;
-
-    public UserResource(UserService userService) {
-        this.userService = userService;
-    }
 
     @PostMapping
     @RequiresPermissions("user:create")

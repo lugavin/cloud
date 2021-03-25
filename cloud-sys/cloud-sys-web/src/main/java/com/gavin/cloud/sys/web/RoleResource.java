@@ -5,6 +5,7 @@ import com.gavin.cloud.common.web.annotation.RequiresPermissions;
 import com.gavin.cloud.common.web.util.HeaderUtils;
 import com.gavin.cloud.sys.core.service.RoleService;
 import com.gavin.cloud.sys.pojo.Role;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,14 +21,11 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/roles")
 public class RoleResource {
 
     private final RoleService roleService;
-
-    public RoleResource(RoleService roleService) {
-        this.roleService = roleService;
-    }
 
     @PostMapping
     @RequiresPermissions("role:create")

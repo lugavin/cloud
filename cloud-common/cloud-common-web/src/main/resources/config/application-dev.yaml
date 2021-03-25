@@ -19,17 +19,3 @@ spring:
 logging:
   level:
     com.gavin.cloud: DEBUG
-
-app:
-  # http://127.0.0.1:8080/swagger-ui/index.html
-  swagger:
-    title: Cloud App RESTful API
-    description: Cloud App API documentation
-    termsOfServiceUrl: https://lugavin.github.io
-    contactName: lugavin
-    contactUrl: https://github.com/lugavin
-    contactEmail: lugavin@outlook.com
-    basePackage: com.gavin.cloud
-    default-include-pattern: /**
-    protocols: http, https
-    version: 0.1.0

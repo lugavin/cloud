@@ -3,6 +3,7 @@ package com.gavin.cloud.sys.web;
 import com.gavin.cloud.sys.core.service.AccountService;
 import com.gavin.cloud.sys.pojo.User;
 import com.gavin.cloud.sys.pojo.dto.RegisterDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,14 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/account")
 public class AccountResource {
 
     private final AccountService accountService;
-
-    public AccountResource(AccountService accountService) {
-        this.accountService = accountService;
-    }
 
     @PostMapping("/register")
     public ResponseEntity<User> registerAccount(@Valid @RequestBody RegisterDTO registerDTO) {

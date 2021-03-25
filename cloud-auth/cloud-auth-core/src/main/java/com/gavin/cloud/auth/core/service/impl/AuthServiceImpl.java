@@ -11,6 +11,7 @@ import com.gavin.cloud.common.base.auth.JwtHelper;
 import com.gavin.cloud.common.base.problem.AppBizException;
 import com.gavin.cloud.common.base.util.NanoIdUtils;
 import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,15 +46,11 @@ import static com.gavin.cloud.common.base.problem.DefaultProblemType.AUTHENTICAT
  * 但是结合用户登出时客户端删除AccessToken的操作, 基本上可以适应常规情况下对用户认证鉴权的精度要求.
  */
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
     private final AuthTokenMapperExt authTokenMapperExt;
     private final JwtExtProperties jwtProperties;
-
-    public AuthServiceImpl(AuthTokenMapperExt authTokenMapperExt, JwtExtProperties jwtProperties) {
-        this.authTokenMapperExt = authTokenMapperExt;
-        this.jwtProperties = jwtProperties;
-    }
 
     @Override
     @Transactional

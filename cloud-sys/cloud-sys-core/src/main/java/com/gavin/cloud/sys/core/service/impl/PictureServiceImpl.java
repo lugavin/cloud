@@ -5,24 +5,19 @@ import com.gavin.cloud.common.base.util.SnowflakeIdWorker;
 import com.gavin.cloud.sys.core.config.properties.OssProperties;
 import com.gavin.cloud.sys.core.config.properties.SftpProperties;
 import com.gavin.cloud.sys.core.service.PictureService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class PictureServiceImpl implements PictureService {
 
     private final SftpProperties sftpProperties;
     private final OssProperties ossProperties;
-
-    public PictureServiceImpl(SftpProperties sftpProperties,
-                              OssProperties ossProperties) {
-        this.sftpProperties = sftpProperties;
-        this.ossProperties = ossProperties;
-    }
 
     //@Override
     //public String upload(InputStream local) {

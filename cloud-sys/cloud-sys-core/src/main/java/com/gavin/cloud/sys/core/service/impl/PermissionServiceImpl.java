@@ -10,8 +10,8 @@ import com.gavin.cloud.sys.core.mapper.ext.RoleExtMapper;
 import com.gavin.cloud.sys.core.mapper.ext.RolePermissionExtMapper;
 import com.gavin.cloud.sys.core.service.PermissionService;
 import com.gavin.cloud.sys.pojo.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -28,6 +28,7 @@ import static com.gavin.cloud.sys.core.enums.SysProblemType.ROLE_NOT_FOUND_TYPE;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PermissionServiceImpl implements PermissionService {
 
     private static final long DEFAULT_TIMEOUT = TimeUnit.SECONDS.toMillis(60);
@@ -37,16 +38,6 @@ public class PermissionServiceImpl implements PermissionService {
     private final PermissionExtMapper permissionExtMapper;
     private final RolePermissionExtMapper rolePermissionExtMapper;
     private final StringRedisTemplate stringRedisTemplate;
-
-    public PermissionServiceImpl(RoleExtMapper roleExtMapper,
-                                 PermissionExtMapper permissionExtMapper,
-                                 RolePermissionExtMapper rolePermissionExtMapper,
-                                 ObjectProvider<StringRedisTemplate> redisTemplateProvider) {
-        this.roleExtMapper = roleExtMapper;
-        this.permissionExtMapper = permissionExtMapper;
-        this.rolePermissionExtMapper = rolePermissionExtMapper;
-        this.stringRedisTemplate = redisTemplateProvider.getIfAvailable();
-    }
 
     @Override
     @Transactional

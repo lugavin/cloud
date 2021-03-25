@@ -9,6 +9,7 @@ import com.gavin.cloud.sys.core.service.UserService;
 import com.gavin.cloud.sys.pojo.User;
 import com.gavin.cloud.sys.pojo.UserExample;
 import com.gavin.cloud.sys.pojo.dto.RegisterDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,15 +23,11 @@ import static com.gavin.cloud.sys.core.enums.SysProblemType.USER_NOT_FOUND_TYPE;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
 
     private final UserExtMapper userExtMapper;
     private final UserService userService;
-
-    public AccountServiceImpl(UserExtMapper userExtMapper, UserService userService) {
-        this.userExtMapper = userExtMapper;
-        this.userService = userService;
-    }
 
     @Override
     public User register(RegisterDTO registerDTO) {

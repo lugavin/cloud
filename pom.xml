@@ -32,16 +32,16 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <powermock.version>2.0.2</powermock.version>
         <spring-cloud.version>Hoxton.RELEASE</spring-cloud.version>
         <spring-cloud-alibaba.version>2.2.4.RELEASE</spring-cloud-alibaba.version>
         <mybatis-spring-boot.version>2.1.4</mybatis-spring-boot.version>
         <mybatis-generator.version>1.4.0</mybatis-generator.version>
-        <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
+        <springdoc.version>1.5.6</springdoc.version>
         <jsch.version>0.1.55</jsch.version>
         <jjwt.version>0.11.2</jjwt.version>
         <yasson.version>2.0.1</yasson.version>
         <guava.version>30.0-jre</guava.version>
+        <mapstruct.version>1.4.2.Final</mapstruct.version>
         <bcprov-jdk15on.version>1.68</bcprov-jdk15on.version>
     </properties>
 
@@ -69,9 +69,9 @@
                 <version>${mybatis-spring-boot.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-boot-starter</artifactId>
-                <version>${springfox-boot-starter.version}</version>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
+                <version>${springdoc.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.jcraft</groupId>
@@ -99,6 +99,16 @@
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
             <!-- Bouncy Castle Crypto API -->
             <dependency>
                 <groupId>org.bouncycastle</groupId>
@@ -109,24 +119,15 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!-- PowerMock -->
         <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito2</artifactId>
-            <version>${powermock.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-junit4</artifactId>
-            <version>${powermock.version}</version>
-            <scope>test</scope>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
