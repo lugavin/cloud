@@ -1,9 +1,6 @@
 spring:
   application:
     name: cloud-auth-api
-  output:
-    ansi:
-      enabled: ALWAYS
 
 ribbon:
   ReadTimeout: 1000
@@ -23,15 +20,11 @@ feign:
 #          thread:
 #            timeoutInMilliseconds: 10000
 
-stores:
-  ribbon:
-    listOfServers: google.com, apple.com
+logging:
+  level:
+    com.netflix.config.sources.URLConfigurationSource: ERROR
 
 api:
   github:
     name: github
     url: https://api.github.com
-
-logging:
-  level:
-    com.netflix.config.sources.URLConfigurationSource: ERROR

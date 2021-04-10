@@ -15,7 +15,7 @@ public class FeignClientInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate template) {
         // TODO 服务鉴权: 设置Token请求头
-        log.info("====== Feign: {} {} ======", template.request().url(), template.request().method());
+        log.info("====== Feign: {} {} ======", template.request().url(), template.request().httpMethod());
     }
 
 }

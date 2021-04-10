@@ -2,21 +2,16 @@ package com.gavin.cloud;
 
 import com.gavin.cloud.client.GitHubClient;
 import com.gavin.cloud.client.RemoteService;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Optional;
-import java.util.stream.IntStream;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@Slf4j
 @SpringBootTest
-@RunWith(SpringRunner.class)
 public class ApplicationTest {
 
     @Autowired
@@ -25,34 +20,22 @@ public class ApplicationTest {
     @Autowired
     private RemoteService remoteService;
 
-    @Autowired
-    private LoadBalancerClient loadBalancer;
-
-    @Before
+    @BeforeEach
     public void setUp() {
-        Assert.assertNotNull(client);
-        Assert.assertNotNull(remoteService);
-        Assert.assertNotNull(loadBalancer);
+        assertNotNull(client);
+        assertNotNull(remoteService);
     }
 
     @Test
     public void testRestTemplate() {
-        Optional.ofNullable(remoteService.getUser("lugavin"))
-                .ifPresent(System.err::println);
+        String json = remoteService.getUser("lugavin");
+        log.info("====== {} ======", json);
     }
 
     @Test
     public void testFeignClient() {
-        Optional.ofNullable(client.getUser("lugavin"))
-                .ifPresent(System.err::println);
-    }
-
-    @Test
-    public void testLoadBalancer() {
-        IntStream.rangeClosed(1, 5).forEach(i -> {
-            ServiceInstance serviceInstance = loadBalancer.choose("stores");
-            System.err.println(String.format("[%d] %s:%s", i, serviceInstance.getHost(), serviceInstance.getPort()));
-        });
+        String json = client.getUser("lugavin");
+        log.info("====== {} ======", json);
     }
 
 }
