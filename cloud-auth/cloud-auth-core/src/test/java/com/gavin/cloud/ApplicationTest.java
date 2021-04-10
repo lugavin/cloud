@@ -9,15 +9,12 @@ import com.gavin.cloud.common.base.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
@@ -25,6 +22,7 @@ import java.util.*;
 
 import static com.gavin.cloud.common.base.util.Constants.PROFILE_DEV;
 import static java.time.temporal.ChronoUnit.DAYS;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * 当在Junit单元测试类中加了{@link SpringBootTest}注解时, 如果你的单元测试方法上加了{@link Transactional}注解,
@@ -32,7 +30,6 @@ import static java.time.temporal.ChronoUnit.DAYS;
  */
 @Slf4j
 @SpringBootTest
-@RunWith(SpringRunner.class)
 @ActiveProfiles(PROFILE_DEV)
 public class ApplicationTest {
 
@@ -42,9 +39,9 @@ public class ApplicationTest {
     @Autowired
     private AuthTokenExtDao authTokenMapperExt;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        Assert.assertNotNull(sqlSessionFactory);
+        assertNotNull(sqlSessionFactory);
     }
 
     /**

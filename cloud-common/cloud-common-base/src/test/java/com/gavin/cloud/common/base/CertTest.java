@@ -1,20 +1,17 @@
 package com.gavin.cloud.common.base;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
 import java.net.URL;
-import java.security.GeneralSecurityException;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.Signature;
+import java.security.*;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.Objects;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CertTest {
 
@@ -26,8 +23,8 @@ public class CertTest {
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         URL key = Objects.requireNonNull(classLoader.getResource("cert.jks"));
         privateKey = exportPrivateKeyFromKeystore(key.getFile(), "gavin", "P@ssw0rd");
@@ -42,7 +39,7 @@ public class CertTest {
         byte[] data = "This is the data that needs to be encrypted.".getBytes();
         byte[] signed = sign(data);
         boolean verified = verify(data, signed);
-        Assert.assertTrue(verified);
+        assertTrue(verified);
     }
 
     /**

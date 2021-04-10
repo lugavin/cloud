@@ -1,34 +1,31 @@
 package com.gavin.cloud;
 
+import com.gavin.cloud.search.core.model.Item;
 import com.gavin.cloud.search.core.repository.ItemRepository;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import reactor.core.publisher.Flux;
 
 import java.util.Arrays;
 import java.util.List;
 
-import com.gavin.cloud.search.core.model.Item;
-import reactor.core.publisher.Flux;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
 public class ApplicationTest {
 
     @Autowired
     private ItemRepository itemRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        Assert.assertNotNull(itemRepository);
+        assertNotNull(itemRepository);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
     }
 

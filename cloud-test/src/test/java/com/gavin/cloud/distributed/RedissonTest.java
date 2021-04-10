@@ -1,8 +1,8 @@
 package com.gavin.cloud.distributed;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.redisson.Redisson;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -23,7 +23,7 @@ public class RedissonTest {
     private RedissonClient redisson;
     private CountDownRunner countDownRunner;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         URL url = ResourceUtils.getURL("classpath:redisson.yml");
         redisson = Redisson.create(Config.fromYAML(url));

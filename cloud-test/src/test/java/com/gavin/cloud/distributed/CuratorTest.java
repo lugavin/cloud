@@ -5,9 +5,9 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.retry.ExponentialBackoffRetry;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
 
@@ -16,7 +16,7 @@ public class CuratorTest {
 
     private CuratorFramework client;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         client = CuratorFrameworkFactory.builder()
                 .connectString("127.0.0.1:2181")
@@ -25,7 +25,7 @@ public class CuratorTest {
         client.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (client != null) {
             client.close();

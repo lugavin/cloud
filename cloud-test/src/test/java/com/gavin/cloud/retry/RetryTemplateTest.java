@@ -1,8 +1,8 @@
 package com.gavin.cloud.retry;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.retry.RetryPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
@@ -23,7 +23,7 @@ public class RetryTemplateTest {
 
     private AtomicInteger counter = new AtomicInteger();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         retryTemplate = new RetryTemplate();
         // 固定次数重试策略: 默认重试最大次数为3次

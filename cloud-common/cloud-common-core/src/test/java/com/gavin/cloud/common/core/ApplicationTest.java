@@ -8,16 +8,16 @@ import com.gavin.cloud.common.core.model.Comment;
 import com.gavin.cloud.common.core.model.Counter;
 import com.gavin.cloud.common.core.transaction.ServiceA;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Calendar;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * 对于基于接口动态代理的 AOP 事务增强来说, 由于接口的方法是 public 的, 这就要求实现类的实现方法必须是 public 的
@@ -37,7 +37,6 @@ import java.util.Optional;
  */
 @Slf4j
 @SpringBootTest
-@RunWith(SpringRunner.class)
 public class ApplicationTest {
 
     private static final String PRC_RET_CODE_OK = "000000";
@@ -51,11 +50,11 @@ public class ApplicationTest {
     @Autowired
     private CounterMapper counterMapper;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        Assert.assertNotNull(serviceA);
-        Assert.assertNotNull(commentMapper);
-        Assert.assertNotNull(counterMapper);
+        assertNotNull(serviceA);
+        assertNotNull(commentMapper);
+        assertNotNull(counterMapper);
     }
 
     @Test
@@ -69,7 +68,7 @@ public class ApplicationTest {
         record.setId(SnowflakeIdWorker.getInstance().nextId());
         record.setCreatedBy("admin");
         int row = commentMapper.insert(record);
-        Assert.assertEquals(1, row);
+        assertEquals(1, row);
     }
 
     @Test
@@ -91,7 +90,7 @@ public class ApplicationTest {
         record.setCreatedAt(Calendar.getInstance().getTime());
         record.setCreatedBy("admin");
         int row = counterMapper.insert(record);
-        Assert.assertEquals(1, row);
+        assertEquals(1, row);
     }
 
     @Test
