@@ -157,35 +157,6 @@
     </pluginRepositories>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.mybatis.generator</groupId>
-                <artifactId>mybatis-generator-maven-plugin</artifactId>
-                <version>${mybatis-generator.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>mysql</groupId>
-                        <artifactId>mysql-connector-java</artifactId>
-                        <version>${mysql.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.softwareloop</groupId>
-                        <artifactId>mybatis-generator-lombok-plugin</artifactId>
-                        <version>1.0</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <!--
-                    (1)只会覆盖Java文件不会覆盖Mapper.xml文件
-                    (2)覆盖Mapper.xml文件需要配置插件<plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
-                    (3)默认configurationFile为${basedir}/src/main/resources/generatorConfig.xml
-                    -->
-                    <verbose>true</verbose>
-                    <overwrite>true</overwrite>
-                    <configurationFile>${basedir}/src/test/resources/mybatis-generator.xml</configurationFile>
-                </configuration>
-            </plugin>
-        </plugins>
         <resources>
             <resource>
                 <directory>${basedir}/src/main/java</directory>
@@ -205,9 +176,9 @@
                 </excludes>
             </resource>
             <resource>
+                <directory>${basedir}/src/main/resources</directory>
                 <!-- 开启filtering(将配置文件引用的@variable@替换为profile中定义的变量) -->
                 <filtering>true</filtering>
-                <directory>${basedir}/src/main/resources</directory>
                 <includes>
                     <include>**/bootstrap.yml</include>
                     <include>**/bootstrap.yaml</include>
@@ -224,6 +195,37 @@
                 </includes>
             </resource>
         </resources>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.mybatis.generator</groupId>
+                    <artifactId>mybatis-generator-maven-plugin</artifactId>
+                    <version>${mybatis-generator.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>mysql</groupId>
+                            <artifactId>mysql-connector-java</artifactId>
+                            <version>${mysql.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.softwareloop</groupId>
+                            <artifactId>mybatis-generator-lombok-plugin</artifactId>
+                            <version>1.0</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <!--
+                        (1)只会覆盖Java文件不会覆盖Mapper.xml文件
+                        (2)覆盖Mapper.xml文件需要配置插件<plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
+                        (3)默认configurationFile为${basedir}/src/main/resources/generatorConfig.xml
+                        -->
+                        <verbose>true</verbose>
+                        <overwrite>true</overwrite>
+                        <configurationFile>${basedir}/src/test/resources/mybatis-generator.xml</configurationFile>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <profiles>
