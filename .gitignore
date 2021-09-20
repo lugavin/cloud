@@ -7,3 +7,4 @@ node_modules
 .project
 .settings
 .factorypath
+.flattened-pom.xml

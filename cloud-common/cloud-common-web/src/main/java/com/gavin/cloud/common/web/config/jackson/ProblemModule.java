@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.util.VersionUtil;
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -44,7 +45,7 @@ public final class ProblemModule extends Module {
     }
 
     @Override
-    public void setupModule(final SetupContext context) {
+    public void setupModule(final Module.SetupContext context) {
         final SimpleModule module = new SimpleModule();
         module.setMixInAnnotation(Exceptional.class, stackTraces ? ExceptionalWithStacktraceMixin.class : ExceptionalMixin.class);
         module.setMixInAnnotation(Problem.class, ProblemMixIn.class);
