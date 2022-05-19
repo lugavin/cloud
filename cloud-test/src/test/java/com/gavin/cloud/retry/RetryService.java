@@ -2,15 +2,13 @@ package com.gavin.cloud.retry;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.remoting.RemoteAccessException;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.EnableRetry;
-import org.springframework.retry.annotation.Recover;
-import org.springframework.retry.annotation.Retryable;
+import org.springframework.retry.annotation.*;
+import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.stereotype.Component;
 
 /**
  * 被{@link Retryable}注解的方法发生异常时会重试
- * - value: 指定发生的异常进行重试
+ * - include: 指定发生的异常进行重试
  * - maxAttemps: 重试次数
  * - backoff: 重试补偿机制
  * <p>
@@ -27,14 +25,20 @@ import org.springframework.stereotype.Component;
 @EnableRetry
 public class RetryService {
 
-    @Retryable(value = {RemoteAccessException.class}, maxAttempts = 2, backoff = @Backoff(delay = 5000L, multiplier = 1))
+    /**
+     * spring-retry 默认的重试策略为 {@link SimpleRetryPolicy}
+     */
+    @Retryable(include = {RemoteAccessException.class}, maxAttempts = 2, backoff = @Backoff(delay = 5000L, multiplier = 1))
     public void call() {
         log.info("====== Do something ======");
         throw new RemoteAccessException("RPC调用异常");
     }
 
+    /**
+     * {@link RecoverAnnotationRecoveryHandler}
+     */
     @Recover
-    public void recover(RemoteAccessException e) {
+    private void recover(RemoteAccessException e) {
         log.error(e.getMessage());
     }
 

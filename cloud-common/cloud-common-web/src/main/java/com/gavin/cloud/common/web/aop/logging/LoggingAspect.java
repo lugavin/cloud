@@ -1,6 +1,5 @@
 package com.gavin.cloud.common.web.aop.logging;
 
-import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -8,7 +7,10 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 
 import java.util.Arrays;
 
@@ -19,7 +21,6 @@ import static com.gavin.cloud.common.base.util.Constants.PROFILE_DEV;
  * <p>
  * By default, it only runs with the "dev" profile.
  */
-@Slf4j
 @Aspect
 public class LoggingAspect {
 
@@ -57,7 +58,8 @@ public class LoggingAspect {
      */
     @AfterThrowing(pointcut = "applicationPackagePointcut() && springBeanPointcut()", throwing = "e")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
-        if (env.acceptsProfiles(PROFILE_DEV)) {
+        Logger log = logger(joinPoint);
+        if (env.acceptsProfiles(Profiles.of(PROFILE_DEV))) {
             log.error("Exception in {}.{}() with cause = \'{}\' and exception = \'{}\'", joinPoint.getSignature().getDeclaringTypeName(),
                     joinPoint.getSignature().getName(), e.getCause() != null ? e.getCause() : "NULL", e.getMessage(), e);
         } else {
@@ -75,6 +77,7 @@ public class LoggingAspect {
      */
     @Around("applicationPackagePointcut()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
+        Logger log = logger(joinPoint);
         if (log.isDebugEnabled()) {
             MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
             String[] parameterNames = methodSignature.getParameterNames();
@@ -93,6 +96,10 @@ public class LoggingAspect {
                     joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
             throw e;
         }
+    }
+
+    private Logger logger(JoinPoint joinPoint) {
+        return LoggerFactory.getLogger(joinPoint.getSignature().getDeclaringTypeName());
     }
 
 }
