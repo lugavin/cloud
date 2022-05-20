@@ -6,6 +6,7 @@ zuul:
   #  max-semaphores: 500
   add-host-header: true
   sensitiveHeaders: #Cookie, Set-Cookie, Authorization
+  # 参考K8S的API资源模型: /apis/{Group}/{Version}/{Resources}
   prefix: /api
   routes:
     cloud-sys: /sys/**
