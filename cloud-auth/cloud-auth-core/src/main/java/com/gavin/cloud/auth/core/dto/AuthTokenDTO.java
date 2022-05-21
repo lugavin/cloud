@@ -8,5 +8,6 @@ public class AuthTokenDTO {
     private final String accessToken;
     private final String refreshToken;
     private final Long expiresIn;
+    // private final String nonce;
 
 }

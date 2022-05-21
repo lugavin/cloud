@@ -60,6 +60,7 @@ public class AuthServiceImpl implements AuthService {
         AuthToken authToken = new AuthToken();
         authToken.setId(SnowflakeIdWorker.getInstance().nextId());
         authToken.setUid(activeUser.getUid());
+        // authToken.setNonce(RandomStringUtils.random(8));
         authToken.setClientIp(activeUser.getClientIP());
         authToken.setRefreshToken(refreshToken);
         authToken.setCreatedAt(Date.from(Instant.now()));
