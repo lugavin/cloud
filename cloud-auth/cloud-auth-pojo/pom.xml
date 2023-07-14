@@ -7,13 +7,13 @@
     <parent>
         <groupId>com.gavin.cloud</groupId>
         <artifactId>cloud-auth</artifactId>
-        <version>${cloud-parent.version}</version>
+        <version>${revision}</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cloud-auth-pojo</artifactId>
 
     <name>${project.artifactId}</name>
-    <url>http://maven.apache.org</url>
+    <url>https://maven.apache.org</url>
 
 </project>

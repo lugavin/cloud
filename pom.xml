@@ -12,11 +12,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gavin.cloud</groupId>
     <artifactId>cloud-parent</artifactId>
-    <version>${cloud-parent.version}</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
-    <url>http://maven.apache.org</url>
+    <url>https://maven.apache.org</url>
 
     <modules>
         <module>cloud-registry</module>
@@ -32,7 +32,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <cloud-parent.version>1.0-SNAPSHOT</cloud-parent.version>
+        <revision>0.0.1-SNAPSHOT</revision>
         <spring-cloud.version>Hoxton.RELEASE</spring-cloud.version>
         <spring-cloud-alibaba.version>2.2.4.RELEASE</spring-cloud-alibaba.version>
         <mybatis-spring-boot.version>2.1.4</mybatis-spring-boot.version>
@@ -200,7 +200,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.2.5</version>
+                <version>1.2.7</version>
                 <configuration>
                     <updatePomFile>true</updatePomFile>
                     <flattenMode>resolveCiFriendliesOnly</flattenMode>
